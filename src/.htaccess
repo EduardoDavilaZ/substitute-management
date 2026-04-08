@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /guardias/
+
+RewriteRule ^$ public/ [L]
+RewriteRule ^(.*)$ public/$1 [L]

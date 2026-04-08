@@ -1,0 +1,151 @@
+@import url("../vendor/bootstrap/bootstrap.min.css");
+@import url("../vendor/bootstrap-icons/font/bootstrap-icons.min.css");
+@import url("fonts.css"); /* 300 400 600 700 */
+
+/* ---------------------------------------------------------------------
+    CONFIGURATION
+------------------------------------------------------------------------ */
+
+:root {
+    /* Main Palette */
+    --primary: #0F4C81;
+    --primary-dark: #0c3c66;
+    --primary-light: #4A6FA5;
+    --highlight: #9DC3D4; 
+    
+    /* Interface */
+    --surface: #ffffff;
+    --app-bg: #f0f0f0;
+    --border: #e6e6e6;
+    
+    /* Text States */
+    --text-main: #333333;
+    --text-muted: #6c757d;
+    --text-on-primary: #ffffff; 
+    
+    /* Feedback */
+    --danger: #d9534f;
+    --success: #28a745;
+
+    /* Layout Constants */
+    --font-main: 'Montserrat', sans-serif;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+
+html,
+body{
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--text-main);
+    background-color: var(--app-bg);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------------------------------------------------------------------
+    TYPOGRAPHY
+------------------------------------------------------------------------ */
+
+.text-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+.text-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    line-height: 1.3;
+}
+
+.text-body {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text-main);
+}
+
+.text-muted-custom {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.text-brand { color: var(--primary); }
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+
+/* ---------------------------------------------------------------------
+    LAYOUT COMPONENTS (CUSTOM CLASSES)
+------------------------------------------------------------------------ */
+
+main, .flex-grow-1 {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
+}
+
+.main{
+    width: 98%;
+    margin: 1.5rem auto;
+    padding: 1.5rem 1.5rem;
+    box-sizing: border-box;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.bg-brand {
+    background-color: var(--primary) !important;
+}
+
+.bg-brand-dark {
+    background-color: var(--primary-dark) !important;
+}
+
+.nav-custom-link {
+    transition: background-color 0.2s;
+    &:hover{
+        background-color: var(--highlight) !important;
+        color: var(--primary-dark) !important;
+    }
+}
+
+.active{
+    background-color: var(--primary-dark) !important;
+    color: var(--text-on-primary) !important;
+}
+
+.btn-custom {
+    background-color: var(--primary);
+    color: var(--text-on-primary) !important;
+    transition: background-color 0.2s;
+
+    &:hover{
+        background-color: var(--highlight) !important;
+        color: var(--primary-dark) !important;
+    }
+}
+
+.bg-app { background-color: var(--app-bg); }
+
+.bg-surface { background-color: var(--surface); }
+
+.text-surface { color: var(--surface); }
+
+.bg-highlight{ background-color: var(--highlight); }
+
+.w-50px { width: 50px !important; }
+
+.h-50px { height: 50px !important; }
+
+
