@@ -11,10 +11,12 @@ Sistema integral diseñado para la automatización, coordinación y seguimiento 
 
 ---
 <div id="sobre-el-proyecto"></div>
+
 ## 📖 Sobre el Proyecto
 Este software nace de la necesidad de optimizar la logística escolar. Permite a los profesores notificar ausencias y adjuntar material pedagógico automáticamente, mientras que los administradores disponen de un panel inteligente para asignar sustitutos basados en la carga de trabajo y disponibilidad en tiempo real.
 
 <div id="estructura-del-repositorio"></div>
+
 ## 📂 Estructura del Repositorio
 El proyecto sigue una arquitectura de separación de intereses para facilitar el mantenimiento y la implementación:
 
@@ -33,6 +35,7 @@ El proyecto sigue una arquitectura de separación de intereses para facilitar el
 * **Componentes:** SweetAlert (Notificaciones visuales).
 
 <div id="instalacion"></div>
+
 ## 🚀 Instalación
 El proyecto está preparado para funcionar tanto en **Apache** (vía `.htaccess`) como en **IIS** (vía `web.config`), soportando URLs limpias y redirección automática al punto de entrada.
 
