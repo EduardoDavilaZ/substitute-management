@@ -1,0 +1,113 @@
+:root {
+    /* Main Palette */
+    --primary: #0F4C81;
+    --primary-dark: #0c3c66;
+    --primary-light: #4A6FA5;
+    --highlight: #9DC3D4; 
+    
+    /* Interface */
+    --surface: #ffffff;
+    --app-bg: #f0f0f0;
+    --border: #e6e6e6;
+    
+    /* Text States */
+    --text-main: #333333;
+    --text-muted: #6c757d;
+    --text-on-primary: #ffffff; 
+    
+    /* Feedback */
+    --danger: #d9534f;
+    --success: #28a745;
+
+    /* Layout Constants */
+    --font-main: 'Montserrat', sans-serif;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+.table-guardias th { 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+    color: #6c757d; }
+.hora-col { 
+    width: 180px; 
+    font-weight: 600; 
+    font-size: 0.85rem; 
+    color: #475569; 
+}
+.teacher-slot { 
+    font-size: 0.75rem; 
+    border-radius: 6px; 
+    padding: 6px 10px; 
+    margin-bottom: 4px; 
+    display: flex; 
+    align-items: center; 
+    min-height: 32px; 
+    transition: all 0.2s ease; 
+    cursor: pointer; 
+    position: relative; 
+}
+.teacher-slot:hover { 
+    transform: scale(1.03); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    z-index: 5; 
+}
+.slot-blue { 
+    background-color: #eff6ff; 
+    color: #1d4ed8; 
+    border: 1px solid #dbeafe; 
+}
+.slot-emerald { 
+    background-color: #ecfdf5; 
+    color: #047857; 
+    border: 1px solid #d1fae5; 
+}
+.badge-count { 
+    font-size: 0.7rem; 
+    padding: 2px 6px; 
+    border-radius: 10px; 
+    margin-left: auto; 
+    font-weight: bold; 
+}
+.bg-blue-badge { 
+    background-color: #dbeafe; 
+    color: #2563eb; 
+}
+.bg-emerald-badge { 
+    background-color: #d1fae5; 
+    color: #059669; 
+}
+.btn-add { 
+    border: 1px dashed #cbd5e1; 
+    color: #94a3b8; 
+    font-size: 0.75rem; 
+    width: 100%; 
+    padding: 4px; 
+    background: transparent; 
+    transition: all 0.2s; 
+    border-radius: 6px; 
+}
+.btn-add:hover { 
+    background-color: #f8fafc; 
+    color: #64748b; 
+    border-color: #94a3b8; 
+}
+.btn-slot-action { 
+    font-size: 0.75rem; 
+    padding: 2px 4px; 
+    border-radius: 4px; 
+    border: none; 
+    background: transparent; 
+    color: inherit; 
+    line-height: 1; 
+    transition: all 0.2s; 
+    opacity: 0.7; 
+}
+.btn-slot-action:hover { 
+    background: rgba(0,0,0,0.05); 
+    transform: scale(1.1); 
+    opacity: 1; 
+}
