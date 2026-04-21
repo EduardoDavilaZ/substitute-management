@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Informar Ausencia</title>
+
+    <meta name="description" content="Sistema de gestión de guardias y horarios para profesores.">
+    <meta name="author" content="Fundación Loyola">
+
+    <!-- Bootstrap and Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../../../src/public/assets/css/app.css">
+    <link rel="stylesheet" href="../../../../src/public/assets/css/report_absence.css">
+</head>
+
+<body>
+    <main class="container">
+        <div class="form-card w-50">
+            <h2>Informar Ausencia</h2>
+            <p class="subtitle">Comunica tu ausencia al centro docente</p>
+
+            <form action="" id="absence-form" enctype="multipart/form-data">
+                <div class="mb-2">
+                    <label for="date">Fecha de ausencia *</label>
+                    <input type="date" name="date" id="date">
+                </div>
+
+                <div class="mb-2">
+                    <label>Horas de ausencia *</label>
+                    <div id="hours-container" class="hours-grid">
+
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label for="description">Motivo de la ausencia *</label>
+                    <textarea name="description" id="description" rows="3"
+                        placeholder="Escribe aquí el motivo principal de tu ausencia"></textarea>
+                </div>
+                <!-- Este campo no lo tenemos y hay que ponerlo -->
+                <div class="mb-2">
+                    <label for="notes">Detalles adicionales</label>
+                    <textarea name="notes" id="notes" rows="3"
+                        placeholder="Información relevante para los compañeros de guardia..."></textarea>
+                </div>
+
+                <div class="mb-2">
+                    <label for="justification">Justificante general (opcional)</label>
+                    <div class="custom-upload">
+                        <input type="file" name="justification" id="justification" accept=".pdf" hidden />
+
+                        <label for="justification" class="upload-box">
+                            <span class="icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </span>
+                            <p class="main-text">Haz clic para subir un justificante</p>
+                            <p class="sub-text">Formatos aceptados: PDF (Máx. 5MB)</p>
+                        </label>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-danger" id="remove-justification">Eliminar Justificante</button>
+                <p class="info-text">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Si no adjuntas justificante ahora, la falta quedará como pendiente. Podrás justificarla más adelante
+                    desde tu perfil.
+                </p>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-light me-md-2">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Enviar Notificación</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+<script src="../../../src/public/assets/js/teacher/report_absence.js"></script>
+
+</html>
