@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <title>Informar Ausencia</title>
+
+        <meta name="description" content="Sistema de gestión de guardias y horarios para profesores.">
+        <meta name="author" content="Fundación Loyola">
+
+        <!-- Bootstrap and Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap"
+            rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="../../../../src/public/assets/css/app.css">
+        <link rel="stylesheet" href="../../../../src/public/assets/css/home_teacher.css">
+    </head>
+    <body>
+        <div class="d-flex align-items-center justify-content-center min-vh-100 bg-secondary">
+            <div id="big-container" class="container d-flex flex-row align-items-center bg-light w-100 h-75 ">
+                <div id="medium-container" class="container d-flex flex-column align-items-center">
+                    <div class="d-flex justify-content-center">
+                        <img src="../../../src/public/assets/img/imagen_perfil_prueba.jpg" alt="foto de perfil"
+                            class="profile-picture w-75 rounded-circle">
+                    </div>
+                    <h1 class="mt-5 text-center">Bienvenido,Albert Ensteint</h1>
+                    <h3 class="text-center">
+                        <span id="fecha"></span> - <span id="reloj"></span>
+                    </h3>
+                </div>
+                <div id="medium-container2"
+                    class="d-flex flex-column container  justify-content-center text-white w-100 gap-5">
+                    <div id="small-container" class="container d-flex flex-row align-items-center gap-5">
+                        <div class="card options text-center" style="width: 200px; height: 150px;">
+                            <a class="card-body" href="#">
+                                <i class="bi bi-shield-check card-icon"></i>
+                                <h5 class="card-title">Mis Guardias</h5>
+                            </a>
+                        </div>
+
+                        <div class="card options text-center" style="width: 200px; height: 150px;">
+                            <a class="card-body" href="#">
+                                <i class="bi bi-calendar-week card-icon"></i>
+                                <h5 class="card-title">Mi horario</h5>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="small-container" class="container d-flex flex-row align-items-center gap-5 ">
+                        <div class="card options text-center" style="width: 200px; height: 150px;">
+                            <a class="card-body" href="#">
+                                <i class="bi bi-person-x card-icon"></i>
+                                <h5 class="card-title">Mis ausencias</h5>
+                            </a>
+                        </div>
+                        <div class="card options text-center" style="width: 200px; height: 150px;">
+                            <a class="card-body" href="../teacher/report_absence.html">
+                                <i class="bi bi-megaphone card-icon"></i>
+                                <h5 class="card-title">Informar ausencia</h5>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="../../../src/public/assets/js/teacher/home_teacher.js"></script>
+</html>

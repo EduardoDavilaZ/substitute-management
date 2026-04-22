@@ -27,7 +27,29 @@
     <link rel="stylesheet" href="../../../../src/public/assets/css/report_absence.css">
 </head>
 
-<body>
+<body class="bg-secondary">
+    <nav class="top-nav">
+        <a href="home_teacher.html" class="nav-pill">
+            <i class="bi bi-house-door"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-pill">
+            <i class="bi bi-shield-check"></i>
+            <span>Mis Guardias</span>
+        </a>
+        <a href="#" class="nav-pill">
+            <i class="bi bi-calendar-week"></i>
+            <span>Mi Horario</span>
+        </a>
+        <a href="#" class="nav-pill">
+            <i class="bi bi-person-x"></i>
+            <span>Mis Ausencias</span>
+        </a>
+        <a href="report_absence.html" class="nav-pill active">
+            <i class="bi bi-megaphone"></i>
+            <span>Informar Ausencia</span>
+        </a>
+    </nav>
     <main class="container">
         <div class="form-card w-50">
             <h2>Informar Ausencia</h2>
@@ -77,7 +99,8 @@
                         </label>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-danger" id="remove-justification">Eliminar Justificante</button>
+                <button type="button" class="btn btn-outline-danger" id="remove-justification">Eliminar
+                    Justificante</button>
                 <p class="info-text">
                     <i class="bi bi-info-circle me-1"></i>
                     Si no adjuntas justificante ahora, la falta quedará como pendiente. Podrás justificarla más adelante
