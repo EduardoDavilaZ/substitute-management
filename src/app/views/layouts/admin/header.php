@@ -29,7 +29,8 @@
 
 <?= js('app.js') ?>
 <?= css('app.css') ?>
-
+<?= css('substitution_schedule.css') ?>
+<link rel="stylesheet" href="assets/css/substitution_schedule.css">
 <?php stack('styles') ?>
 
 <script>
