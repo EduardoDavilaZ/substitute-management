@@ -84,7 +84,6 @@
                                         <?php else: ?>
                                             <button class="btn btn-add"><i class="bi bi-plus"></i> Añadir P2</button>
                                         <?php endif; ?>
-
                                     </div>
                                 </td>
                                 <?php endforeach; ?>
