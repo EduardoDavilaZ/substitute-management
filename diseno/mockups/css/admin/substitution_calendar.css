@@ -1,0 +1,103 @@
+#substitution-calendar {
+    padding: 1rem;
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
+}
+
+.fc {
+    .fc-toolbar-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        font-family: var(--font-main);
+    }
+
+    .fc-button-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        font-weight: 600;
+        text-transform: capitalize;
+        padding: 0.5rem 1rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: var(--highlight);
+            border-color: var(--highlight);
+            color: var(--primary-dark);
+        }
+
+        &:disabled {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            opacity: 0.6;
+        }
+    }
+
+    .fc-col-header-cell {
+        background-color: var(--primary-dark);
+        padding: 10px 0;
+    }
+
+    .fc-col-header-cell-cushion {
+        color: var(--text-on-primary);
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    /* Events */
+    .fc-event {
+        cursor: pointer;
+        border: none !important;
+        padding: 2px 5px;
+        border-radius: var(--radius-sm) !important;
+        transition: transform 0.1s ease;
+        color: white !important;
+
+        &:hover {
+            transform: scale(1.02);
+            z-index: 5;
+        }
+
+        /* Colores por Niveles (Dentro de .fc para ganar especificidad) */
+        &.level-eso { background-color: var(--primary) !important; border-color: var(--primary) !important; }
+        &.level-high-school { background-color: var(--success) !important; border-color: var(--success) !important; }
+        &.level-primary { background-color: #f39c12 !important; border-color: #f39c12 !important; }
+        &.level-vocational { background-color: #8e44ad !important; border-color: #8e44ad !important; }
+        &.level-default { background-color: #6c757d !important; border-color: #6c757d !important; }
+    }
+
+    .fc-list-event:hover td {
+        background-color: inherit !important;
+    }
+}
+
+/* Event Tooltip */
+.event-tooltip {
+    position: absolute;
+    z-index: 10000;
+    background-color: var(--surface);
+    min-width: 280px;
+    pointer-events: none;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-md) !important;
+    border-radius: var(--radius-md);
+    animation: fadeIn 0.2s ease-out;
+
+    hr {
+        border-top: 1px solid var(--border);
+        opacity: 1;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.4em 0.8em;
+        border-radius: 20px;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
