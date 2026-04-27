@@ -1,24 +1,60 @@
 /* ---------------------------------------------------------------------
-    PREMIUM SUBSTITUTION CALENDAR STYLES (STRICT ROOT VARS)
+    PREMIUM SUBSTITUTION CALENDAR STYLES (PURE VISUAL REFINEMENT)
 ------------------------------------------------------------------------ */
 
+:root {
+    /* Refined color variations based on app.css */
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.4);
+}
+
+body {
+    background-color: #f8fafc;
+    /* Subtle background pattern for a premium feel without extra elements */
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(15, 76, 129, 0.03) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, rgba(157, 195, 212, 0.05) 0, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(40, 167, 69, 0.03) 0, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Main Container Entry Animation */
+.main {
+    animation: pageFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+@keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 #substitution-calendar {
-    padding: 1.5rem;
+    padding: 1rem;
     background-color: var(--surface);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-md);
+}
+
+/* Card Styling Refinement */
+.card {
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 
+                0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+    transition: box-shadow 0.3s ease;
 }
 
 .fc {
     font-family: var(--font-main);
 
-    /* Toolbar styling */
+    /* Toolbar styling - More "Floaty" look */
     .fc-toolbar {
-        margin-bottom: 2.5rem !important;
+        margin-bottom: 2rem !important;
+        padding: 0 10px;
         
         .fc-toolbar-title {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: var(--primary-dark);
             letter-spacing: -0.02em;
@@ -34,16 +70,16 @@
             background-color: transparent !important;
             border: none !important;
             color: var(--primary) !important;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.85rem;
             border-radius: 8px !important;
-            padding: 0.6rem 1.2rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
 
             &:hover {
                 background-color: var(--surface) !important;
-                box-shadow: var(--shadow-sm);
                 color: var(--primary-dark) !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             }
 
             &.fc-button-active {
@@ -60,44 +96,43 @@
             color: var(--text-on-primary) !important;
             border-radius: 8px !important;
             margin-right: 12px !important;
-            opacity: 1 !important;
             border: none !important;
+            font-weight: 700;
             
-            &:disabled { opacity: 0.5 !important; }
+            &:disabled { opacity: 0.6 !important; }
         }
     }
 
-    /* Day Headers */
+    /* Table refinement */
+    .fc-theme-bootstrap5 thead { border: none; }
+
     .fc-col-header-cell {
         background: transparent;
         border: none;
-        padding-bottom: 15px;
+        padding-bottom: 12px;
 
         .fc-col-header-cell-cushion {
             color: var(--text-muted);
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
             text-decoration: none;
         }
     }
 
-    .fc-scrollgrid {
-        border: none !important;
-    }
+    .fc-scrollgrid { border: none !important; }
 
     .fc-daygrid-day {
-        border: 1px solid var(--border) !important;
-        transition: background-color 0.2s ease;
+        border: 1px solid rgba(0, 0, 0, 0.04) !important;
 
         &.fc-day-today {
-            background-color: rgba(15, 76, 129, 0.05) !important;
+            background-color: rgba(15, 76, 129, 0.03) !important;
             .fc-daygrid-day-number {
                 background: var(--primary);
                 color: var(--text-on-primary);
-                width: 28px;
-                height: 28px;
+                width: 26px;
+                height: 26px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -108,58 +143,45 @@
     }
 
     .fc-daygrid-day-number {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--primary-dark);
         padding: 8px 12px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-decoration: none !important;
     }
 
-    /* Events Styling */
+    /* Events Refinement - Soft Gradients */
     .fc-event {
         border: none !important;
-        padding: 4px 10px !important;
-        margin: 2px 4px !important;
-        border-radius: var(--radius-sm) !important;
-        font-weight: 600 !important;
-        font-size: 0.8rem !important;
-        box-shadow: var(--shadow-sm);
-        transition: all 0.2s ease;
+        padding: 5px 10px !important;
+        margin: 2px 6px !important;
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+        font-size: 0.75rem !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease, filter 0.2s ease;
         color: white !important;
 
         &:hover {
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+            transform: scale(1.02);
             filter: brightness(1.1);
         }
 
-        /* Color Mapping using Root Variables */
-        &.level-eso {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
-        }
-        &.level-high-school {
-            background: linear-gradient(135deg, var(--success), #27ae60) !important;
-        }
-        &.level-primary {
-            background: linear-gradient(135deg, #f39c12, #e67e22) !important;
-        }
-        &.level-vocational {
-            background: linear-gradient(135deg, #8e44ad, #7d3c98) !important;
-        }
-        &.level-default {
-            background: linear-gradient(135deg, var(--text-muted), #5a6268) !important;
-        }
+        &.level-eso { background: linear-gradient(135deg, var(--primary), #1a6ab3) !important; }
+        &.level-high-school { background: linear-gradient(135deg, var(--success), #27ae60) !important; }
+        &.level-primary { background: linear-gradient(135deg, #f39c12, #e67e22) !important; }
+        &.level-vocational { background: linear-gradient(135deg, #8e44ad, #7d3c98) !important; }
+        &.level-default { background: linear-gradient(135deg, #6c757d, #5a6268) !important; }
     }
 
-    /* Agenda/List View */
+    /* List View Refinement */
     .fc-list {
         border: none !important;
         background-color: var(--surface);
         
         .fc-list-day-cushion {
-            background-color: var(--surface) !important;
+            background-color: #fcfcfc !important;
             border-bottom: 1px solid var(--border) !important;
-            border-top: 1px solid var(--border) !important;
             padding: 15px 25px !important;
 
             .fc-list-day-text, .fc-list-day-side-text {
@@ -167,47 +189,49 @@
                 font-weight: 800 !important;
                 text-transform: capitalize;
                 text-decoration: none !important;
+                font-size: 0.9rem;
             }
         }
 
         .fc-list-event {
-            &:hover td { background-color: rgba(0, 0, 0, 0.02) !important; }
-            td { border-bottom: 1px solid var(--border) !important; padding: 15px 25px !important; }
+            &:hover td { background-color: #fafafa !important; }
+            td { border-bottom: 1px solid rgba(0,0,0,0.03) !important; padding: 15px 25px !important; }
         }
     }
 }
 
-/* Tooltip with Glassmorphism */
+/* Tooltip - Advanced Glassmorphism */
 .event-tooltip {
     position: absolute;
     z-index: 10000;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    min-width: 300px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px) saturate(180%);
+    min-width: 280px;
     padding: 20px !important;
-    border: 1px solid var(--border) !important;
-    box-shadow: var(--shadow-lg) !important;
-    border-radius: var(--radius-md);
-    animation: tooltipAppear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 16px;
+    animation: tooltipAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-    hr { margin: 15px 0; border-top: 1px solid var(--border); opacity: 0.5; }
+    h6 { letter-spacing: -0.01em; font-weight: 800; }
+    hr { margin: 15px 0; border-top: 1px solid rgba(0,0,0,0.08); }
 }
 
 @keyframes tooltipAppear {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    from { opacity: 0; transform: scale(0.9) translateY(15px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Legend Styling (Sidebar) */
+/* Legend Styling (Sidebar Widget) */
 .calendar-legend {
     display: flex;
     flex-direction: column;
-    gap: 5px;
     padding: 25px 20px;
-    background: var(--surface);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
 
     .uppercase { text-transform: uppercase; }
     .letter-spacing { letter-spacing: 0.1em; }
@@ -216,19 +240,21 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        font-size: 0.75rem;
-        font-weight: 700;
+        font-size: 0.72rem;
+        font-weight: 800;
         color: var(--text-muted);
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(0,0,0,0.02);
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.03);
+        transition: color 0.2s ease;
 
+        &:hover { color: var(--primary-dark); }
         &:last-child { border-bottom: none; }
 
         .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 4px;
-            box-shadow: var(--shadow-sm);
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             flex-shrink: 0;
         }
     }
