@@ -1,103 +1,235 @@
+/* ---------------------------------------------------------------------
+    PREMIUM SUBSTITUTION CALENDAR STYLES (STRICT ROOT VARS)
+------------------------------------------------------------------------ */
+
 #substitution-calendar {
-    padding: 1rem;
+    padding: 1.5rem;
     background-color: var(--surface);
     border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
 }
 
 .fc {
-    .fc-toolbar-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--primary);
-        font-family: var(--font-main);
-    }
+    font-family: var(--font-main);
 
-    .fc-button-primary {
-        background-color: var(--primary);
-        border-color: var(--primary);
-        font-weight: 600;
-        text-transform: capitalize;
-        padding: 0.5rem 1rem;
-        transition: all 0.2s ease;
-
-        &:hover {
-            background-color: var(--highlight);
-            border-color: var(--highlight);
+    /* Toolbar styling */
+    .fc-toolbar {
+        margin-bottom: 2.5rem !important;
+        
+        .fc-toolbar-title {
+            font-size: 1.8rem;
+            font-weight: 800;
             color: var(--primary-dark);
+            letter-spacing: -0.02em;
         }
 
-        &:disabled {
-            background-color: var(--primary-light);
-            border-color: var(--primary-light);
-            opacity: 0.6;
+        .fc-button-group {
+            background: var(--primary-light);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .fc-button-primary {
+            background-color: transparent !important;
+            border: none !important;
+            color: var(--primary) !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px !important;
+            padding: 0.6rem 1.2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            &:hover {
+                background-color: var(--surface) !important;
+                box-shadow: var(--shadow-sm);
+                color: var(--primary-dark) !important;
+            }
+
+            &.fc-button-active {
+                background-color: var(--surface) !important;
+                box-shadow: var(--shadow-sm);
+                color: var(--primary-dark) !important;
+            }
+            
+            &:focus { box-shadow: none !important; }
+        }
+
+        .fc-today-button {
+            background-color: var(--primary) !important;
+            color: var(--text-on-primary) !important;
+            border-radius: 8px !important;
+            margin-right: 12px !important;
+            opacity: 1 !important;
+            border: none !important;
+            
+            &:disabled { opacity: 0.5 !important; }
         }
     }
 
+    /* Day Headers */
     .fc-col-header-cell {
-        background-color: var(--primary-dark);
-        padding: 10px 0;
+        background: transparent;
+        border: none;
+        padding-bottom: 15px;
+
+        .fc-col-header-cell-cushion {
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+        }
     }
 
-    .fc-col-header-cell-cushion {
-        color: var(--text-on-primary);
-        text-decoration: none;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-    }
-
-    /* Events */
-    .fc-event {
-        cursor: pointer;
+    .fc-scrollgrid {
         border: none !important;
-        padding: 2px 5px;
+    }
+
+    .fc-daygrid-day {
+        border: 1px solid var(--border) !important;
+        transition: background-color 0.2s ease;
+
+        &.fc-day-today {
+            background-color: rgba(15, 76, 129, 0.05) !important;
+            .fc-daygrid-day-number {
+                background: var(--primary);
+                color: var(--text-on-primary);
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                margin: 4px;
+            }
+        }
+    }
+
+    .fc-daygrid-day-number {
+        font-weight: 600;
+        color: var(--primary-dark);
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        text-decoration: none !important;
+    }
+
+    /* Events Styling */
+    .fc-event {
+        border: none !important;
+        padding: 4px 10px !important;
+        margin: 2px 4px !important;
         border-radius: var(--radius-sm) !important;
-        transition: transform 0.1s ease;
+        font-weight: 600 !important;
+        font-size: 0.8rem !important;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s ease;
         color: white !important;
 
         &:hover {
-            transform: scale(1.02);
-            z-index: 5;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+            filter: brightness(1.1);
         }
 
-        /* Colores por Niveles (Dentro de .fc para ganar especificidad) */
-        &.level-eso { background-color: var(--primary) !important; border-color: var(--primary) !important; }
-        &.level-high-school { background-color: var(--success) !important; border-color: var(--success) !important; }
-        &.level-primary { background-color: #f39c12 !important; border-color: #f39c12 !important; }
-        &.level-vocational { background-color: #8e44ad !important; border-color: #8e44ad !important; }
-        &.level-default { background-color: #6c757d !important; border-color: #6c757d !important; }
+        /* Color Mapping using Root Variables */
+        &.level-eso {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+        }
+        &.level-high-school {
+            background: linear-gradient(135deg, var(--success), #27ae60) !important;
+        }
+        &.level-primary {
+            background: linear-gradient(135deg, #f39c12, #e67e22) !important;
+        }
+        &.level-vocational {
+            background: linear-gradient(135deg, #8e44ad, #7d3c98) !important;
+        }
+        &.level-default {
+            background: linear-gradient(135deg, var(--text-muted), #5a6268) !important;
+        }
     }
 
-    .fc-list-event:hover td {
-        background-color: inherit !important;
+    /* Agenda/List View */
+    .fc-list {
+        border: none !important;
+        background-color: var(--surface);
+        
+        .fc-list-day-cushion {
+            background-color: var(--surface) !important;
+            border-bottom: 1px solid var(--border) !important;
+            border-top: 1px solid var(--border) !important;
+            padding: 15px 25px !important;
+
+            .fc-list-day-text, .fc-list-day-side-text {
+                color: var(--primary-dark) !important;
+                font-weight: 800 !important;
+                text-transform: capitalize;
+                text-decoration: none !important;
+            }
+        }
+
+        .fc-list-event {
+            &:hover td { background-color: rgba(0, 0, 0, 0.02) !important; }
+            td { border-bottom: 1px solid var(--border) !important; padding: 15px 25px !important; }
+        }
     }
 }
 
-/* Event Tooltip */
+/* Tooltip with Glassmorphism */
 .event-tooltip {
     position: absolute;
     z-index: 10000;
-    background-color: var(--surface);
-    min-width: 280px;
-    pointer-events: none;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    min-width: 300px;
+    padding: 20px !important;
     border: 1px solid var(--border) !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: var(--shadow-lg) !important;
     border-radius: var(--radius-md);
-    animation: fadeIn 0.2s ease-out;
+    animation: tooltipAppear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
-    hr {
-        border-top: 1px solid var(--border);
-        opacity: 1;
-    }
-
-    .badge {
-        font-size: 0.7rem;
-        padding: 0.4em 0.8em;
-        border-radius: 20px;
-    }
+    hr { margin: 15px 0; border-top: 1px solid var(--border); opacity: 0.5; }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes tooltipAppear {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Legend Styling (Sidebar) */
+.calendar-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 25px 20px;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+
+    .uppercase { text-transform: uppercase; }
+    .letter-spacing { letter-spacing: 0.1em; }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.02);
+
+        &:last-child { border-bottom: none; }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+    }
 }

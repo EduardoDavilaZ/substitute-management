@@ -88,19 +88,63 @@
             </div>
         </nav>
         <main class="main">
-            <h1 class="text-center mt-5 display-4 fw-bold">Calendario de guardias</h1>
-            <div class="container mt-5">
-                <div class="row justify-content-center">
-                    <div class="col-md-12">
-                        <div class="card sho">
-                            <div id="substitution-calendar"></div>
-                            <div class="card-body">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-2">
+                        <!-- Leyenda del Calendario (Lateral) -->
+                        <div class="calendar-legend h-100">
+                            <h6 class="fw-bold mb-4 text-primary-dark small uppercase letter-spacing">Leyenda</h6>
+                            <div class="legend-item mb-3">
+                                <span class="dot" style="background: var(--primary);"></span> ESO
+                            </div>
+                            <div class="legend-item mb-3">
+                                <span class="dot" style="background: var(--success);"></span> BACHILLERATO
+                            </div>
+                            <div class="legend-item mb-3">
+                                <span class="dot" style="background: #f39c12;"></span> PRIMARIA
+                            </div>
+                            <div class="legend-item mb-3">
+                                <span class="dot" style="background: #8e44ad;"></span> CICLOS
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-10">
+                        <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
+                            <div id="substitution-calendar"></div>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </main>
+        <div class="container-fluid bg-brand">
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-2 my-2 border-top">
+                <div class="d-flex align-items-center">
+                    <span class="text-surface fw-light">
+                        © 2026 Fundación Loyola
+                    </span>
+                </div>
+
+                <ul class="nav justify-content-end list-unstyled d-flex">
+                    <li class="mx-2">
+                        <a class="text-surface fs-5" href="https://www.instagram.com/escuelaevg/?hl=es" target="_blank"
+                            aria-label="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                    </li>
+                    <li class="mx-2">
+                        <a class="text-surface fs-5" href="https://www.facebook.com/EscuelaVirgendeGuadalupe/"
+                            target="_blank" aria-label="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                    </li>
+                    <li class="mx-2">
+                        <a class="text-surface fs-5" href="#" target="_blank" aria-label="Github">
+                            <i class="bi bi-github"></i>
+                        </a>
+                    </li>
+                </ul>
+            </footer>
+        </div>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
         <script src="../js/admin/substitution_calendar.js"></script>
