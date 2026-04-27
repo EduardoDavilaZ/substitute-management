@@ -45,6 +45,11 @@
         i { color: blue; }
     }
 
+    .icon-user {
+        background-color: rgb(231, 237, 243);
+        i { color: rgb(53, 138, 212); }
+    }
+
     .icon-book {
         background-color: rgb(254, 245, 225);
         i { color: rgb(255, 149, 0); }
