@@ -1,0 +1,94 @@
+
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-thin {
+    -webkit-text-stroke: 0.5px white;
+    text-stroke: 0.5px white;
+    
+}
+
+
+.icon-bold {
+    -webkit-text-stroke: 1px currentColor;
+    text-stroke: 1px currentColor;
+}
+
+.kpi-card {
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+    height: 100%;
+
+    .kpi-label {
+        color: var(--text-muted);
+        font-size: small;
+        text-transform: uppercase;
+    }
+
+    .kpi-value {
+        font-weight: bolder;
+        font-size: xx-large;
+    }
+
+    .kpi-icon {
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+    }
+    
+    .icon-people {
+        background-color: rgb(231, 237, 243);
+        i { color: blue; }
+    }
+
+    .icon-user {
+        background-color: rgb(231, 237, 243);
+        i { color: rgb(53, 138, 212); }
+    }
+
+    .icon-book {
+        background-color: rgb(254, 245, 225);
+        i { color: rgb(255, 149, 0); }
+    }
+
+    .icon-shield {
+        background-color: rgb(228, 255, 219);
+        i { color: rgb(20, 80, 0); }
+    }
+
+    .icon-calendar {
+        background-color: rgb(255, 229, 229);
+        i { color: rgb(255, 0, 0); }
+    }
+
+    #weekly-substitutions-chart{
+        height: 40vh;
+    }
+
+    #pending-substitutions {
+        max-height: 40vh;
+        overflow-y: scroll;
+
+        .pending-group {
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+
+            .icon-alert {
+                width: 1rem;
+                height: 1rem;
+                border-radius: 50%;
+                background-color: rgb(254, 245, 225);
+                i { color: rgb(255, 149, 0); }
+            }
+        }
+    }
+}
+
