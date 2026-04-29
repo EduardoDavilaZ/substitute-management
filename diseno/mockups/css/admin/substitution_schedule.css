@@ -19,9 +19,6 @@
     min-width: 180px;
     font-weight: 700;
     color: var(--primary);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
 .teacher-slot {
