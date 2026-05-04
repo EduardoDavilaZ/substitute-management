@@ -1,16 +1,14 @@
 <?php 
 
-class TeacherController {
-    public $view;
-    public $msg;
-    public $layout = 'teacher/layout';
-
-    public function __construct(){
-        $this->view = '';
-        $this->msg = '';
+final class TeacherController extends Controller 
+{
+    protected function init() : void
+    {
+        $this->layout = 'teacher/layout';
     }
 
-    public function home() {
+    public function home() : void
+    {
         $this->view = 'teacher/home';
     }
 }

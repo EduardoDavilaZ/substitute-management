@@ -1,0 +1,98 @@
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.right {
+    display: block;
+    margin-left: auto;
+}
+
+.event-container {
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+
+    & > div {
+        display: flex;
+        justify-content: space-between;
+
+        & > div {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            .event-label {
+                margin: 0;
+                display: inline-block;
+            }
+
+            .event-group {
+                padding: 4px 12px;
+                border-radius: var(--radius-md);
+                border: 1px solid black;
+                font-size: .6rem;
+            }
+        }
+    }
+
+    .event-details {
+        font-size: .8rem;
+        padding: 1rem 0;
+        margin: 0;
+    }
+
+    .event-date {
+        font-size: .8rem;
+    }
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-md);
+    font-size: .6rem;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.badge-red {
+    background-color: #fde2e2;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.badge-green {
+    background-color: #def7ec;
+    color: #03543f;
+    border: 1px solid #84e1bc;
+}
+
+.badge-yellow {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.btn-edit {
+    border: 0;
+    i {
+        color: #00397e;
+    }
+}
+
+.btn-delete {
+    border: 0;
+    i {
+        color: #c53030;
+    }
+}
+
+.btn-create {
+    background-color: var(--primary);
+    border: 0;
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+}

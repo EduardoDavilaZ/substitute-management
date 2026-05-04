@@ -32,7 +32,6 @@ define("UPLOADS_URL", BASE_URL . "uploads/");
 /**
  * Paths (Filesystem / Backend)
  */
-
 define("PUBLIC_PATH", BASE_PATH . "public/");
 define("UPLOADS_PATH", PUBLIC_PATH . "uploads/");
 define("UPLOADS_IMG_PATH", UPLOADS_PATH . "img/");
