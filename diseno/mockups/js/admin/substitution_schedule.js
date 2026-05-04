@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <tr class="${h.includes('Recreo') ? 'bg-light-subtle' : ''}">
             <td class="p-3 hora-col ${h.includes('Recreo') ? 'fw-bold' : ''}">${h}</td>
             ${days.map(d => {
-                const assigned = assignments.filter(a => a.d === d && a.p === p);
-                return `<td class="p-2" style="min-width: 200px;"><div class="d-flex flex-column gap-1">
+        const assigned = assignments.filter(a => a.d === d && a.p === p);
+        return `<td class="p-2" style="min-width: 200px;"><div class="d-flex flex-column gap-1">
                     ${[0, 1].map(i => assigned[i] ? `
                         <div class="teacher-slot slot-${assigned[i].cl}">
                             <i class="bi bi-person-fill me-1"></i>
@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>` : `
                         <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addTeacherModal"><i class="bi bi-plus"></i> Añadir P${i + 1}</button>`
-                    ).join('')}
+        ).join('')}
                 </div></td>`;
-            }).join('')}
+    }).join('')}
         </tr>`).join('');
 });

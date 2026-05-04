@@ -42,14 +42,21 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav d-flex gap-1">
                         <li class="nav-item">
-                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/home') ?>" href="">
+                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/home') ?>" 
+                                href="">
                                 Inicio
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/substitution-schedule') ?>"
-                                href="">
+                                href="substitution_schedule.html">
                                 Libro de guardias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/substitution-schedule') ?>"
+                                href="substitution_calendar.html">
+                                Calendario de guardias
                             </a>
                         </li>
                         <li class="nav-item">
@@ -90,9 +97,6 @@
                 <div class="d-flex justify-content-end gap-2 mb-3 pe-2">
                     <button class="btn btn-reset btn-sm rounded-pill px-3 shadow-sm">
                         <i class="bi bi-arrow-counterclockwise me-1"></i> Restablecer
-                    </button>
-                    <button class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
-                        <i class="bi bi-file-earmark-pdf me-1"></i> Descargar en PDF
                     </button>
                 </div>
 
