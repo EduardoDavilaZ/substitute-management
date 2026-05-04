@@ -9,13 +9,14 @@
     ?>
 </head>
 <body class="bg-app">
-    <?php 
+    <?php
 
-        include_once('menu.php'); 
-        require $view_file; 
-        include_once('footer.php');
-        stack('scripts'); 
-        
+    include_once('menu.php'); 
+    echo $content; 
+    include_once('footer.php');
+    stack('scripts'); 
+    
     ?>
+    <div id="modal-container"></div>
 </body>
 </html>

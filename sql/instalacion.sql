@@ -11,7 +11,8 @@ CREATE TABLE classes (
 );
 
 CREATE TABLE periods (
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id TINYINT UNSIGNED NOT NULL,
+	name CHAR(7) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     CONSTRAINT pk_periods PRIMARY KEY (id)

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/database.php';
 
 abstract class Model
 {
-    protected $connection;
+    protected ?PDO $connection;
 
     public function __construct()
     {
