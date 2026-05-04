@@ -1,6 +1,7 @@
 @import url("../vendor/bootstrap/bootstrap.min.css");
 @import url("../vendor/bootstrap-icons/font/bootstrap-icons.min.css");
 @import url("fonts.css"); /* 300 400 600 700 */
+@import url('components.css');
 
 /* ---------------------------------------------------------------------
     CONFIGURATION
@@ -14,7 +15,7 @@
     --highlight: #9DC3D4; 
     
     /* Interface */
-    --surface: #ffffff;
+    --surface: #ffffff3f;
     --app-bg: #f0f0f0;
     --border: #e6e6e6;
     
@@ -34,6 +35,16 @@
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
+
+    --red: #881f1b;
+    --yellow: #92400e;
+    --green: #03543f;
+    --blue: #0c3c66;
+
+    --bg-red: #fde2e2;
+    --bg-yellow: #fef3c7;
+    --bg-green: #def7ec;
+    --bg-blue: #dce8fa;
 }
 
 html,
@@ -79,30 +90,21 @@ body {
     font-size: 0.85rem;
 }
 
-.text-brand { color: var(--primary); }
-.font-bold { font-weight: 700; }
-.font-medium { font-weight: 500; }
+.text-brand { 
+    color: var(--primary); 
+}
+
+.font-bold { 
+    font-weight: 700; 
+}
+
+.font-medium { 
+    font-weight: 500; 
+}
 
 /* ---------------------------------------------------------------------
-    LAYOUT COMPONENTS (CUSTOM CLASSES)
+    COLORS & BACKGROUNDS
 ------------------------------------------------------------------------ */
-
-main, .flex-grow-1 {
-    flex: 1 0 auto;
-}
-
-footer {
-    flex-shrink: 0;
-}
-
-.main{
-    width: 98%;
-    margin: 1.5rem auto;
-    padding: 1.5rem 1.5rem;
-    box-sizing: border-box;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-}
 
 .bg-brand {
     background-color: var(--primary) !important;
@@ -112,40 +114,57 @@ footer {
     background-color: var(--primary-dark) !important;
 }
 
-.nav-custom-link {
-    transition: background-color 0.2s;
-    &:hover{
-        background-color: var(--highlight) !important;
-        color: var(--primary-dark) !important;
-    }
+.bg-app { 
+    background-color: var(--app-bg); 
 }
 
-.active{
-    background-color: var(--primary-dark) !important;
-    color: var(--text-on-primary) !important;
+.bg-surface { 
+    background-color: var(--surface); 
 }
 
-.btn-custom {
-    background-color: var(--primary);
-    color: var(--text-on-primary) !important;
-    transition: background-color 0.2s;
-
-    &:hover{
-        background-color: var(--highlight) !important;
-        color: var(--primary-dark) !important;
-    }
+.text-on-primary { 
+    color: var(--text-on-primary); 
 }
 
-.bg-app { background-color: var(--app-bg); }
+.bg-highlight{ 
+    background-color: var(--highlight); 
+}
 
-.bg-surface { background-color: var(--surface); }
+/* ---------------------------------------------------------------------
+    UTILITIES
+------------------------------------------------------------------------ */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-.text-surface { color: var(--surface); }
+.right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
 
-.bg-highlight{ background-color: var(--highlight); }
+.left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
 
-.w-50px { width: 50px !important; }
+.right-self {
+    display: block;
+    margin-left: auto;
+}
 
-.h-50px { height: 50px !important; }
+.left-self {
+    display: block;
+    margin-right: auto;
+}
 
+.w-50px { 
+    width: 50px !important; 
+}
 
+.h-50px { 
+    height: 50px !important; 
+}

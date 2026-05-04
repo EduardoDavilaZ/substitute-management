@@ -1,0 +1,81 @@
+.schedule-table {
+    --table-border: #dddddd;
+    background-color: var(--surface);
+    border-radius: var(--radius-lg) !important;
+    border-collapse: separate !important; 
+    border-spacing: 0;
+    overflow: hidden;
+    border: .5px solid var(--table-border);
+
+    th, td {
+        border: .5px solid var(--table-border);
+    }
+
+    .schedule-slot{
+        .slot-container{
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+
+            .schedule-slot-wrapper {
+                width: 100%;
+                min-height: 32px;
+                display: flex;
+
+                .teacher-badge, .btn-add-slot {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    font-size: .65rem;
+                    font-weight: 500;
+                    border-radius: var(--radius-md);
+                    transition: all 0.15s ease-in-out;
+                    border: 1px solid transparent;
+                }
+
+                .teacher-badge {
+                    justify-content: space-between;
+
+                    &:hover {
+                        transform: translateY(-1px);
+                        box-shadow: var(--shadow-sm);
+                    }
+
+                    &.slot-primary {
+                        background-color: var(--bg-blue);
+                        color: var(--primary-dark);
+                        border-color: #dbeafe;
+                    }
+
+                    &.slot-success {
+                        background-color: var(--bg-green);
+                        color: var(--green);
+                        border-color: #bbf7d0;
+                    }
+
+                    .count-pill {
+                        font-size: 0.6rem;
+                        background: rgba(255, 255, 255, 0.7);
+                        padding: 1px 5px;
+                        border-radius: 6px;
+                        font-weight: 700;
+                    }
+                }
+
+                .btn-add-slot {
+                    justify-content: center;
+                    background: transparent;
+                    border: 1px dashed #cbd5e1;
+                    color: var(--text-muted);
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #f8fafc;
+                        border-color: var(--primary-light);
+                        color: var(--primary);
+                    }
+                }
+            }
+        }
+    }
+}

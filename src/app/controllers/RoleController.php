@@ -1,15 +1,19 @@
 <?php
 
-class RoleController {
-    public $view;
-    public $layout;
-
-    public function index() {
-        $this->view = 'role_selector';
-        $this->layout = null;
+final class RoleController extends Controller
+{
+    protected function init() : void
+    {
+        $this->layout = 'null';
     }
 
-    public function setRole($rol) {
+    public function index() : void
+    {
+        $this->view = 'role_selector';
+    }
+
+    public function setRole(string $rol) : never
+    {
         $_SESSION['user_role'] = $rol;
         $_SESSION['user_id'] = 1;
         

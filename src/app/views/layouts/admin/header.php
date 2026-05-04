@@ -17,6 +17,8 @@
 <?= js('jquery/jquery-4.0.0.js', 'vendor') ?>
 <?= js('bootstrap/bootstrap.bundle.min.js', 'vendor') ?>
 <?= js('sweetalert/sweetalert.min.js', 'vendor') ?>
+<?= js('chartjs/chart-4.5.0.umd.min.js', 'vendor') ?>
+<?= js('fullcalendar/fullcalendar-6.1.20.min.js', 'vendor') ?>
 
 <?= js('datatables/dataTables-2.3.7.js', 'vendor') ?>
 <?= js('datatables/jszip-3.10.1.min.js', 'vendor') ?>
@@ -29,13 +31,12 @@
 
 <?= js('app.js') ?>
 <?= css('app.css') ?>
-<?= css('substitution_schedule.css') ?>
-<link rel="stylesheet" href="assets/css/substitution_schedule.css">
+
 <?php stack('styles') ?>
 
 <script>
-    const BASE_URL   = "<?php echo BASE_URL; ?>";
-    const ASSETS_URL = "<?php echo ASSETS_URL; ?>";
-    const JS_URL    = "<?php echo JS_URL; ?>";
-    const CSS_URL   = "<?php echo CSS_URL; ?>";
+    const BASE_URL      = "<?php echo BASE_URL; ?>";
+    const ASSETS_URL    = "<?php echo ASSETS_URL; ?>";
+    const JS_URL        = "<?php echo JS_URL; ?>";
+    const CSS_URL       = "<?php echo CSS_URL; ?>";
 </script>
