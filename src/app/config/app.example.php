@@ -8,6 +8,7 @@ define("BASE_PATH", dirname(__DIR__, 2) . '/');
 define("VIEWS_PATH", BASE_PATH . "app/views/");
 define("CONTROLLERS_PATH", BASE_PATH . "app/controllers/");
 define("MODELS_PATH", BASE_PATH . "app/models/");
+define("CORE_PATH", BASE_PATH . "app/core/");
 
 /**
  * Default values

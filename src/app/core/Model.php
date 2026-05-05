@@ -1,25 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/Database.php';
 
 abstract class Model
 {
-    protected ?PDO $connection;
+    protected PDO $connection;
 
     public function __construct()
     {
-        $dsn = DB_CONNECTION . ":host=" . DB_HOST . ";dbname=" . DB_DATABASE . ";charset=utf8mb4;";
-        try{
-            $this->connection = new PDO($dsn, DB_USERNAME, DB_PASSWORD);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $e){
-            die("Error en la conexión: " . $e->getMessage());
-        }
-    }
-
-    public function __destruct()
-    {
-        $this->connection = null;
+        $this->connection = Database::getConnection();
     }
 
     protected function query(string $sql, array $params = [], bool $fetchAll = true): array
@@ -28,11 +17,17 @@ abstract class Model
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
 
-            if ($fetchAll) {
-                return ['success' => true, 'data' => $stmt->fetchAll()];
-            } else {
-                return ['success' => true, 'data' => $stmt->fetch()];
-            }
+            $data = $fetchAll 
+                    ? $stmt->fetchAll(PDO::FETCH_ASSOC) 
+                    : $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $total = $fetchAll ? count($data) : ($data ? 1 : 0);
+
+            return [
+                'success' => true, 
+                'data' => $data,
+                'total' => $total
+            ];
         } catch (PDOException $e) {
             return [
                 'success' => false,
@@ -66,9 +61,16 @@ abstract class Model
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            return ['success' => true, 'rowsAffected' => $stmt->rowCount()];
+            return [
+                'success' => true, 
+                'rowsAffected' => $stmt->rowCount()
+            ];
         } catch (PDOException $e) {
-            return ['success' => false, 'code' => $e->getCode(), 'message' => $e->getMessage()];
+            return [
+                'success' => false, 
+                'code' => $e->getCode(), 
+                'message' => $e->getMessage()
+            ];
         }
     }
     
