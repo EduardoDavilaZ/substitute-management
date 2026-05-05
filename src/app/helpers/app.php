@@ -4,7 +4,8 @@ spl_autoload_register(function ($class)
 {
     $directories = [
         CONTROLLERS_PATH,
-        MODELS_PATH
+        MODELS_PATH,
+        CORE_PATH
     ];
 
     foreach ($directories as $directory) {
