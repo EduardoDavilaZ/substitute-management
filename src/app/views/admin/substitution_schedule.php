@@ -55,8 +55,9 @@
                                     <div class="d-flex align-items-center gap-1">
                                         <span class="count-pill"><?= $t['count'] ?></span>
                                         <button class="btn-edit" 
-                                                data-id="<?= $t['id'] ?>" 
-                                                data-info="<?= $fullInfo ?>">
+                                            data-id="<?= $t['id'] ?>" 
+                                            data-day="<?= $day ?>" 
+                                            data-period="<?= $p['id'] ?>">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
 
@@ -68,9 +69,8 @@
                                 
                             <?php else: ?>
                                 <button class="btn-add-slot p-2" 
-                                        data-day="<?= $day ?>" 
-                                        data-period="<?= $p['id'] ?>"
-                                        data-info="<?= $fullInfo ?>">
+                                    data-day="<?= $day ?>" 
+                                    data-period="<?= $p['id'] ?>">
                                     <i class="bi bi-plus-circle me-1"></i> Añadir profesor <?= $i + 1 ?>
                                 </button>
                             <?php endif; ?>

@@ -2,13 +2,13 @@
 
 abstract class Controller {
     public string $view;
-    public string $msg;
+    public string $message;
     public ?string $layout;
 
     final public function __construct() 
     {
         $this->view = '';
-        $this->msg = '';
+        $this->message = '';
         $this->layout = '';
         $this->init();
     }

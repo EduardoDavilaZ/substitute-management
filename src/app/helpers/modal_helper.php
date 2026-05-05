@@ -7,7 +7,7 @@ function modal_start(array $config) : void
     $size = $config['size'] ?? ''; // modal-sm, modal-lg, modal-xl
 
     echo "
-        <div class='modal fade' id='{$id}' tabindex='-1' aria-hidden='true'>
+        <div class='modal fade' id='{$id}' tabindex='-1'>
             <div class='modal-dialog modal-dialog-centered {$size}'>
                 <div class='modal-content'>
                     <div class='modal-header border-0'>
