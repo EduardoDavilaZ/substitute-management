@@ -14,6 +14,15 @@
 <main class="main">
     <h1 class="text-title">Libro de Guardias</h1>
 
+    <div class="right g-2">
+        <a href="<?= BASE_URL ?>schedule/exportExcel" class="btn btn-excel">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel
+        </a>
+        <a href="<?= BASE_URL ?>schedule/exportPdf" class="btn btn-pdf">
+            <i class="bi bi-file-earmark-pdf"></i> Descargar pdf
+        </a>
+    </div>
+
     <table class="schedule-table table-responsive mx-auto w-100">
         <thead>
             <tr>

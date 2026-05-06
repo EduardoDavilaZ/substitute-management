@@ -9,6 +9,7 @@ define("VIEWS_PATH", BASE_PATH . "app/views/");
 define("CONTROLLERS_PATH", BASE_PATH . "app/controllers/");
 define("MODELS_PATH", BASE_PATH . "app/models/");
 define("CORE_PATH", BASE_PATH . "app/core/");
+define("SERVICES_PATH", BASE_PATH . "app/services/");
 
 /**
  * Default values
