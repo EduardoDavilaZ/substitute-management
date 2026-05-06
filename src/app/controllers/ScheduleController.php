@@ -1,4 +1,8 @@
-<?php 
+<?php
+
+require_once __DIR__ . '/../services/ExcelService.php';
+use App\Services\ExcelService;
+use App\Services\PdfService;
 
 final class ScheduleController extends Controller 
 {
@@ -82,6 +86,81 @@ final class ScheduleController extends Controller
         } else {
             json_error("No se pudo eliminar: el registro no existe o ya fue eliminado.");
         }
+    }
+
+    public function exportExcel() : void
+    {
+        $periodsList = (new Period())->getPeriods();
+        $schedules = (new Schedule())->getGuardSchedules();
+        
+        $days = ['L', 'M', 'X', 'J', 'V'];
+        
+        $guards = [];
+        foreach ($schedules as $s) {
+            $guards["{$s['day']}-{$s['period_id']}"][] = $s;
+        }
+
+        $headers = ['HORA', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES'];
+        $data = [];
+
+        foreach ($periodsList['data'] as $p) {
+            $timeRange = substr($p['start_time'], 0, 5) . " - " . substr($p['end_time'], 0, 5);
+            $row = ["{$p['name']} ({$timeRange})"]; 
+            
+            foreach ($days as $day) {
+                $key = "$day-{$p['id']}";
+                $teachers = $guards[$key] ?? [];
+                $names = array_map(fn($t) => $t['full_name'], $teachers);
+                $row[] = implode(' / ', $names);
+            }
+            $data[] = $row;
+        }
+
+        $writer = ExcelService::create($headers, $data, 'Libro de Guardias');
+        download_excel($writer, 'libro_guardias_' . date('Ymd'));
+    }
+
+    public function exportPdf() : void 
+    {
+        $periodsList = (new Period())->getPeriods();
+        $schedules = (new Schedule())->getGuardSchedules();
+        $days = ['L', 'M', 'X', 'J', 'V'];
+        
+        $guards = [];
+        foreach ($schedules as $s) {
+            $guards["{$s['day']}-{$s['period_id']}"][] = $s;
+        }
+
+        $html = "
+            <style>
+                body { font-family: sans-serif; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+                th { background-color: #f2f2f2; }
+                h1 { text-align: center; }
+            </style><h1>Libro de Guardias</h1>
+            <table>
+                <thead>
+                    <tr><th>HORA</th><th>LUNES</th><th>MARTES</th><th>MIÉRCOLES</th><th>JUEVES</th><th>VIERNES</th></tr>
+                </thead>
+                <tbody>";
+
+                foreach ($periodsList['data'] as $p) {
+                    $timeRange = substr($p['start_time'], 0, 5) . " - " . substr($p['end_time'], 0, 5);
+                    $html .= "<tr><td><strong>{$p['name']}</strong><br>{$timeRange}</td>";
+                    
+                    foreach ($days as $day) {
+                        $key = "$day-{$p['id']}";
+                        $teachers = $guards[$key] ?? [];
+                        $names = array_map(fn($t) => $t['full_name'], $teachers);
+                        $html .= "<td>" . implode('<br>', $names) . "</td>";
+                    }
+                    $html .= "</tr>";
+                }
+        $html .= "</tbody></table>";
+
+        $writer = PdfService::create($html);
+        download_pdf($writer, 'libro_guardias_' . date('Ymd') . '.pdf');
     }
 }
 

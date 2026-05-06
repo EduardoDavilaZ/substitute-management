@@ -98,6 +98,26 @@ footer {
     }
 }
 
+.btn-excel {
+    background-color: var(--green);
+    color: var(--text-on-primary);
+
+    &:hover {
+        background-color: var(--bg-green) !important;
+        color: var(--green);
+    }
+}
+
+.btn-pdf {
+    background-color: var(--red);
+    color: var(--text-on-primary);
+
+    &:hover {
+        background-color: var(--bg-red) !important;
+        color: var(--red)
+    }
+}
+
 /* ---------------------------------------------------------------------
     STATUS BADGES
 ------------------------------------------------------------------------ */
