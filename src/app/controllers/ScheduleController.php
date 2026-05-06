@@ -28,7 +28,7 @@ final class ScheduleController extends Controller
         ];
     }
 
-    public function setGuardTime() : void
+    public function setGuardPeriod() : void
     {
         $fields = validate_fields(['teacher_id', 'day', 'period_id']);
         
@@ -37,12 +37,28 @@ final class ScheduleController extends Controller
         }
 
         extract($fields);
-        $success = (new Schedule())->setGuardTime($teacher_id, $period_id, $day);
+        $success = (new Schedule())->setGuardPeriod($teacher_id, $period_id, $day);
         
         if ($success) {
             json_success("La asignación se realizó correctamente.");
         } else {
             json_error("No se pudo guardar la asignación en la base de datos.");
+        }
+    }
+
+    public function deleteGuardPeriod() : void 
+    {
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            json_error("ID de guardia inválido.");
+        }
+
+        $result = (new Schedule())->deleteGuardPeriod($id);
+        
+        if ($result) {
+            json_success("La guardia ha sido eliminada correctamente.");
+        } else {
+            json_error("No se pudo eliminar: el registro no existe o ya fue eliminado.");
         }
     }
 }

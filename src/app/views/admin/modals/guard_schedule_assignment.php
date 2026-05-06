@@ -15,7 +15,7 @@
     $period     = $period ?? 0;
 ?>
 
-<form id="formAddGuardTime" data-day="<?= $day ?>" data-period="<?= $period ?>">
+<form id="formAddGuardPeriod" data-day="<?= $day ?>" data-period="<?= $period ?>">
     <div class="my-2">
         <div class="mb-3">
             <span class="text-muted small"><?= htmlspecialchars($infoText) ?></span>
@@ -42,6 +42,6 @@
         [
             'text' => $isEdit ? 'Guardar Cambios' : 'Realizar Asignación', 
             'type' => 'submit',
-            'attr' => 'form="formAddGuardTime"'
+            'attr' => 'form="formAddGuardPeriod"'
         ],
 ]); ?>

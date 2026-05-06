@@ -4,7 +4,7 @@ final class Schedule extends Model
 {
     public function getGuardSchedules() : array
     {
-        $sql = "SELECT s.day, s.period_id, t.id, t.full_name, t.substitution_counter AS count
+        $sql = "SELECT s.id AS schedule_id, s.day, s.period_id, t.id, t.full_name, t.substitution_counter AS count
                 FROM schedules s
                 JOIN teachers t ON s.teacher_id = t.id
                 WHERE s.class_id IS NULL";
@@ -13,7 +13,7 @@ final class Schedule extends Model
         return $res['success'] ? $res['data'] : [];
     }
 
-    public function setGuardTime(int $teacher_id, int $period_id, string $day) : bool 
+    public function setGuardPeriod(int $teacher_id, int $period_id, string $day) : bool 
     {
         $sql1 = "SELECT id FROM schedules 
                     WHERE teacher_id = :teacher_id 
@@ -43,6 +43,21 @@ final class Schedule extends Model
             $insertRes = $this->insert($sql3, $params);
             return $insertRes['success'];
         }
+    }
+
+    public function deleteGuardPeriod(int $id): bool
+    {
+        $sql = "DELETE FROM schedules WHERE id = :id";
+        $res = $this->delete($sql, ['id' => $id]);
+
+        // 1. Si hubo error en la consulta, retorna false
+        if (!($res['success'] ?? false)) {
+            return false;
+        }
+
+        // 2. RETORNA TRUE SOLO SI SE BORRÓ ALGUNA FILA
+        // Si rowsAffected es 0, significa que el ID no existía
+        return ($res['rowsAffected'] ?? 0) > 0;
     }
 }
 

@@ -61,7 +61,7 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
 
-                                        <button class="btn-delete" data-id="<?= $t['id'] ?>">
+                                        <button class="btn-delete" data-id="<?= $t['schedule_id'] ?>">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>

@@ -7,7 +7,8 @@ const GuardSchedule = {
         const container = $('.schedule-table'); 
         
         container.on('click', '.btn-edit, .btn-add-slot', this.handleModalOpen);
-        $(document).on('submit', '#formAddGuardTime', this.handleSubmit);
+        container.on('click', '.btn-delete', this.delete);
+        $(document).on('submit', '#formAddGuardPeriod', this.handleSubmit);
     },
 
     handleModalOpen: function(e) {
@@ -37,7 +38,7 @@ const GuardSchedule = {
 
     setGuardTime: function(formData) {
         $.ajax({
-            url: `${BASE_URL}schedule/set-guard-time/`,
+            url: `${BASE_URL}schedule/set-guard-period/`,
             type: 'POST',
             data: formData,
             contentType: false,
@@ -56,6 +57,37 @@ const GuardSchedule = {
     onError: (xhr) => {
         console.error("Error:", xhr.responseText);
         swal({ icon: 'error', title: 'Oops...', text: 'Hubo un error al procesar la petición.' });
+    },
+
+    delete: function(e) {
+        e.preventDefault();
+        const $btn = $(e.currentTarget);
+        const id = $btn.data('id');
+
+        swal({
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            buttons: ["Cancelar", "Sí, eliminar"],
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                GuardSchedule.sendDeleteRequest(id);
+            }
+        });
+    },
+
+    sendDeleteRequest: function(id) {
+        $.ajax({
+            url: `${BASE_URL}schedule/delete-guard-period/`, 
+            type: 'POST',
+            data: { 
+                id: id 
+            }, 
+            dataType: 'json',
+            success: (res) => GuardSchedule.onSuccess(res),
+            error: (xhr) => GuardSchedule.onError(xhr)
+        });
     }
 };
 
