@@ -161,12 +161,10 @@ body {
     margin-right: auto;
 }
 
-.w-50px { width: 50px !important; }
-.h-50px {  height: 50px !important; }
+.w-50px { 
+    width: 50px !important; 
+}
 
-.g-0 { gap: 0; }
-.g-1 { gap: 0.25rem; }
-.g-2 { gap: 0.5rem;  }
-.g-3 { gap: 1rem;    }
-.g-4 { gap: 1.5rem;  }
-.g-5 { gap: 3rem;    }
+.h-50px {  
+    height: 50px !important; 
+}
