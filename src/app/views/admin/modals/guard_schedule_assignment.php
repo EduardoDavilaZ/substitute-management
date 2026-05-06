@@ -13,9 +13,11 @@
     $infoText   = $infoText ?? 'Información de horario no disponible';
     $day        = $day ?? '';
     $period     = $period ?? 0;
+    $selectedTeacherId = $selectedTeacherId ?? null;
+    $isEdit = !empty($selectedId);
 ?>
 
-<form id="formAddGuardPeriod" data-day="<?= $day ?>" data-period="<?= $period ?>">
+<form id="formAddGuardPeriod" data-id="<?= $selectedId ?? 0 ?>" data-day="<?= $day ?>" data-period="<?= $period ?>">
     <div class="my-2">
         <div class="mb-3">
             <span class="text-muted small"><?= htmlspecialchars($infoText) ?></span>
@@ -29,7 +31,7 @@
             
             <?php foreach ($teachers as $t): ?>
                 <option value="<?= $t['id'] ?>" 
-                    <?= ($isEdit && $selectedId == $t['id']) ? 'selected' : '' ?>>
+                    <?= ($isEdit && $selectedTeacherId == $t['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($t['full_name']) ?>
                 </option>
             <?php endforeach; ?>
@@ -41,7 +43,8 @@
     modal_end([
         [
             'text' => $isEdit ? 'Guardar Cambios' : 'Realizar Asignación', 
-            'type' => 'submit',
-            'attr' => 'form="formAddGuardPeriod"'
+            'type' => 'button',
+            'id'   => 'btnSubmitGuard',
+            'attr' => ''
         ],
 ]); ?>

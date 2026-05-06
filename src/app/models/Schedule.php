@@ -13,6 +13,15 @@ final class Schedule extends Model
         return $res['success'] ? $res['data'] : [];
     }
 
+    public function getSchedule(int $id): array 
+    {
+        $res = $this->find('schedules', $id); 
+        if (!$res['success'] || empty($res['data'])) {
+            return [];
+        }
+        return isset($res['data'][0]) ? $res['data'][0] : $res['data'];
+    }
+
     public function setGuardPeriod(int $teacher_id, int $period_id, string $day) : bool 
     {
         $sql1 = "SELECT id FROM schedules 
@@ -45,18 +54,29 @@ final class Schedule extends Model
         }
     }
 
+    public function updateGuardPeriod(int $schedule_id, int $teacher_id): bool
+    {
+        $sql = "UPDATE schedules SET teacher_id = :teacher_id WHERE id = :id";
+        
+        $res = $this->update($sql, [
+            'teacher_id' => $teacher_id, 
+            'id'         => $schedule_id
+        ]);
+
+        if (!($res['success'] ?? false)) {
+            return false;
+        }
+        return true; 
+    }
     public function deleteGuardPeriod(int $id): bool
     {
         $sql = "DELETE FROM schedules WHERE id = :id";
         $res = $this->delete($sql, ['id' => $id]);
 
-        // 1. Si hubo error en la consulta, retorna false
         if (!($res['success'] ?? false)) {
             return false;
         }
-
-        // 2. RETORNA TRUE SOLO SI SE BORRÓ ALGUNA FILA
-        // Si rowsAffected es 0, significa que el ID no existía
+        
         return ($res['rowsAffected'] ?? 0) > 0;
     }
 }

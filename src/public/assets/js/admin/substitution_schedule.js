@@ -4,89 +4,98 @@ const GuardSchedule = {
     },
 
     bindEvents: function() {
-        const container = $('.schedule-table'); 
-        
+        const container = $('.schedule-table');
         container.on('click', '.btn-edit, .btn-add-slot', this.handleModalOpen);
-        container.on('click', '.btn-delete', this.delete);
-        $(document).on('submit', '#formAddGuardPeriod', this.handleSubmit);
+        container.on('click', '.btn-delete', (e) => this.delete(e));
+        container.on('click', '.btn-update', (e) => this.update(e));
+        
+        $(document).on('submit', '#formAddGuardPeriod', (e) => this.handleSubmit(e));
+        $(document).on('click', '#btnSubmitGuard', () => $('#formAddGuardPeriod').submit());
     },
 
     handleModalOpen: function(e) {
         e.preventDefault();
         const btn = $(e.currentTarget);
-        
-        const params = {
-            id: btn.data('id') || '0',
-            day: btn.data('day'),
-            period: btn.data('period')
-        };
-
-        const url = `${BASE_URL}schedule/guard-schedule-assignment/${params.id}/${params.day}/${params.period}`;
+        const url = `${BASE_URL}schedule/guard-schedule-assignment/${btn.data('id') || 0}/${btn.data('day')}/${btn.data('period')}`;
         Modal.show(url);
     },
-
+    
     handleSubmit: function(e) {
         e.preventDefault();
-        const form = this;
+        const $form = $(e.target);
+        const formData = new FormData(e.target);
+        const id = parseInt($form.data('id'));
+
+        formData.append('day', $form.data('day'));
+        formData.append('period_id', $form.data('period'));
         
-        const formData = new FormData(form);
-        formData.append('day', $(form).data('day'));
-        formData.append('period_id', $(form).data('period'));
+        if (id > 0){
+            formData.append('id', id);
+        } 
 
-        GuardSchedule.setGuardTime(formData);
+        const url = (id > 0) 
+            ? 'schedule/update-guard-period/' 
+            : 'schedule/set-guard-period/';
+        this.ajaxRequest(url, formData);
     },
 
-    setGuardTime: function(formData) {
+    ajaxRequest: function(endpoint, data, isFormData = true) {
         $.ajax({
-            url: `${BASE_URL}schedule/set-guard-period/`,
+            url: `${BASE_URL}${endpoint}`,
             type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
+            data: data,
+            contentType: isFormData ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
+            processData: isFormData ? false : true,
             dataType: 'json',
-            success: (res) => GuardSchedule.onSuccess(res),
-            error: (xhr) => GuardSchedule.onError(xhr)
-        });
-    },
-
-    onSuccess: (res) => {
-        swal({ icon: 'success', title: '¡Éxito!', text: res.message || 'Cambios guardados.' })
-            .then(() => location.reload());
-    },
-
-    onError: (xhr) => {
-        console.error("Error:", xhr.responseText);
-        swal({ icon: 'error', title: 'Oops...', text: 'Hubo un error al procesar la petición.' });
-    },
-
-    delete: function(e) {
-        e.preventDefault();
-        const $btn = $(e.currentTarget);
-        const id = $btn.data('id');
-
-        swal({
-            title: "¿Estás seguro?",
-            text: "Esta acción no se puede deshacer.",
-            icon: "warning",
-            buttons: ["Cancelar", "Sí, eliminar"],
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
-                GuardSchedule.sendDeleteRequest(id);
+            success: (res) => {
+                swal({ 
+                    icon: 'success', 
+                    title: '¡Éxito!', 
+                    text: res.message || 'Cambios guardados.' 
+                }).then(() => location.reload());
+            },
+            error: (xhr) => {
+                console.error("Error:", xhr.responseText);
+                swal({ 
+                    icon: 'error', 
+                    title: 'Oops...', 
+                    text: 'Hubo un error al procesar la petición.' 
+                });
             }
         });
     },
 
-    sendDeleteRequest: function(id) {
-        $.ajax({
-            url: `${BASE_URL}schedule/delete-guard-period/`, 
-            type: 'POST',
-            data: { 
-                id: id 
-            }, 
-            dataType: 'json',
-            success: (res) => GuardSchedule.onSuccess(res),
-            error: (xhr) => GuardSchedule.onError(xhr)
+    delete: function(e) {
+        const id = $(e.currentTarget).data('id');
+        swal({ 
+            title: "¿Seguro?", 
+            text: "No se puede deshacer.", 
+            icon: "warning", 
+            buttons: ["Cancelar", "Sí"], 
+            dangerMode: true 
+        }).then((willDelete) => {
+                if (willDelete) {
+                    this.ajaxRequest('schedule/delete-guard-period/', { 
+                        id: id 
+                    }, false);
+                } 
+            });
+    },
+
+    update: function(e) {
+        const btn = $(e.currentTarget);
+        swal({ 
+                title: "¿Confirmar?", 
+                text: "¿Actualizar el profesor asignado?", 
+                icon: "info", 
+                buttons: ["Cancelar", "Sí"] 
+        }).then((willUpdate) => {
+            if (willUpdate){
+                this.ajaxRequest('schedule/update-guard-period/', { 
+                    id: btn.data('id'), 
+                    teacher_id: btn.data('teacher_id') 
+                }, false);
+            } 
         });
     }
 };
