@@ -7,7 +7,7 @@ function modal_start(array $config) : void
     $size = $config['size'] ?? ''; // modal-sm, modal-lg, modal-xl
 
     echo "
-        <div class='modal fade' id='{$id}' tabindex='-1' aria-hidden='true'>
+        <div class='modal fade' id='{$id}' tabindex='-1'>
             <div class='modal-dialog modal-dialog-centered {$size}'>
                 <div class='modal-content'>
                     <div class='modal-header border-0'>
@@ -25,11 +25,13 @@ function modal_end(array $buttons = []) : void
                             <button type='button' class='btn btn-cancel' data-bs-dismiss='modal'>Cancelar</button>";
     
                     foreach ($buttons as $btn) {
+                        $id    = isset($btn['id']) ? "id='{$btn['id']}'" : "";
                         $type  = $btn['type'] ?? 'button';
                         $class = $btn['class'] ?? 'btn-save';
                         $attr  = $btn['attr'] ?? '';
                         $text  = $btn['text'] ?? 'Aceptar';
-                        echo "<button type='{$type}' class='btn {$class}' {$attr}>{$text}</button>";
+                        
+                        echo "<button {$id} type='{$type}' class='btn {$class}' {$attr}>{$text}</button>";
                     }
 
     echo "      </div>
