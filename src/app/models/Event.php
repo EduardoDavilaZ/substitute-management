@@ -4,7 +4,7 @@ final class Event extends Model
 {
     public function getEvents() : array
     {
-        return $this->all('events');
+        return ($this->all('events'))['data'];
     }
 
     public function getEvent(int $id) : array{
