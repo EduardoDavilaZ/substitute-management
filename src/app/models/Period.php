@@ -4,7 +4,7 @@ final class Period extends Model
 {
     public function getPeriods() : array
     {
-        return ($this->all('periods'))['data'];
+        return $this->all('periods');
     }
 
     public function getPeriod(int $id) : array{

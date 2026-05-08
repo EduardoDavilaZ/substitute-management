@@ -1,5 +1,5 @@
 <?php 
-    $list = $periods ?? []; 
+    $list = $periods['data'] ?? []; 
     $days = ['L', 'M', 'X', 'J', 'V'];
     $schedules = $schedules ?? [];
     

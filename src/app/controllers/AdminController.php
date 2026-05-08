@@ -11,7 +11,7 @@ final class AdminController extends Controller
         $this->view = 'admin/home';
     }
 
-    public function substitutionSchedule() : array
+    public function substitutionSchedule()
     {
         $this->view = 'admin/substitution_schedule';
 
@@ -36,13 +36,9 @@ final class AdminController extends Controller
         $this->view = 'admin/absence_history';
     }
 
-    public function eventManagement() : array
+    public function eventManagement() : void
     {
         $this->view = 'admin/event_management';
-
-        return [
-            'events' => (new Event())->getEvents()
-        ];
     }
 
     public function teacherManagement() : void

@@ -1,7 +1,3 @@
-<?php 
-    $events = $events ?? [];
-?>
-
 <main class="main">
     <h1 class="text-title">Gestión de eventos</h1>
     <span class="text-muted-custom">Crea y notifica eventos a las clases</span>
@@ -11,38 +7,64 @@
     </button>
 
     <div class="row row-cols-1 row-cols-lg-2">
-
-        <?php foreach ($events as $e): ?>
-            <div class="col p-2">
-                <article class="event-container p-2">
+        <div class="col p-2">
+            <article class="event-container p-2">
+                <div>
                     <div>
-                        <div>
-                            <h4 class="event-label"><?= $e['title'] ?></h4>
-                            <span class="event-group">3° ESO A</span>
-                            <span class="badge-status badge-green">Notificado</span>
-                        </div>
-
-                        <div>
-                            <button class="btn-edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            <button class="btn-delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <h4 class="event-label">Excursión a Londres</h4>
+                        <span class="event-group">3° ESO A</span>
+                        <span class="badge-status badge-green">Notificado</span>
                     </div>
-                    
-                    <p class="event-details">
-                        <?= $e['description'] ?>
-                    </p>
 
-                    <span class="event-date">
-                        <i class="bi bi-calendar2-check"></i> <?= $e['start_date'] ?>
-                    </span>
-                </article>
-            </div>
+                    <div>
+                        <button class="btn-edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn-delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <p class="event-details">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsam, nulla necessitatibus a autem eos corrupti ipsa veritatis ab, cum libero enim iure? Aut esse consequatur reiciendis nam consectetur voluptas? Expedita.
+                </p>
 
-        <?php endforeach; ?>
+                <span class="event-date">
+                    <i class="bi bi-calendar2-check"></i> 11-04-2026
+                </span>
+            </article>
+        </div>
+
+
+        <div class="col p-2">
+            <article class="event-container p-2">
+                <div>
+                    <div>
+                        <h4 class="event-label">Excursión a Malaga</h4>
+                        <span class="event-group">3° ESO B</span>
+                        <span class="badge-status badge-yellow">Pendiente</span>
+                    </div>
+
+                    <div>
+                        <button class="btn-edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn-delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <p class="event-details">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsam, nulla necessitatibus a autem eos corrupti ipsa veritatis ab, cum libero enim iure? Aut esse consequatur reiciendis nam consectetur voluptas? Expedita.
+                </p>
+
+                <span class="event-date">
+                    <i class="bi bi-calendar2-check"></i> 11-04-2026
+                </span>
+            </article>
+        </div>
     </div>
 </main>
 
