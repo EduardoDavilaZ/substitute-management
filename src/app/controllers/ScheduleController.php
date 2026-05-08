@@ -103,7 +103,7 @@ final class ScheduleController extends Controller
         $headers = ['HORA', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES'];
         $data = [];
 
-        foreach ($periodsList['data'] as $p) {
+        foreach ($periodsList as $p) {
             $timeRange = substr($p['start_time'], 0, 5) . " - " . substr($p['end_time'], 0, 5);
             $row = ["{$p['name']} ({$timeRange})"]; 
             
@@ -145,7 +145,7 @@ final class ScheduleController extends Controller
                 </thead>
                 <tbody>";
 
-                foreach ($periodsList['data'] as $p) {
+                foreach ($periodsList as $p) {
                     $timeRange = substr($p['start_time'], 0, 5) . " - " . substr($p['end_time'], 0, 5);
                     $html .= "<tr><td><strong>{$p['name']}</strong><br>{$timeRange}</td>";
                     
