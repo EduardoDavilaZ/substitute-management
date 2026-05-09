@@ -55,7 +55,7 @@ $(document).ready(function () {
                     </div>`);
             });
             const substitutionsWeekly = respuesta["weekly_substitutions"];
-            
+
             const ctx = document.getElementById('weekly-substitutions-chart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',

@@ -65,7 +65,7 @@
     <div class="row">
         <div class="col col-md-8 p-2">
             <div class="kpi-card p-2">
-                <span class="kpi-label">Sustituciones Semanales</span>
+                <span class="section-title">Sustituciones Semanales</span>
                 <div>
                     <canvas id="weekly-substitutions-chart"></canvas>
                 </div>
@@ -74,7 +74,7 @@
 <!------------------------------------------------ Guardias pendientes ---------------------------------------------------->
         <div class="col col-md-4 p-2">
             <div class="kpi-card p-2">
-                <span class="kpi-label">Guardias pendientes</span>
+                <span class="section-title">Guardias pendientes</span>
                 
                 <div class="row row-cols-1" id="pending-substitutions">
                 </div>
@@ -84,7 +84,7 @@
     <!------------------------------------------------ Ausencias de la semana ---------------------------------------------------->
     <div class="row row-cols-1 p-2">
         <div class="kpi-card p-2">
-            <span class="kpi-label">Ausencias del dia</span>
+            <span class="section-title">Ausencias del día</span>
             <div id="teachers_absences" class="row row-cols-3 row-cols-md-6 row-cols-lg-12">
             </div>
         </div>
