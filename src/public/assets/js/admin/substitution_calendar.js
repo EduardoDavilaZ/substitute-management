@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         },
         eventDataTransform: function (event) {
-            console.log(event);
             if (!event.class) return event;
-            const name = event.class.toUpperCase();
-            if (name.includes('ESO')) event.className = 'level-eso';
-            else if (name.includes('BACH')) event.className = 'level-high-school';
-            else if (name.includes('PRIM')) event.className = 'level-primary';
-            else if (name.includes('DAW') || name.includes('ASIR') || name.includes('SISTEMAS') || name.includes('SM')) event.className = 'level-vocational';
+            const stage = event.stage;
+            if (stage === 'ESO') event.className = 'level-eso';
+            else if (stage === 'BACH') event.className = 'level-high-school';
+            else if (stage === 'PRIM') event.className = 'level-primary';
+            else if (stage === 'CFGM') event.className = 'level-midlle-grade';
+            else if (stage === 'CFGS') event.className = 'level-higher-grade';
             else event.className = 'level-default';
             
             return event;
