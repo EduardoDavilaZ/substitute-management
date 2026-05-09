@@ -36,9 +36,13 @@ final class AdminController extends Controller
         $this->view = 'admin/absence_history';
     }
 
-    public function eventManagement() : void
+    public function eventManagement() : array
     {
         $this->view = 'admin/event_management';
+
+        return [
+            'events' => (new Event())->getEventsWithClasses()
+        ];
     }
 
     public function teacherManagement() : void
