@@ -29,10 +29,11 @@
                         </div>
 
                         <div>
-                            <button class="btn-edit" data-id="<?= $event['class_id'] ?>">
+                            <button class="btn-edit" data-id="<?= $event['event_id'] ?>">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
-                            <button class="btn-delete" data-id="<?= $event['class_id'] ?>">
+                            
+                            <button class="btn-delete" data-id="<?= $event['event_id'] ?>">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
