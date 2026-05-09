@@ -36,7 +36,9 @@ body {
     background-color: var(--surface);
     border-radius: var(--radius-lg);
 }
-
+.fc .fc-toolbar-title::first-letter {
+    text-transform: uppercase;
+}
 /* Card Styling Refinement */
 .card {
     border: 1px solid var(--border) !important;
@@ -170,7 +172,8 @@ body {
         &.level-eso { background: linear-gradient(135deg, var(--primary), #1a6ab3) !important; }
         &.level-high-school { background: linear-gradient(135deg, var(--success), #27ae60) !important; }
         &.level-primary { background: linear-gradient(135deg, #f39c12, #e67e22) !important; }
-        &.level-vocational { background: linear-gradient(135deg, #8e44ad, #7d3c98) !important; }
+        &.level-midlle-grade { background: linear-gradient(135deg, #8e44ad, #7d3c98) !important; }
+        &.level-higher-grade { background: linear-gradient(135deg,  #af3138,  #b1242b) !important; }
         &.level-default { background: linear-gradient(135deg, #6c757d, #5a6268) !important; }
     }
 
