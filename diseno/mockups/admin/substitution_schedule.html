@@ -42,8 +42,7 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav d-flex gap-1">
                         <li class="nav-item">
-                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/home') ?>" 
-                                href="">
+                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/home') ?>" href="dashboard.html">
                                 Inicio
                             </a>
                         </li>
@@ -54,15 +53,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/substitution-schedule') ?>"
-                                href="substitution_calendar.html">
-                                Calendario de guardias
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/daily-substitutions') ?>"
                                 href="">
                                 Guardias de hoy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class() ?>"
+                                href="substitution_calendar.html">
+                                Calendario de guardias
                             </a>
                         </li>
                         <li class="nav-item">
@@ -75,6 +74,12 @@
                             <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/group-management') ?>"
                                 href="">
                                 Clases
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded nav-custom-link px-3 <?= active_class('admin/group-management') ?>"
+                                href="event_management.html">
+                                Eventos
                             </a>
                         </li>
                     </ul>
