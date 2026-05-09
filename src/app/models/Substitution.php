@@ -39,5 +39,16 @@
                                 ORDER BY date ASC",[$date]);
             return $res['success'] ? $res['data'] : [];
         }
+
+        public function getSubstitutionsCalendar() : array
+        {
+            $res = $this->query("SELECT s.date AS start, c.name AS title, c.name AS class,c.stage, ta.full_name AS absent_teacher, ts.full_name AS substitute_teacher
+                                FROM substitutions s 
+                                JOIN teachers ta ON s.absent_teacher_id = ta.id
+                                JOIN classes c ON s.class_id = c.id
+                                JOIN teachers ts ON s.substitute_teacher_id = ts.id
+                                WHERE s.status = 'CONFIRMADO'");
+            return $res['success'] ? $res['data'] : [];
+        }
     }
 ?>
