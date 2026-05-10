@@ -45,7 +45,7 @@
                                 JOIN periods p ON a.period_id = p.id
                                 JOIN absences ab ON a.absence_id = ab.id
                                 LEFT JOIN teachers ts ON s.substitute_teacher_id = ts.id
-                                WHERE s.is_enabled=1"); /*Change is-enabled for enabled*/
+                                WHERE s.is_enabled=1 AND (s.status='PENDIENTE' OR ab.is_justified = 0)"); /*Change is-enabled for enabled*/
             return $res['success'] ? $res['data'] : [];
         }
     }

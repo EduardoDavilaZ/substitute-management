@@ -8,10 +8,27 @@
                     <i class="bi bi-search"></i>
                     <input type="text" id="search-teacher" placeholder="Buscar profesor...">
                 </div>
+                <div class="filter-group select-group">
+                    <select name="states" id="states">
+                        <option value="">Todos los estados</option>
+                        <option value="CONFIRMADO">Confirmados</option>
+                        <option value="PENDIENTE">Pendientes</option>
+                    </select>
+                </div>
+                <div class="filter-group select-group">
+                    <select name="justifies" id="justifies">
+                        <option value="">Todas las justificaciones</option>
+                        <option value="1">Justificados</option>
+                        <option value="0">Sin justificar</option>
+                    </select>
+                </div>
                 <div class="filter-group date-group">
-                    <input type="date" id="date-from">
+                    <input type="date" id="date-from" class="input-white" placeholder="dd/mm/aaaa">
                     <span class="date-separator">–</span>
-                    <input type="date" id="date-to">
+                    <input type="date" id="date-to" class="input-white" placeholder="dd/mm/aaaa">
+                </div>
+                <div id="reset">
+                    <button class="btn-cancel">Reiniciar filtros</button>
                 </div>
             </div>
             <div class="results-info">
@@ -31,6 +48,7 @@
                     <th class="text-center">Sustituto</th>
                     <th class="text-center">Detalles de ausencia</th>
                     <th class="text-center">Asignar sustituto</th>
+                    <th class="text-center">Eliminar ausencia</th>
                 </thead>
                 <tbody>
                 </tbody>
@@ -39,6 +57,6 @@
     </div>
 </main>
 <?php
-    push_css('admin/managementAbsences.css');
-    push_js('admin/managementAbsences.js');
+    push_css('admin/substitution_management.css');
+    push_js('admin/substitution_management.js');
 ?>
