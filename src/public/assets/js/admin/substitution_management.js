@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    $('#search-teacher').on('keyup', function() {
+    $('#search-teacher').on('keyup', function () {
         toggleResetButton();
     });
 
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
         dtable.column(0).search('').draw();
 
         $('#states, #justifies').val('').trigger('change');
-        
+
         $('.select-group').each(function () {
             const $select = $(this).find('select');
             const firstOpt = $select.find('option:first').text();
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
         altFormat: 'd/m/Y',
         allowInput: true,
         static: true,
-        onReady: function(selectedDates, dateStr, instance) {
+        onReady: function (selectedDates, dateStr, instance) {
             $(instance.altInput).attr('placeholder', 'dd/mm/aaaa');
             $(instance.altInput).css({
                 'background-color': '#ffffff',
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'opacity': '1'
             });
         },
-        onChange: function() {
+        onChange: function () {
             dtable.draw();
         }
     };
@@ -238,11 +238,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var $select = $group.find('select');
         var $options = $select.find('option');
 
-        // Create trigger
         var $trigger = $('<div class="custom-select-trigger">' + $select.find('option:selected').text() + '</div>');
         $group.append($trigger);
 
-        // Create options container
         var $optionsContainer = $('<div class="custom-options"></div>');
         $options.each(function () {
             var $opt = $(this);
@@ -252,14 +250,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         $group.append($optionsContainer);
 
-        // Toggle open
         $trigger.on('click', function (e) {
             e.stopPropagation();
             $('.select-group').not($group).removeClass('open');
             $group.toggleClass('open');
         });
 
-        // Option selection
         $optionsContainer.on('click', '.custom-option', function () {
             var val = $(this).data('value');
             var text = $(this).text();
@@ -274,5 +270,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $(document).on('click', function () {
         $('.select-group').removeClass('open');
+    });
+
+    $('#substitutions-table').on('click', '.btn-delete', function () {
+        var btn = $(this);
+        var $tr = btn.closest('tr');
+        
+        if ($tr.hasClass('child')) {
+            $tr = $tr.prev('.parent');
+        }
+
+        var id = btn.data('del-id');
+
+        swal({
+            title: "¿Estás seguro?",
+            text: "Una vez eliminado, no podrás recuperar este registro.",
+            icon: "warning",
+            buttons: ["Cancelar", "Sí, eliminar"],
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url: BASE_URL + "substitution/delete-substitution",
+                        type: "POST",
+                        data: {
+                            substitution_id: id
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.status === 'success') {
+                                dtable.row($tr).remove().draw(false);
+                                swal("¡Eliminado!", response.message, "success", {
+                                    timer: 1500,
+                                    buttons: false
+                                });
+                            } else {
+                                swal("Error", response.message, "error");
+                            }
+                        },
+                        error: function () {
+                            swal("Error", "No se pudo completar la petición de borrado.", "error");
+                        }
+                    });
+                }
+            });
     });
 });

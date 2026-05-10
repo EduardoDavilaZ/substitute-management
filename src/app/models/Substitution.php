@@ -50,5 +50,10 @@
                                 WHERE s.status = 'CONFIRMADO'");
             return $res['success'] ? $res['data'] : [];
         }
+        public function deleteSubstitutions(int $id): bool
+        {   
+            $res = $this->query("UPDATE substitutions SET enabled = 0 WHERE id = ?;",[$id]);
+            return $res['success'] ? true : false;
+        }
     }
 ?>
