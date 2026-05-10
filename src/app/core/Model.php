@@ -101,5 +101,17 @@ abstract class Model
     { 
         $this->connection->rollBack(); 
     }
+
+    protected function queryNested(string $sql, array $params, array $config): array
+    {
+        $response = $this->query($sql, $params);
+
+        if ($response['success'] && !empty($response['data'])) {
+            $response['data'] = db_nest($response['data'], $config);
+            $response['total'] = count($response['data']);
+        }
+
+        return $response;
+    }
 }
 ?>
