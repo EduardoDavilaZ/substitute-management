@@ -41,7 +41,7 @@
 
     <div class="mb-3">
         <label class="form-label small fw-bold">Descripción</label>
-        <textarea name="description" class="form-control" rows="2" required><?= htmlspecialchars($description) ?></textarea>
+        <textarea name="description" class="form-control" rows="3" required><?= htmlspecialchars($description) ?></textarea>
     </div>
 
     <div class="row">
@@ -88,7 +88,7 @@
                 <div id="newClassesSelectors"></div>
 
                 <div class="mt-2 pt-2 border-top">
-                    <button type="button" class="btn btn-sm btn-outline-primary w-100" id="btnAddClassSelector">
+                    <button type="button" class="btn btn-sm w-100 btn-save" id="btnAddClassSelector">
                         <i class="bi bi-plus-circle me-1"></i> Añadir otra clase
                     </button>
                 </div>
@@ -96,7 +96,7 @@
         </div>
 
         <div class="col-md-6 mb-3">
-            <label class="form-label small fw-bold mb-2">Horas / Periodos</label>
+            <label class="form-label small fw-bold mb-2">Horas</label>
             <div class="border rounded p-2">
                 <?php foreach($periods as $p): ?>
                     <?php 

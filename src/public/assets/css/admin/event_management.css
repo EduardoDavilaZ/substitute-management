@@ -44,3 +44,18 @@
         border: 1px solid var(--blue);
     }
 }
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid #7a96e0 !important;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: white;
+    transition: background 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #7a96e0 !important;
+    position: relative;
+}
