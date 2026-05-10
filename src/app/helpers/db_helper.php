@@ -35,7 +35,6 @@ function db_nest(array $rows, array $config): array
             // Create the entry if it hasn't been initialized in the result tree
             if (!isset($current[$id_val])) {
                 if ($prefix) {
-                    // Extract and map columns that match the specified prefix
                     $item_data = [];
                     foreach ($row as $key => $value) {
                         if (str_starts_with($key, $prefix)) {
@@ -45,11 +44,28 @@ function db_nest(array $rows, array $config): array
                     }
                     $current[$id_val] = $item_data;
                 } else {
-                    // Use the entire row as the base data
-                    $current[$id_val] = $row;
+                    // SOLUCIÓN: Si no hay prefijo, solo tomamos las columnas 
+                    // que NO pertenecen a otros contenedores (no tienen otros prefijos)
+                    $item_data = [];
+                    // Obtenemos todos los prefijos definidos en el resto del config
+                    $all_prefixes = array_filter(array_column($config, 'prefix'));
+                    
+                    foreach ($row as $key => $value) {
+                        $is_child_data = false;
+                        foreach ($all_prefixes as $p) {
+                            if (str_starts_with($key, $p)) {
+                                $is_child_data = true;
+                                break;
+                            }
+                        }
+                        // Si la columna no pertenece a un hijo, pertenece al padre
+                        if (!$is_child_data) {
+                            $item_data[$key] = $value;
+                        }
+                    }
+                    $current[$id_val] = $item_data;
                 }
-                
-                // Initialize the child container array if nesting is required
+
                 if ($container) {
                     $current[$id_val][$container] = [];
                 }

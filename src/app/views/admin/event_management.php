@@ -6,14 +6,14 @@
     <h1 class="text-title">Gestión de eventos</h1>
     <span class="text-muted-custom">Crea y notifica eventos a las clases</span>
 
-    <button class="btn-create right-self my-2 py-1 px-2">
+    <button class="btn-create right-self my-2 py-2 px-4">
         <i class="bi bi-plus-square"></i> Nuevo evento
     </button>
 
     <div class="row row-cols-1 row-cols-lg-2">
         <?php foreach($events as $event): ?>
             <div class="col p-2">
-                <article class="event-container p-2">
+                <article class="event-container p-2 h-100">
                     <div>
                         <div>
                             <h4 class="event-label"><?= htmlspecialchars($event['title']) ?></h4>

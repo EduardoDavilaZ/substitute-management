@@ -10,28 +10,65 @@ final class EventController extends Controller
         $eventModel = new Event();
         $eventData = ($id > 0) ? $eventModel->getEventWithClasses($id) : [];
         return [
-            'selectedId'    => $id, // Cambiamos el nombre para evitar colisiones con la variable $id
+            'selectedId'    => $id,
             'event'         => $eventData,
             'classes'       => (new Classes())->getClasses(),
             'periods'       => (new Period())->getPeriods(),
         ];
     }
 
-    // public function addEvent() : void 
-    // {
-    //     $fields = validate_fields(['title', 'description', 'start_date', 'end_date']);
-    //     if (!$fields) {
-    //         json_error("Faltan campos obligatorios.");
-    //     }
-        
-    //     $result = (new Event())->createEvent($fields, $scheduleIds);
-        
-    //     if ($result) {
-    //         json_success("Evento creado correctamente.");
-    //     } else {
-    //         json_error("No se pudo crear el evento.");
-    //     }
-    // }
+    public function addEvent() : void 
+    {
+        $this->handleForm();
+    }
+
+    public function updateEvent() : void 
+    {
+        $id = (int)($_POST['id'] ?? 0);
+        $this->handleForm($id);
+    }
+
+    private function handleForm(int $id = 0) : never  
+    {
+        $eventData = [
+            'title'       => $_POST['title'] ?? '',
+            'description' => $_POST['description'] ?? '',
+            'start_date'  => $_POST['start_date'] ?? '',
+            'end_date'    => $_POST['end_date'] ?? ''
+        ];
+
+        $classIds = $_POST['class_ids'] ?? [];
+        $periodIds = $_POST['period_ids'] ?? [];
+
+        if (empty($eventData['title']) || empty($eventData['start_date'])) {
+            json_error("Faltan datos obligatorios.");
+        }
+
+        $model = new Event();
+        if ($model->saveEvent($eventData, $classIds, $periodIds, $id)) {
+            json_success($id > 0 ? "Evento actualizado con éxito." : "Evento creado con éxito.");
+        } else {
+            json_error("No se pudo guardar el evento.");
+        }
+    }
+
+    public function deleteEvent() : never 
+    {
+        $id = $_POST['id'] ?? 0;
+
+        if ($id <= 0) {
+            json_error("ID de evento no válido.");
+        }
+
+        $model = new Event();
+        $result = $model->deleteEvent($id);
+
+        if ($result) {
+            json_success("El evento ha sido eliminado correctamente.");
+        } else {
+            json_error("No se pudo eliminar el evento. Es posible que no exista.");
+        }
+    }
 }   
 
 ?>
