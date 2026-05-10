@@ -6,16 +6,19 @@
                 <div class="calendar-legend h-50 mt-5">
                     <h6 class="fw-bold mb-4 text-primary-dark small uppercase letter-spacing">Leyenda</h6>
                     <div class="legend-item mb-3">
+                        <span class="dot" style="background: #f39c12;"></span> PRIMARIA
+                    </div>
+                    <div class="legend-item mb-3">
                         <span class="dot" style="background: var(--primary);"></span> ESO
                     </div>
                     <div class="legend-item mb-3">
                         <span class="dot" style="background: var(--success);"></span> BACHILLERATO
                     </div>
                     <div class="legend-item mb-3">
-                        <span class="dot" style="background: #f39c12;"></span> PRIMARIA
+                        <span class="dot" style="background: #8e44ad;"></span> GRADO MEDIO
                     </div>
                     <div class="legend-item mb-3">
-                        <span class="dot" style="background: #8e44ad;"></span> CICLOS
+                        <span class="dot" style="background: #b1242b;"></span> GRADO SUPERIOR
                     </div>
                 </div>
             </div>
