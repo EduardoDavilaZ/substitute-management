@@ -1,9 +1,13 @@
 <?php
-    final class SubstitutionController extends Controller {
-        public function getSubstitutions()  {
+    final class SubstitutionController extends Controller 
+    {
+        public function getSubstitutions()  
+        {
             return json((new Substitution())->getSubstitutionsCalendar());
         }
-        public function deleteSubstitution(){
+
+        public function deleteSubstitution()
+        {
             $id = $_POST["substitution_id"] ?? 0;
             if($id <= 0)
             {
@@ -19,4 +23,3 @@
             }
         }
     }
-?>

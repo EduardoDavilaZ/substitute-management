@@ -12,5 +12,3 @@ final class TeacherController extends Controller
         $this->view = 'teacher/home';
     }
 }
-
-?>

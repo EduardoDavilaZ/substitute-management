@@ -46,5 +46,3 @@ function has_input(string $key): bool
 {
     return isset($_POST[$key]) || isset($_GET[$key]);
 }
-
-?>

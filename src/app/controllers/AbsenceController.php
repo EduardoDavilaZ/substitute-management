@@ -7,4 +7,3 @@
             return json(['data' => (new Absence())->getAbsencesDetail()]);
         }
     }
-?>

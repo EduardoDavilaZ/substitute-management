@@ -1,8 +1,9 @@
 <?php
 
-final class DashboardController extends Controller {
-    public function obtainDashboardData() {
-
+final class DashboardController extends Controller 
+{
+    public function obtainDashboardData() 
+    {
         return json([
             'active_teachers' => (new Teacher())->countActiveTeachers(),
             'today_shifts' => (new Substitution())->countTodaySubstitutions(date('Y-m-d')),

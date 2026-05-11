@@ -163,6 +163,3 @@ final class ScheduleController extends Controller
         download_pdf($writer, 'libro_guardias_' . date('Ymd') . '.pdf');
     }
 }
-
-?>
-

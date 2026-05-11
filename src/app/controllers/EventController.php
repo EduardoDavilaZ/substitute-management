@@ -70,5 +70,3 @@ final class EventController extends Controller
         }
     }
 }   
-
-?>

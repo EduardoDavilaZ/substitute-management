@@ -114,4 +114,3 @@ abstract class Model
         return $response;
     }
 }
-?>

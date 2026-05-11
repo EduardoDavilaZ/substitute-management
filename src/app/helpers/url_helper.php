@@ -111,5 +111,3 @@ function abort(int $code = 404): void
     
     exit;
 }
-
-?>
