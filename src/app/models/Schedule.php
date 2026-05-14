@@ -79,6 +79,25 @@ final class Schedule extends Model
         
         return ($res['rowsAffected'] ?? 0) > 0;
     }
+
+    public function getIdAndDay(int $id){
+        $res = $this->query("SELECT p.id as id, sc.`day` as day from substitutions s
+                                JOIN schedules sc ON s.schedule_id = sc.id
+                                JOIN periods p ON sc.period_id = p.id
+                                WHERE s.schedule_id = ?",[$id]);
+        return $res['success'] ? $res['data'] : [];
+    }
+    public function getTeachersHour (int $id, string $letterDay){
+        $res = $this->query("SELECT 
+                            s.teacher_id,
+                            t.full_name
+                        FROM schedules s 
+                        JOIN teachers t ON s.teacher_id = t.id 
+                        WHERE s.class_id IS NULL 
+                            AND s.period_id = ? 
+                            AND s.`day` = ?",[$id,$letterDay]);
+        return $res['success'] ? $res['data'] : [];
+    }
 }
 
 ?>

@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     return `<span class="badge ${badgeClass}">${data}</span>`;
                 }
             },
-            { data: 'sustitute', className: 'text-center' },
             {
                 data: null,
                 orderable: false,
@@ -48,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 render: function (row) {
                     return `
                         <div class="boxButton">
-                            <button type="button" class="btn btn-primary btn-sm assign-substitute" data-id="${row.id}">
+                            <button type="button" class="btn btn-primary btn-sm assign-substitute" data-assig-id="${row.id}">
                                 <i class="bi bi-person-plus-fill me-2"></i> Asignar
                             </button>
                         </div>`;
@@ -315,5 +314,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 }
             });
+    });
+
+    $('#substitutions-table').on('click','.assign-substitute',function(e){
+        e.preventDefault();
+        var btn = $(this);
+        
+        var id = btn.data('assig-id');
+
+        const url = `${BASE_URL}substitution/get-substitution-assig/${id}`;
+        Modal.show(url);
     });
 });

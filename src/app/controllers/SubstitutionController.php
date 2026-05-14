@@ -18,5 +18,17 @@
                 return json_error("Error al eliminar la sustitución");
             }
         }
+        public function getSubstitutionAssig(int $id) {
+            $this->view = 'admin/modals/assign_substitute';
+            $subtitution = (new Substitution())->getSubstitution($id);
+            $idHourScheduleTeachers = (new Schedule())->getIdAndDay($subtitution['schedule_id']);
+            $teachersDay =(new Schedule())->getTeachersHour($idHourScheduleTeachers[0]['id'],$idHourScheduleTeachers[0]['day']);
+            ////Hay que traer los profesores libres
+           
+                return [
+                'substitution' => $subtitution,
+                'teachersDay' => $teachersDay,
+                ];
+        }
     }
 ?>

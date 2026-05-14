@@ -24,7 +24,7 @@
                                     ELT(WEEKDAY(s.date) + 1, 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') AS dia,c.name AS class_name 
                                 FROM substitutions s 
                                 JOIN classes c ON s.class_id = c.id 
-                                WHERE s.date = ? AND s.substitute_teacher_id IS NULL;", [$date]);
+                                WHERE s.date = ? AND s.status = 'PENDIENTE';", [$date]);
             return $res['success'] ? $res['data'] : [];
         }
 
@@ -52,7 +52,9 @@
         }
         public function deleteSubstitutions(int $id): bool
         {   
-            $res = $this->query("UPDATE substitutions SET enabled = 0 WHERE id = ?;",[$id]);
+            $res = $this->query("UPDATE substitutions 
+                                SET enabled = 0, status = 'CANCELADO' 
+                                WHERE id = ?;",[$id]);
             return $res['success'] ? true : false;
         }
     }

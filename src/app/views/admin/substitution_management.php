@@ -45,7 +45,6 @@
                     <th class="text-center">Hora</th>
                     <th class="text-center">Justificación</th>
                     <th class="text-center">Estado</th>
-                    <th class="text-center">Sustituto</th>
                     <th class="text-center">Detalles de ausencia</th>
                     <th class="text-center">Asignar sustituto</th>
                     <th class="text-center">Eliminar ausencia</th>

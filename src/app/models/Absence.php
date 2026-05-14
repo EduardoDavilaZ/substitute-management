@@ -28,24 +28,23 @@
         public function getAbsencesDetail() : array
         {
             $res = $this->query("SELECT 
-                                    s.id,
-                                    c.name AS class, 
-                                    ta.full_name AS absent, 
-                                    p.name AS name_hour, 
-                                    ab.is_justified AS justify,
-                                    s.`status` AS state, 
-                                    ts.full_name AS sustitute,
-                                    ab.date AS date_absence,
-                                    ab.reason AS reason,
-                                    ab.proof_file_path AS material
+                                s.id,
+                                c.name AS class, 
+                                ta.full_name AS absent, 
+                                p.name AS name_hour, 
+                                ab.is_justified AS justify,
+                                s.`status` AS state, 
+                                ab.date AS date_absence,
+                                ab.reason AS reason,
+                                ab.proof_file_path AS material
                                 FROM substitutions s 
                                 JOIN classes c ON s.class_id = c.id
                                 JOIN teachers ta ON s.absent_teacher_id = ta.id
                                 JOIN absence_period a ON s.absence_detail_id = a.id
-                                JOIN periods p ON a.period_id = p.id
-                                JOIN absences ab ON a.absence_id = ab.id
-                                LEFT JOIN teachers ts ON s.substitute_teacher_id = ts.id
-                                WHERE s.enabled=1 AND (s.status='PENDIENTE' OR ab.is_justified = 0)"); /*Change is-enabled for enabled*/
+                                JOIN schedules sc ON s.schedule_id = sc.id
+                                JOIN periods p ON sc.period_id = p.id
+                                LEFT JOIN absences ab ON a.absence_id = ab.id
+                                WHERE s.enabled=1 AND s.status='PENDIENTE' OR ab.is_justified = 0;"); 
             return $res['success'] ? $res['data'] : [];
         }
     }
