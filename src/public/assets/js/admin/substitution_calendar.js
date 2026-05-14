@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (stage === 'PRIM') event.className = 'level-primary';
             else if (stage === 'CFGM') event.className = 'level-midlle-grade';
             else if (stage === 'CFGS') event.className = 'level-higher-grade';
+            else if (stage === 'INF') event.className = 'level-childish-grade';
             else event.className = 'level-default';
             
             return event;

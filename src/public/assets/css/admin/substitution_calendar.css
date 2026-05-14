@@ -174,6 +174,7 @@ body {
         &.level-primary { background: linear-gradient(135deg, #f39c12, #e67e22) !important; }
         &.level-midlle-grade { background: linear-gradient(135deg, #8e44ad, #7d3c98) !important; }
         &.level-higher-grade { background: linear-gradient(135deg,  #af3138,  #b1242b) !important; }
+        &.level-childish-grade { background: linear-gradient(135deg,  #e4e141,  #eafa0b) !important; }
         &.level-default { background: linear-gradient(135deg, #6c757d, #5a6268) !important; }
     }
 
