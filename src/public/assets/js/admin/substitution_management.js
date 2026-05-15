@@ -289,31 +289,31 @@ document.addEventListener('DOMContentLoaded', function () {
             buttons: ["Cancelar", "Sí, eliminar"],
             dangerMode: true,
         })
-            .then((willDelete) => {
-                if (willDelete) {
-                    $.ajax({
-                        url: BASE_URL + "substitution/delete-substitution",
-                        type: "POST",
-                        data: {
-                            substitution_id: id
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            if (response.status === 'success') {
-                                dtable.row($tr).remove().draw(false);
-                                swal("¡Eliminado!", response.message, "success", {
-                                    timer: 1500,
-                                    buttons: false
-                                });
-                            } else {
-                                swal("Error", response.message, "error");
-                            }
-                        },
-                        error: function () {
-                            swal("Error", "No se pudo completar la petición de borrado.", "error");
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: BASE_URL + "substitution/delete-substitution",
+                    type: "POST",
+                    data: {
+                        substitution_id: id
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            dtable.row($tr).remove().draw(false);
+                            swal("¡Eliminado!", response.message, "success", {
+                                timer: 1500,
+                                buttons: false
+                            });
+                        } else {
+                            swal("Error", response.message, "error");
                         }
-                    });
-                }
-            });
+                    },
+                    error: function () {
+                        swal("Error", "No se pudo completar la petición de borrado.", "error");
+                    }
+                });
+            }
+        });
     });
 });
