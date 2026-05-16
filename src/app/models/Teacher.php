@@ -27,5 +27,42 @@
             $res = $this->query("UPDATE teachers SET enabled = 0 WHERE id = ?;",[$id]);
             return $res['success'] ? true : false;
         }
+        public function updateTeacher(int $id, array $data): bool
+        {
+            $fields = [];
+            $values = [];
+
+            foreach ($data as $key => $value) {
+                $fields[] = "$key = ?";
+                $values[] = $value;
+            }
+
+            $values[] = $id;
+            $query = "UPDATE teachers SET " . implode(', ', $fields) . " WHERE id = ?";
+            $res = $this->query($query, $values);
+            return $res['success'] ?? false;
+        }
+
+        /** True si otro profesor (distinto id) ya usa ese email. */
+        public function existsOtherWithEmail(string $email, int $excludeId): bool
+        {
+            $res = $this->query(
+                'SELECT id FROM teachers WHERE email = ? AND id <> ? LIMIT 1',
+                [$email, $excludeId],
+                false
+            );
+            return ($res['success'] ?? false) && !empty($res['data']);
+        }
+
+        /** True si otro profesor ya usa ese teléfono (mismo valor exacto en BD). */
+        public function existsOtherWithPhone(string $phone, int $excludeId): bool
+        {
+            $res = $this->query(
+                'SELECT id FROM teachers WHERE phone = ? AND id <> ? LIMIT 1',
+                [$phone, $excludeId],
+                false
+            );
+            return ($res['success'] ?? false) && !empty($res['data']);
+        }
     }
 ?>
