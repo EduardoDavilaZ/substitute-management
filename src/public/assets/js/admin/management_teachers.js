@@ -43,7 +43,18 @@ document.addEventListener('DOMContentLoaded', function () {
                             <button class="btn btn-action btn-delete" data-del-id="${row.id}"><i class="bi bi-trash fs-4"></i></button>
                         </div>`;
                 }
-            }
+            },
+            {
+                data: null,
+                orderable: false,
+                className: 'text-center',
+                render: function (row) {
+                    return `
+                        <div class="boxButton d-flex justify-content-center align-items-center">
+                            <button class="btn btn-action" data-schedule-id="${row.id}"><i class="bi bi-calendar3 fs-4"></i></button>
+                        </div>`;
+                }
+            },
         ],
         lengthChange: false,
         info: false,
@@ -57,13 +68,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     {
                         extend: 'excel',
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel',
-                        className: 'btn btn-excel mx-1'
+                        className: 'btn btn-excel mx-1',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3] 
+                        }
                     },
-                    {
-                        extend: 'pdf',
-                        text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
-                        className: 'btn btn-pdf mx-1'
-                    }
+                    DataTablesPdfTheme.pdfButton(
+                        {
+                            text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
+                            className: 'btn btn-pdf mx-1',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3],
+                                stripHtml: true,
+                            },
+                        },
+                        { title: 'Gestión de profesores' }
+                    )
                 ]
             },
             bottomStart: null,
@@ -126,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    function validarCampo(input) {
+    function validateField(input) {
         var name = input.attr('name');
         var value = input.val().trim();
         
@@ -176,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     $(document).on('input change', '#formModTeacher .form-control', function() {
-        validarCampo($(this));
+        validateField($(this));
     });
 
     $(document).on('click', '#btnSubmitGuard', function(e) {
@@ -186,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if ($form.length === 0) return false;
 
         $form.find('input[name="nameTeacher"], input[name="emailTeacher"], input[name="phoneTeacher"]').each(function() {
-            validarCampo($(this));
+            validateField($(this));
         });
 
         if ($form.find('.is-invalid').length > 0) {

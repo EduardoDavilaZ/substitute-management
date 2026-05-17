@@ -41,14 +41,6 @@ final class TeacherUpdateValidator
             return $fieldError;
         }
 
-        if ($teacherModel->existsOtherWithEmail($email, $id)) {
-            return 'Ya existe otro profesor con ese correo.';
-        }
-
-        if ($phone !== '' && $teacherModel->existsOtherWithPhone($phone, $id)) {
-            return 'Ya existe otro profesor con ese teléfono.';
-        }
-
         return null;
     }
 

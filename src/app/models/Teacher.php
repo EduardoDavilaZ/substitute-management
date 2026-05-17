@@ -27,42 +27,28 @@
             $res = $this->query("UPDATE teachers SET enabled = 0 WHERE id = ?;",[$id]);
             return $res['success'] ? true : false;
         }
-        public function updateTeacher(int $id, array $data): bool
-        {
-            $fields = [];
-            $values = [];
-
-            foreach ($data as $key => $value) {
-                $fields[] = "$key = ?";
-                $values[] = $value;
+        /**
+         * @param string|null $profileImgPath Si se indica, actualiza profile_img_path; si es null, se conserva el valor actual.
+         */
+        public function updateTeacher(
+            int $id,
+            string $fullName,
+            string $email,
+            string $phone,
+            ?string $profileImgPath = null
+        ): bool {
+            if ($profileImgPath !== null) {
+                $res = $this->query(
+                    'UPDATE teachers SET full_name = ?, email = ?, phone = ?, profile_img_path = ? WHERE id = ?',
+                    [$fullName, $email, $phone, $profileImgPath, $id]
+                );
+            } else {
+                $res = $this->query(
+                    'UPDATE teachers SET full_name = ?, email = ?, phone = ? WHERE id = ?',
+                    [$fullName, $email, $phone, $id]
+                );
             }
-
-            $values[] = $id;
-            $query = "UPDATE teachers SET " . implode(', ', $fields) . " WHERE id = ?";
-            $res = $this->query($query, $values);
             return $res['success'] ?? false;
-        }
-
-        /** True si otro profesor (distinto id) ya usa ese email. */
-        public function existsOtherWithEmail(string $email, int $excludeId): bool
-        {
-            $res = $this->query(
-                'SELECT id FROM teachers WHERE email = ? AND id <> ? LIMIT 1',
-                [$email, $excludeId],
-                false
-            );
-            return ($res['success'] ?? false) && !empty($res['data']);
-        }
-
-        /** True si otro profesor ya usa ese teléfono (mismo valor exacto en BD). */
-        public function existsOtherWithPhone(string $phone, int $excludeId): bool
-        {
-            $res = $this->query(
-                'SELECT id FROM teachers WHERE phone = ? AND id <> ? LIMIT 1',
-                [$phone, $excludeId],
-                false
-            );
-            return ($res['success'] ?? false) && !empty($res['data']);
         }
     }
 ?>

@@ -10,13 +10,13 @@
 <form id="formModTeacher" data-id="<?= $teacher['id'] ?? 0 ?>">
     <div class="mb-3">
         <label class="form-label small fw-bold">Nombre Completo</label>
-        <input type="text" name="nameTeacher" class="form-control input-validate" value="<?= htmlspecialchars($teacher['full_name'] ?? '') ?>" required>
+        <input type="text" name="nameTeacher" class="form-control input-validate" value="<?= htmlspecialchars($teacher['full_name'] ?? '') ?>">
         <div class="error-message text-danger small mt-1"></div>
     </div>
 
     <div class="mb-3">
         <label class="form-label small fw-bold">Correo Electrónico</label>
-        <input type="email" name="emailTeacher" class="form-control input-validate" value="<?= htmlspecialchars($teacher['email'] ?? '') ?>" required>
+        <input type="email" name="emailTeacher" class="form-control input-validate" value="<?= htmlspecialchars($teacher['email'] ?? '') ?>">
         <div class="error-message text-danger small mt-1"></div>
     </div>
 

@@ -133,13 +133,46 @@ final class ScheduleController extends Controller
 
         $html = "
             <style>
-                body { font-family: sans-serif; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th, td { border: 1px solid #333; padding: 8px; text-align: center; }
-                th { background-color: #f2f2f2; }
-                h1 { text-align: center; }
-            </style><h1>Libro de Guardias</h1>
-            <table>
+                body {
+                    font-family: 'DejaVu Sans', sans-serif;
+                    color: #334155;
+                    font-size: 11px;
+                }
+                .report-header td {
+                    background-color: transparent !important;
+                }
+                table.data-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 12px;
+                }
+                table.data-table th,
+                table.data-table td {
+                    border: 1px solid #e2e8f0;
+                    padding: 10px 8px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                table.data-table th {
+                    background-color: #0F4C81;
+                    color: #ffffff;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    font-size: 9px;
+                    letter-spacing: 0.5px;
+                }
+                table.data-table tbody tr:nth-child(even) td {
+                    background-color: #e0f2fe;
+                }
+                table.data-table tbody tr:nth-child(odd) td {
+                    background-color: #ffffff;
+                }
+                table.data-table td strong {
+                    color: #0c3c66;
+                }
+            </style>
+            " . pdf_report_header_html('Libro de Guardias') . "
+            <table class=\"data-table\">
                 <thead>
                     <tr><th>HORA</th><th>LUNES</th><th>MARTES</th><th>MIÉRCOLES</th><th>JUEVES</th><th>VIERNES</th></tr>
                 </thead>

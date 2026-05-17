@@ -91,11 +91,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel',
                         className: 'btn btn-excel mx-1'
                     },
-                    {
-                        extend: 'pdf',
-                        text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
-                        className: 'btn btn-pdf mx-1'
-                    }
+                    DataTablesPdfTheme.pdfButton(
+                        {
+                            text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
+                            className: 'btn btn-pdf mx-1',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6],
+                                stripHtml: true,
+                            },
+                        },
+                        { title: 'Gestión de ausencias y sustituciones', orientation: 'landscape' }
+                    )
                 ]
             },
             bottomStart: null,

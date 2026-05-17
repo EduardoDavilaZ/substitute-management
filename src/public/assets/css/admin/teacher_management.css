@@ -31,7 +31,7 @@ table#teachers-table {
     text-transform: uppercase;
     font-size: 0.68rem;
     letter-spacing: 1.5px;
-    padding: 1.4rem 1.2rem;
+    padding: 1rem 1.2rem;
     border: none;
     text-align: left;
 }
@@ -84,7 +84,7 @@ table#teachers-table {
 }
 
 #teachers-table tbody td {
-    padding: 1.4rem 1.2rem;
+    padding: 0.9rem 1.2rem;
     vertical-align: middle;
     border-top: 1px solid #f1f5f9;
     border-bottom: 1px solid #f1f5f9;
@@ -223,4 +223,135 @@ table#teachers-table {
     display: flex;
     gap: 0.8rem;
     align-items: center;
+}
+
+/* Custom scrollbar for table responsive */
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    #teachers-table-container {
+        padding: 1.5rem !important;
+        border-radius: 16px !important;
+        margin-top: 1.5rem !important;
+    }
+
+    #teachers-table-container table#teachers-table {
+        table-layout: auto !important;
+    }
+
+    #teachers-table-container #teachers-table tbody td {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    #teachers-table-container .dt-layout-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1.2rem !important;
+    }
+
+    #teachers-table-container .dt-layout-cell.dt-layout-end {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 1rem !important;
+        display: flex !important;
+    }
+
+    #teachers-table-container .dt-search {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: stretch !important;
+    }
+
+    #teachers-table-container .dt-search input {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+    }
+
+    #teachers-table-container .dt-buttons {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        margin-top: 0.5rem !important;
+        display: flex !important;
+    }
+
+    #teachers-table-container .dt-buttons .btn {
+        flex: 1 1 auto !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 640px) {
+    #teachers-table-container {
+        padding: 1rem !important;
+        border-radius: 12px !important;
+        margin-top: 1rem !important;
+    }
+
+    .text-title {
+        font-size: 1.75rem !important;
+        text-align: center !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #teachers-table-container #teachers-table thead th {
+        padding: 0.8rem 0.6rem !important;
+        font-size: 0.62rem !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    #teachers-table-container #teachers-table tbody td {
+        padding: 0.75rem 0.6rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    #teachers-table-container .btn-action {
+        padding: 0.2rem !important;
+    }
+    
+    #teachers-table-container .btn-action i {
+        font-size: 1.2rem !important;
+    }
+
+    /* Centrado y empaquetado de botones de paginación en móviles */
+    #teachers-table-container .dt-paging {
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 0.35rem !important;
+        margin-top: 1.5rem !important;
+    }
+
+    #teachers-table-container .dt-paging .dt-paging-button {
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.75rem !important;
+        border-radius: 8px !important;
+        margin: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
 }

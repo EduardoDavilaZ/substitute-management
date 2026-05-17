@@ -39,6 +39,7 @@ final class TeacherController extends Controller
 
     public function getTeacherById(int $id)
     {
+        $this->layout = null;
         $this->view = 'admin/modals/mod_teacher_modal';
         return ['teacher' => (new Teacher())->getTeacher($id)];
     }
@@ -69,17 +70,10 @@ final class TeacherController extends Controller
             return json_error($payloadError);
         }
 
-        $updateData = [
-            'full_name' => $fullName,
-            'email' => $email,
-            'phone' => $phone
-        ];
-
-        $replacingImage = false;
+        $newProfileImgPath = null;
         if (!empty($_FILES['profileImage']) && is_array($_FILES['profileImage'])) {
             $fileErr = $_FILES['profileImage']['error'] ?? UPLOAD_ERR_NO_FILE;
             if ($fileErr !== UPLOAD_ERR_NO_FILE) {
-                $replacingImage = true;
                 $imgError = TeacherUpdateValidator::validateProfileImageUpload($_FILES['profileImage']);
                 if ($imgError !== null) {
                     return json_error($imgError);
@@ -99,20 +93,20 @@ final class TeacherController extends Controller
                 if (!is_uploaded_file($file['tmp_name']) || !move_uploaded_file($file['tmp_name'], $uploadPath)) {
                     return json_error("No se pudo guardar imagen.");
                 }
-                $updateData['profile_img_path'] = $fileName;
+                $newProfileImgPath = $fileName;
             }
         }
 
-        $result = $teacherModel->updateTeacher($id, $updateData);
+        $result = $teacherModel->updateTeacher($id, $fullName, $email, $phone, $newProfileImgPath);
         if ($result) {
-            if ($replacingImage && isset($updateData['profile_img_path'])) {
+            if ($newProfileImgPath !== null) {
                 $this->deleteTeacherProfileImage($existing['profile_img_path'] ?? null);
             }
             return json_success("Profesor actualizado correctamente.");
         }
 
-        if ($replacingImage && isset($updateData['profile_img_path'])) {
-            $this->deleteTeacherProfileImage($updateData['profile_img_path']);
+        if ($newProfileImgPath !== null) {
+            $this->deleteTeacherProfileImage($newProfileImgPath);
         }
         return json_error("Error al actualizar profesor.");
         
