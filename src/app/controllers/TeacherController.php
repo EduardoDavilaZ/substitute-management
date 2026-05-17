@@ -54,6 +54,7 @@ final class TeacherController extends Controller
         $fullName = trim((string) ($_POST['nameTeacher'] ?? ''));
         $email = trim((string) ($_POST['emailTeacher'] ?? ''));
         $phone = trim((string) ($_POST['phoneTeacher'] ?? ''));
+        $tutor = $_POST['tutor'];
 
         $teacherModel = new Teacher();
         $existing = $teacherModel->getTeacher($id);
@@ -97,7 +98,7 @@ final class TeacherController extends Controller
             }
         }
 
-        $result = $teacherModel->updateTeacher($id, $fullName, $email, $phone, $newProfileImgPath);
+        $result = $teacherModel->updateTeacher($id, $fullName, $email, $phone, $tutor, $newProfileImgPath);
         if ($result) {
             if ($newProfileImgPath !== null) {
                 $this->deleteTeacherProfileImage($existing['profile_img_path'] ?? null);
@@ -138,6 +139,12 @@ final class TeacherController extends Controller
         ) {
             @unlink($realFile);
         }
+    }
+    public function getTeacherByIdSchedule(int $id)
+    {
+        $this->layout = null;
+        $this->view = 'admin/modals/add_schedule_modal';
+        return ['teacher' => (new Teacher())->getTeacher($id)];
     }
 }
 ?>

@@ -15,7 +15,14 @@ table#teachers-table {
     border: none;
     margin-top: 1.5rem !important;
 }
-
+#teachers-table thead th:nth-child(1) { width: 15% !important; } 
+#teachers-table thead th:nth-child(2) { width: 20% !important; }
+#teachers-table thead th:nth-child(3) { width: 15% !important; } 
+#teachers-table thead th:nth-child(4) { width: 10% !important; }
+#teachers-table thead th:nth-child(5) { width: 10% !important; } 
+#teachers-table thead th:nth-child(6) { width: 10% !important; }
+#teachers-table thead th:nth-child(7) { width: 10% !important; }
+#teachers-table thead th:nth-child(8) { width: 10% !important; }
 .dt-container {
     width: 100% !important;
 }
@@ -83,6 +90,46 @@ table#teachers-table {
     opacity: 1;
 }
 
+/* Ensure arrows are visible even if default DT CSS is missing */
+.dt-column-order::before,
+.dt-column-order::after {
+    display: inline-block;
+    font-family: "bootstrap-icons" !important;
+    font-size: 0.75rem;
+    line-height: 0.6rem;
+    content: "" !important;
+}
+
+/* Up arrow */
+.dt-orderable-asc .dt-column-order::before {
+    content: "\F235" !important;
+    /* caret-up-fill */
+    margin-bottom: 2px;
+}
+
+/* Down arrow */
+.dt-orderable-desc .dt-column-order::after {
+    content: "\F229" !important;
+    /* caret-down-fill */
+}
+
+/* Highlight active arrow */
+.dt-ordering-asc .dt-column-order::after,
+.dt-ordering-desc .dt-column-order::before {
+    opacity: 0.2;
+    /* Fade out the inactive direction */
+}
+
+.dt-ordering-asc .dt-column-order::before,
+.dt-ordering-desc .dt-column-order::after {
+    opacity: 1;
+}
+
+#teachers-table thead th.dt-orderable-asc .dt-column-order,
+#teachers-table thead th.dt-orderable-desc .dt-column-order {
+    color: var(--text-on-primary) !important;
+}
+
 #teachers-table tbody td {
     padding: 0.9rem 1.2rem;
     vertical-align: middle;
@@ -116,6 +163,11 @@ table#teachers-table {
     background-color: #f1f5f9;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     transform: translateY(-1px);
+}
+.btn-downlo:hover{  
+    background-color: #cbd5e1;
+    color: #334155;
+    border-color: #cbd5e1;
 }
 
 .btn-sm {
@@ -326,11 +378,11 @@ table#teachers-table {
         padding: 0.75rem 0.6rem !important;
         font-size: 0.8rem !important;
     }
-    
+
     #teachers-table-container .btn-action {
         padding: 0.2rem !important;
     }
-    
+
     #teachers-table-container .btn-action i {
         font-size: 1.2rem !important;
     }

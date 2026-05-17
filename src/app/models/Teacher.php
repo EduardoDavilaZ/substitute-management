@@ -8,7 +8,7 @@
         }
         public function getTeachersEnabled() : array
         {
-            $res = $this->query("SELECT id,full_name,email,phone,substitution_counter FROM teachers WHERE enabled = 1");
+            $res = $this->query("SELECT id,full_name,email,phone,substitution_counter,is_tutor FROM teachers WHERE enabled = 1");
             return $res['data'] ?? [];
         }
         public function getTeacher(int $id) : array
@@ -35,17 +35,18 @@
             string $fullName,
             string $email,
             string $phone,
+            bool $tutor,
             ?string $profileImgPath = null
         ): bool {
             if ($profileImgPath !== null) {
                 $res = $this->query(
-                    'UPDATE teachers SET full_name = ?, email = ?, phone = ?, profile_img_path = ? WHERE id = ?',
-                    [$fullName, $email, $phone, $profileImgPath, $id]
+                    'UPDATE teachers SET full_name = ?, email = ?, phone = ?, profile_img_path = ?, is_tutor = ? WHERE id = ?',
+                    [$fullName, $email, $phone, $profileImgPath, $tutor, $id]
                 );
             } else {
                 $res = $this->query(
-                    'UPDATE teachers SET full_name = ?, email = ?, phone = ? WHERE id = ?',
-                    [$fullName, $email, $phone, $id]
+                    'UPDATE teachers SET full_name = ?, email = ?, phone = ?, is_tutor = ? WHERE id = ?',
+                    [$fullName, $email, $phone, $tutor, $id]
                 );
             }
             return $res['success'] ?? false;

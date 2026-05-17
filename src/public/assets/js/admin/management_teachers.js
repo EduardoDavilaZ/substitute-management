@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dataSrc: 'data'
         },
         responsive: true,
+        autoWidth: false,
         columns: [
             { data: 'full_name' },
             { data: 'email' },
@@ -19,7 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             { data: 'substitution_counter', className: 'text-center' },
-            // { data: 'tutor'},
+            {   data: 'is_tutor',
+                className: 'text-center',
+                render: function (data) {
+                    return (data === 1) ? 'SI' : 'NO'  
+                }
+            },
             {
                 data: null,
                 orderable: false,
@@ -51,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 render: function (row) {
                     return `
                         <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button class="btn btn-action" data-schedule-id="${row.id}"><i class="bi bi-calendar3 fs-4"></i></button>
+                            <button class="btn btn-action btn-charge" data-schedule-id="${row.id}"><i class="bi bi-calendar3 fs-4"></i></button>
                         </div>`;
                 }
             },
@@ -70,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel',
                         className: 'btn btn-excel mx-1',
                         exportOptions: {
-                            columns: [0, 1, 2, 3] 
+                            columns: [0, 1, 2, 3, 4] 
                         }
                     },
                     DataTablesPdfTheme.pdfButton(
@@ -83,7 +89,24 @@ document.addEventListener('DOMContentLoaded', function () {
                             },
                         },
                         { title: 'Gestión de profesores' }
-                    )
+                    ),
+                    {
+                        text: '<i class="bi bi-download"></i> Descargar Plantilla',
+                        className: 'btn btn-secondary btn-downlo mx-1', 
+                        action: function () {
+
+                            var urlPlantilla = ASSETS_URL + 'scheduleTemplate/Horario-Calendario-Semanal.xlsx'; //Carmbiar el archivo hay uno de prueba
+                            
+                            var link = document.createElement('a');
+                            link.href = urlPlantilla;
+                            
+                            link.download = 'Plantilla_Gestion_Profesores.xlsx'; 
+                            
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }
+                    }
                 ]
             },
             bottomStart: null,
@@ -91,7 +114,19 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-        }
+        },
+        columnDefs: [
+            {
+                targets: '_all',
+                orderable: true,
+                orderSequence: ['asc', 'desc']
+            },
+            {
+                targets: [5, 6, 7],
+                orderable: false
+            }
+        ],
+        order: [[0, 'asc']]
     });
     ///---------------DELETE
     $('#teachers-table').on('click', '.btn-delete', function () {
@@ -245,5 +280,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 swal("Error", "No se pudo actualizar el registro.", "error");
             }
         });
+    });
+    //--------------Charge Schedule
+    $(document).on('click','.btn-charge',function(e){
+        e.preventDefault();
+        var id = $(this).data('schedule-id');
+        Modal.show(`${BASE_URL}teacher/get-teacher-by-id-schedule/${id}`);
     });
 });

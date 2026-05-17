@@ -36,6 +36,14 @@
         <input type="file" name="profileImage" class="form-control input-validate">
         <div class="error-message text-danger small mt-1"></div>
     </div>
+    <div class="mb-3">
+        <label for="tutor" class="form-label small fw-bold">¿Es tutor?</label>
+        <select name="tutor" id="tutor" class="form-select form-control input-validate">
+            <option value="1" <?php echo (isset($teacher['is_tutor']) && $teacher['is_tutor'] == 1) ? 'selected' : ''; ?>>Sí</option>
+            <option value="0" <?php echo (isset($teacher['is_tutor']) && $teacher['is_tutor'] == 0) ? 'selected' : ''; ?>>No</option>
+        </select>
+        <div class="error-message text-danger small mt-1"></div>
+    </div>
 </form>
 <?php
     modal_end([
