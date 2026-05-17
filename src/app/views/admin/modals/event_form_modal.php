@@ -1,35 +1,32 @@
-<?php
+<?php 
     $currentId = $selectedId ?? 0; 
     $isEdit = ($currentId > 0);
-    $event = $event ?? [];
-    $eventRaw = $event ?? [];
-    $data = isset($eventRaw[0]) ? (array)$eventRaw[0] : (array)$eventRaw;
+    $data = $event ?? [];
 
-    $periods = $periods ?? [];
-    $classes = $classes ?? [];
+    $periods  = $periods ?? [];
+    $classes  = $classes ?? [];
+    $teachers = $teachers ?? [];
 
     $title       = $data['title'] ?? '';
     $description = $data['description'] ?? '';
     $start       = $data['start_date'] ?? date('Y-m-d');
     $end         = $data['end_date'] ?? date('Y-m-d');
     
-    $affectedClasses = $data['affected_classes'] ?? [];
+    $affectedClasses  = $data['affected_classes'] ?? [];
+    $affectedTeachers = $data['affected_teachers'] ?? []; 
 
     $markedPeriods = [];
-    if (!empty($affectedClasses)) {
-        foreach ($affectedClasses as $ac) {
-            if (!empty($ac['affected_periods'])) {
-                $pIds = array_column($ac['affected_periods'], 'id');
-                $markedPeriods = array_merge($markedPeriods, $pIds);
-            }
+    foreach ($affectedClasses as $ac) {
+        if (!empty($ac['affected_periods'])) {
+            $pIds = array_column($ac['affected_periods'], 'id');
+            $markedPeriods = array_merge($markedPeriods, $pIds);
         }
     }
-    
     $markedPeriods = array_unique(array_map('intval', $markedPeriods));
 
     modal_start([
         'title' => $isEdit ? 'Editar Evento' : 'Crear Nuevo Evento',
-        'size' => 'modal-lg',
+        'size' => 'modal-xl',
     ]); 
 ?>
 
@@ -58,16 +55,11 @@
     <hr>
 
     <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label small fw-bold mb-2">Clases Afectadas</label>
-            <div id="classesContainer" class="border rounded p-2 bg-light" style="min-height: 100px;">
-                
+            <div id="classesContainer" class="border rounded p-2 bg-light" style="min-height: 200px; max-height: 300px; overflow-y: auto;">
                 <div id="currentClassesList">
-                    <?php
-                    $eventData = $event[0] ?? [];
-                    $affectedClasses = $eventData['affected_classes'] ?? $event; 
-
-                    foreach($affectedClasses as $ac): ?>
+                    <?php foreach($affectedClasses as $ac): if(isset($ac['id'])): ?>
                         <div class="d-flex align-items-center justify-content-between bg-white border rounded p-2 mb-2 class-selector-item">
                             <span class="small">
                                 <i class="bi bi-mortarboard me-2"></i>
@@ -75,18 +67,14 @@
                                 <br>
                                 <small class="text-muted"><?= htmlspecialchars($ac['name'] ?? '') ?></small>
                             </span>
-                            
                             <input type="hidden" name="class_ids[]" value="<?= $ac['id'] ?>">
-                            
                             <button type="button" class="btn btn-link text-danger p-0 btnRemoveClass" title="Eliminar">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endif; endforeach; ?>
                 </div>
-                
                 <div id="newClassesSelectors"></div>
-
                 <div class="mt-2 pt-2 border-top">
                     <button type="button" class="btn btn-sm w-100 btn-save" id="btnAddClassSelector">
                         <i class="bi bi-plus-circle me-1"></i> Añadir otra clase
@@ -95,21 +83,45 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <label class="form-label small fw-bold mb-2">Horas</label>
-            <div class="border rounded p-2">
+        <div class="col-md-4 mb-3">
+            <label class="form-label small fw-bold mb-2">Profesores Acompañantes</label>
+            <div id="teachersContainer" class="border rounded p-2 bg-light" style="min-height: 200px; max-height: 300px; overflow-y: auto;">
+                <div id="currentTeachersList">
+                    <?php foreach($affectedTeachers as $at): if(isset($at['id'])): ?>
+                        <div class="d-flex align-items-center justify-content-between bg-white border rounded p-2 mb-2 teacher-selector-item">
+                            <span class="small">
+                                <i class="bi bi-person me-2"></i>
+                                <strong><?= htmlspecialchars($at['full_name'] ?? 'N/A') ?></strong>
+                            </span>
+                            <input type="hidden" name="teacher_ids[]" value="<?= $at['id'] ?>">
+                            <button type="button" class="btn btn-link text-danger p-0 btnRemoveTeacher" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    <?php endif; endforeach; ?>
+                </div>
+                <div id="newTeachersSelectors"></div>
+                <div class="mt-2 pt-2 border-top">
+                    <button type="button" class="btn btn-sm w-100 btn-save" id="btnAddTeacherSelector">
+                        <i class="bi bi-plus-circle me-1"></i> Añadir profesor
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label small fw-bold mb-2">Horas / Periodos</label>
+            <div class="border rounded p-2 bg-white" style="min-height: 200px; max-height: 300px; overflow-y: auto;">
                 <?php foreach($periods as $p): ?>
-                    <?php 
-                        $isChecked = in_array((int)$p['id'], $markedPeriods) ? 'checked' : ''; 
-                    ?>
-                    <div class="form-check small">
+                    <?php $isChecked = in_array((int)$p['id'], $markedPeriods) ? 'checked' : ''; ?>
+                    <div class="form-check small mb-1">
                         <input class="form-check-input" type="checkbox" name="period_ids[]" 
-                                value="<?= $p['id'] ?>" 
-                                id="p<?= $p['id'] ?>" 
-                                <?= $isChecked ?>>
+                            value="<?= $p['id'] ?>" 
+                            id="p<?= $p['id'] ?>" 
+                            <?= $isChecked ?>>
                         <label class="form-check-label" for="p<?= $p['id'] ?>">
                             <strong><?= htmlspecialchars($p['name']) ?></strong> 
-                            <span class="text-muted">(<?= $p['start_time'] ?>)</span>
+                            <span class="text-muted">(<?= substr($p['start_time'], 0, 5) ?>)</span>
                         </label>
                     </div>
                 <?php endforeach; ?>
@@ -118,6 +130,7 @@
     </div>
 </form>
 
+<!-- TEMPLATES -->
 <template id="classSelectorTemplate">
     <div class="class-selector-item mb-2 shadow-sm border rounded bg-white p-2">
         <div class="selector-phase">
@@ -125,29 +138,46 @@
                 <select class="form-select select-class-trigger">
                     <option value="">Seleccionar clase...</option>
                     <?php foreach($classes as $c): ?>
-                        <option value="<?= $c['id'] ?>" 
-                                data-code="<?= htmlspecialchars($c['code']) ?>" 
-                                data-name="<?= htmlspecialchars($c['name']) ?>">
+                        <option value="<?= $c['id'] ?>" data-code="<?= htmlspecialchars($c['code']) ?>" data-name="<?= htmlspecialchars($c['name']) ?>">
                             <?= $c['code'] ?> - <?= $c['name'] ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <button class="btn btn-outline-danger btnRemoveClass" type="button">
-                    <i class="bi bi-x-lg"></i>
-                </button>
+                <button class="btn btn-outline-danger btnRemoveClass" type="button"><i class="bi bi-x-lg"></i></button>
             </div>
         </div>
-
         <div class="display-phase d-none d-flex align-items-center justify-content-between">
             <span class="small">
-                <i class="bi bi-mortarboard me-2"></i>
-                <strong class="class-code-text"></strong>
+                <i class="bi bi-mortarboard me-2"></i><strong class="class-code-text"></strong>
                 <br><small class="text-muted class-name-text"></small>
             </span>
             <input type="hidden" name="class_ids[]" value="" class="class-id-input">
-            <button type="button" class="btn btn-link btn-delete text-danger p-0 btnRemoveClass">
-                <i class="bi bi-trash"></i>
-            </button>
+            <button type="button" class="btn btn-link text-danger p-0 btnRemoveClass"><i class="bi bi-trash"></i></button>
+        </div>
+    </div>
+</template>
+
+<template id="teacherSelectorTemplate">
+    <div class="teacher-selector-item mb-2 shadow-sm border rounded bg-white p-2">
+        <div class="selector-phase">
+            <div class="input-group input-group-sm">
+                <select class="form-select select-teacher-trigger">
+                    <option value="">Seleccionar profesor...</option>
+                    <?php foreach($teachers as $t): ?>
+                        <option value="<?= $t['id'] ?>" data-name="<?= htmlspecialchars($t['full_name']) ?>">
+                            <?= $t['full_name'] ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button class="btn btn-outline-danger btnRemoveTeacher" type="button"><i class="bi bi-x-lg"></i></button>
+            </div>
+        </div>
+        <div class="display-phase d-none d-flex align-items-center justify-content-between">
+            <span class="small">
+                <i class="bi bi-person me-2"></i><strong class="teacher-name-text"></strong>
+            </span>
+            <input type="hidden" name="teacher_ids[]" value="" class="teacher-id-input">
+            <button type="button" class="btn btn-link text-danger p-0 btnRemoveTeacher"><i class="bi bi-trash"></i></button>
         </div>
     </div>
 </template>
