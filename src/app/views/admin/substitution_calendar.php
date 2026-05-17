@@ -2,7 +2,7 @@
     <h1 class="text-title text-center">Calendario de sustituciones</h1>
     <div class="container">
         <div class="row g-4">
-            <div class="col-md-2">
+            <div class="col-xl-2 col-lg-12">
                 <div class="calendar-legend h-50 mt-5">
                     <h6 class="fw-bold mb-4 text-primary-dark small uppercase letter-spacing">Leyenda</h6>
                     <div class="legend-item mb-3">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-10">
+            <div class="col-xl-10 col-lg-12">
                 <div class="card border-0 shadow-sm overflow-hidden mt-5" style="border-radius: 20px;">
                     <div id="substitution-calendar"></div>
                 </div>
