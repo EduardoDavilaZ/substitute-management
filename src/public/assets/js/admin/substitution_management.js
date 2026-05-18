@@ -91,11 +91,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel',
                         className: 'btn btn-excel mx-1'
                     },
-                    {
-                        extend: 'pdf',
-                        text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
-                        className: 'btn btn-pdf mx-1'
-                    }
+                    DataTablesPdfTheme.pdfButton(
+                        {
+                            text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
+                            className: 'btn btn-pdf mx-1',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6],
+                                stripHtml: true,
+                            },
+                        },
+                        { title: 'Gestión de ausencias y sustituciones', orientation: 'landscape' }
+                    )
                 ]
             },
             bottomStart: null,
@@ -289,31 +295,31 @@ document.addEventListener('DOMContentLoaded', function () {
             buttons: ["Cancelar", "Sí, eliminar"],
             dangerMode: true,
         })
-            .then((willDelete) => {
-                if (willDelete) {
-                    $.ajax({
-                        url: BASE_URL + "substitution/delete-substitution",
-                        type: "POST",
-                        data: {
-                            substitution_id: id
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            if (response.status === 'success') {
-                                dtable.row($tr).remove().draw(false);
-                                swal("¡Eliminado!", response.message, "success", {
-                                    timer: 1500,
-                                    buttons: false
-                                });
-                            } else {
-                                swal("Error", response.message, "error");
-                            }
-                        },
-                        error: function () {
-                            swal("Error", "No se pudo completar la petición de borrado.", "error");
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: BASE_URL + "substitution/delete-substitution",
+                    type: "POST",
+                    data: {
+                        substitution_id: id
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            dtable.row($tr).remove().draw(false);
+                            swal("¡Eliminado!", response.message, "success", {
+                                timer: 1500,
+                                buttons: false
+                            });
+                        } else {
+                            swal("Error", response.message, "error");
                         }
-                    });
-                }
-            });
+                    },
+                    error: function () {
+                        swal("Error", "No se pudo completar la petición de borrado.", "error");
+                    }
+                });
+            }
+        });
     });
 });
