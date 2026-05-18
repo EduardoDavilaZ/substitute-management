@@ -8,12 +8,14 @@ final class EventController extends Controller
         $this->layout = null;
 
         $eventModel = new Event();
-        $eventData = ($id > 0) ? $eventModel->getEventWithClasses($id) : [];
+        $eventData = ($id > 0) ? $eventModel->getEventWithClassesAndTeachers($id) : [];
+        
         return [
             'selectedId'    => $id,
             'event'         => $eventData,
             'classes'       => (new Classes())->getClasses(),
             'periods'       => (new Period())->getPeriods(),
+            'teachers'      => (new Teacher())->getTeachers(), // Para rellenar los selectores
         ];
     }
 
@@ -37,15 +39,16 @@ final class EventController extends Controller
             'end_date'    => $_POST['end_date'] ?? ''
         ];
 
-        $classIds = $_POST['class_ids'] ?? [];
+        $classIds  = $_POST['class_ids'] ?? [];
         $periodIds = $_POST['period_ids'] ?? [];
+        $teacherIds = $_POST['teacher_ids'] ?? []; // Capturamos los profesores asistentes
 
-        if (empty($eventData['title']) || empty($eventData['start_date'])) {
+        if (empty($eventData['title']) || empty($eventData['start_date']) || empty($eventData['end_date'])) {
             json_error("Faltan datos obligatorios.");
         }
 
         $model = new Event();
-        if ($model->saveEvent($eventData, $classIds, $periodIds, $id)) {
+        if ($model->saveEvent($eventData, $classIds, $periodIds, $teacherIds, $id)) {
             json_success($id > 0 ? "Evento actualizado con éxito." : "Evento creado con éxito.");
         } else {
             json_error("No se pudo guardar el evento.");
