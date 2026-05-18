@@ -1,0 +1,84 @@
+#absences-table-container {
+    overflow-x: auto;
+    margin: 2rem 0;
+}
+
+#table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+#table-controls select,
+#table-controls input {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    background-color: #ffffff;
+    outline: none;
+
+    &:focus {
+        border-color: var(--primary-light);
+    }
+}
+
+.controls-left select {
+    margin: 0 0.3rem;
+}
+
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#filter-search {
+    width: 200px;
+}
+
+#table-info {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+#absences-table {
+    --table-border: #dddddd;
+
+    width: 100%;
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border: 0.5px solid var(--table-border);
+
+    th,
+    td {
+        border: 0.5px solid var(--table-border);
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-size: 0.85rem;
+    }
+
+    thead th {
+        background-color: var(--primary);
+        color: var(--text-on-primary);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    tbody tr:hover {
+        background-color: var(--bg-blue);
+    }
+}

@@ -31,9 +31,13 @@ final class AdminController extends Controller
         $this->view = 'admin/substitution_calendar';
     }
 
-    public function absenceHistory() : void
+    public function absenceHistory() : array
     {
         $this->view = 'admin/absence_history';
+
+        return [
+            'absences' => (new Absence())->getAbsences()
+        ];
     }
 
     public function eventManagement() : void
