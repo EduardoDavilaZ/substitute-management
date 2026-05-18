@@ -4,7 +4,7 @@
 
         public function getAbsencesDetail()
         {
-            return json(['data' => (new Absence())->getAbsencesDetail()]);
+            return json(['data' => (new Absence())->getAbsencesDetails()]);
         }
     }
 ?>

@@ -25,7 +25,7 @@
                                 WHERE DATE = ?", [$date]);
             return $res['success'] ? $res['data'] : [];
         }
-        public function getAbsencesDetail() : array
+        public function getAbsencesDetails() : array
         {
             $res = $this->query("SELECT 
                                 s.id,
