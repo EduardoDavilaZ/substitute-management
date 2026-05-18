@@ -95,5 +95,6 @@
 
 <?php
     push_css('admin/substitution_schedule.css');
+    push_js('admin/datatables_export.js');
     push_js('admin/substitution_schedule.js');
 ?>
