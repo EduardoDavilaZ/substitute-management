@@ -81,11 +81,26 @@ final class Schedule extends Model
     }
 
     public function getIdAndDay(int $id){
-        $res = $this->query("SELECT p.id as id, sc.`day` as day from substitutions s
-                                JOIN schedules sc ON s.schedule_id = sc.id
-                                JOIN periods p ON sc.period_id = p.id
-                                WHERE s.schedule_id = ?",[$id]);
-        return $res['success'] ? $res['data'] : [];
+        $res = $this->query("SELECT
+                                    guardias.teacher_id AS teacher_id,
+                                    t.full_name AS teacher_name,
+                                    t.substitution_counter AS counter
+                                FROM substitutions sub
+                                JOIN schedules clases_ausentes ON sub.schedule_id = clases_ausentes.id
+                                JOIN schedules guardias ON clases_ausentes.period_id = guardias.period_id
+                                AND guardias.day = CASE WEEKDAY(sub.date)
+                                                    WHEN 0 THEN 'L'
+                                                    WHEN 1 THEN 'M'
+                                                    WHEN 2 THEN 'X'
+                                                    WHEN 3 THEN 'J'
+                                                    WHEN 4 THEN 'V'
+                                                    ELSE NULL
+                                                END
+
+                                JOIN teachers t ON guardias.teacher_id = t.id
+                                WHERE sub.id = ?
+                                AND guardias.class_id IS NULL;",[$id]);
+                                        return $res['success'] ? $res['data'] : [];
     }
     public function getTeachersHour (int $id, string $letterDay){
         $res = $this->query("SELECT 
@@ -96,6 +111,39 @@ final class Schedule extends Model
                         WHERE s.class_id IS NULL 
                             AND s.period_id = ? 
                             AND s.`day` = ?",[$id,$letterDay]);
+        return $res['success'] ? $res['data'] : [];
+    }
+    public function getTeacherFree(int $id,string $date): array
+    {
+        $res = $this->query("SELECT 
+                            t.id AS teacher_id, 
+                            t.full_name AS teacher_name,
+                            t.substitution_counter AS counter
+                        FROM teachers t
+                        JOIN schedules s ON t.id = s.teacher_id 
+                            AND s.period_id = ?
+                            AND s.day = (
+                                CASE DAYOFWEEK(?)
+                                    WHEN 2 THEN 'L'
+                                    WHEN 3 THEN 'M'
+                                    WHEN 4 THEN 'X'
+                                    WHEN 5 THEN 'J'
+                                    WHEN 6 THEN 'V'
+                                END
+                            )
+                        JOIN classes c ON s.class_id = c.id
+                        JOIN event_schedules es ON s.id = es.schedule_id
+                        JOIN events ev ON es.event_id = ev.id 
+                            AND ? BETWEEN ev.start_date AND ev.end_date
+                            AND ev.enabled = TRUE
+                        WHERE 
+                            NOT EXISTS (
+                                SELECT 1 
+                                FROM event_teachers et 
+                                WHERE et.event_id = ev.id 
+                                AND et.teacher_id = t.id
+                            )
+                            AND t.enabled = TRUE;",[$id,$date,$date]);
         return $res['success'] ? $res['data'] : [];
     }
 }

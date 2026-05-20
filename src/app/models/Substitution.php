@@ -9,8 +9,26 @@
 
         public function getSubstitution(int $id) : array
         {
-            $res = $this->find('substitutions', $id);
+            $res = $this->query("SELECT
+                sub.id AS id,
+                t_abs.full_name AS absent,
+                sub.absence_detail_id as detailId,
+                c.name AS class,
+                sub.date AS date,
+                p.name AS name_hour,
+                a.is_justified AS justify,
+                sub.status AS state,
+                sub.absent_teacher_id
+            FROM substitutions sub
+            LEFT JOIN teachers t_abs ON sub.absent_teacher_id = t_abs.id
+            LEFT JOIN classes c ON sub.class_id = c.id
+            LEFT JOIN absence_period ap ON sub.absence_detail_id = ap.id
+            LEFT JOIN periods p ON ap.period_id = p.id
+            LEFT JOIN absences a ON ap.absence_id = a.id
+            WHERE sub.enabled = TRUE AND sub.id = ?",[$id]);
+
             return $res['success'] ? $res['data'] : [];
+            
         }
 
         public function countTodaySubstitutions(string $date) : int
@@ -55,6 +73,27 @@
             $res = $this->query("UPDATE substitutions 
                                 SET enabled = 0, status = 'CANCELADO' 
                                 WHERE id = ?;",[$id]);
+            return $res['success'] ? true : false;
+        }
+        public function assign(){
+            $substitutionId = $_POST['idTeacher'] ?? 0;
+            $teacherToday = $_POST['teacherToday'] ?? '';
+            $teacherFree = $_POST['teacherFree'] ?? '';
+
+            if (!$substitutionId || (!$teacherToday && !$teacherFree)) {
+                return false;
+            }
+
+            $selectedTeacher = $teacherToday ?: $teacherFree;
+
+            $res = $this->query("UPDATE substitutions
+                            SET substitute_teacher_id = ?,
+                                status = 'CONFIRMADO',
+                                updated_at = NOW()
+                            WHERE id = ?
+                            AND status = 'PENDIENTE'
+                            AND enabled = 1;",[$selectedTeacher, $substitutionId]);
+            //Me queda sumar el contador
             return $res['success'] ? true : false;
         }
     }

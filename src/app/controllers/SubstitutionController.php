@@ -1,9 +1,11 @@
 <?php
     final class SubstitutionController extends Controller {
-        public function getSubstitutions()  {
+        public function getSubstitutions()
+        {
             return json((new Substitution())->getSubstitutionsCalendar());
         }
-        public function deleteSubstitution(){
+        public function deleteSubstitution()
+        {
             $id = $_POST["substitution_id"] ?? 0;
             if($id <= 0)
             {
@@ -20,15 +22,32 @@
         }
         public function getSubstitutionAssig(int $id) {
             $this->view = 'admin/modals/assign_substitute';
-            $subtitution = (new Substitution())->getSubstitution($id);
-            $idHourScheduleTeachers = (new Schedule())->getIdAndDay($subtitution['schedule_id']);
-            $teachersDay =(new Schedule())->getTeachersHour($idHourScheduleTeachers[0]['id'],$idHourScheduleTeachers[0]['day']);
-            ////Hay que traer los profesores libres
-           
+            $this->layout = null;
+            $substitutionData = (new Substitution())->getSubstitution($id);
+            $substitution = !empty($substitutionData) ? $substitutionData[0] : [];
+
+            if (empty($substitution)) {
+                return ['substitution' => [], 'teachersDay' => [], 'teachersFree' => []];
+            }
+
+            $teachersDay = (new Schedule())->getIdAndDay($id);
+            $teachersFree = (new Schedule())->getTeacherFree($substitution['absent_teacher_id'],$substitution['date']);
+
                 return [
-                'substitution' => $subtitution,
+                'substitution' => $substitution,
                 'teachersDay' => $teachersDay,
+                'teachersFree' => $teachersFree
                 ];
+        }
+        public function assingSubstitute()
+        {
+            $model = new Substitution();
+            $result = $model->assign();
+            if($result) {
+                return json_success("Sustitución asignada correctamente");
+            } else {
+                return json_error("Error al asignar la sustitución");
+            }
         }
     }
 ?>

@@ -8,33 +8,42 @@
     
     $substitution = $substitution ?? [];
     $teachersDay = $teachersDay ?? [];
-    var_dump($substitution);
-    $name = $substitution['absent_teacher_id'] ?? 'Profesor no identificado';
+    $teachersFree = $teachersFree ?? [];
+    $name = $substitution['absent'] ?? 'Profesor no identificado';
     $date = $substitution['date'] ?? 'Fecha no disponible';
-    $teacherFree = [];
+    
 ?>
-<p>Ausencia de <?= htmlspecialchars($name) ?> el <?= htmlspecialchars($date) ?></p>
+<p>Ausencia de <strong><?= htmlspecialchars($name) ?></strong><br> Dia: <strong><?= htmlspecialchars($date) ?></strong></p>
 
-<form action="" method="POST">
-    <label for="teacherToday">Profesores asignados para esta hora</label>
-    <select name="teacherToday" id="teacherToday">
-        <?php foreach($teachersDay as $teacher): ?>
-            <option value="<?= $teacher['teacher_id'] ?>"> <?= $teacher['full_name'] ?> </option>
-        <?php endforeach; ?>
-    </select>
+<form action="" method="POST" id="formAssign">
+    <input type="hidden" name="idTeacher" value="<?= $substitution['id']?>">
+    <div class="mb-3">
+        <label for="teacherToday" class="form-label small fw-bold">Profesores asignados para esta hora</label>
+        <select name="teacherToday" id="teacherToday" class="form-select form-control input-validate">
+            <option value="">-- Seleccionar profesor --</option>
+            <?php foreach($teachersDay as $teacher): ?>
+                <option value="<?= $teacher['teacher_id'] ?>"> <?= $teacher['teacher_name'] ?> (<?=  $teacher['counter']?>) </option>
+            <?php endforeach; ?>
+        </select>
+        <div class="error-message text-danger small mt-1"></div>
+    </div>
 
-    <label for="teacherFree">Profesores libres para esta hora</label>
-    <select name="teacherFree" id="teacherFree">
-        <?php foreach($teacherFree as $tFree): ?>
-            <option value="<?= $tFree['id'] ?>"> <?= $tFree['nombre'] ?> </option>
-        <?php endforeach; ?>
-    </select>
+    <div class="mb-3">
+        <label for="teacherFree" class="form-label small fw-bold">Profesores libres para esta hora</label>
+        <select name="teacherFree" id="teacherFree" class="form-select form-control input-validate">
+            <option value="">-- Seleccionar profesor --</option>
+            <?php foreach($teachersFree as $tFree): ?>
+                <option value="<?= $tFree['teacher_id'] ?>"> <?= $tFree['teacher_name'] ?> (<?=  $tFree['counter']?>) </option>
+            <?php endforeach; ?>
+        </select>
+        <div class="error-message text-danger small mt-1"></div>
+    </div>
 </form>
 <?php
     modal_end([
         [
             'text' => 'Realizar Asignación', 
-            'type' => 'button',
+            'type' => 'submit',
             'id'   => 'btnSubmitAssig',
             'attr' => ''
         ],
