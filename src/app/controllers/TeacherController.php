@@ -2,149 +2,204 @@
 
 final class TeacherController extends Controller
 {
-    private const TEACHER_IMG_DOCUMENT_SUBPATH = '/assets/imgTeacher/';
+    private const UPLOAD_PATH = UPLOADS_PATH . 'teachers/';
+    private const UPLOAD_URL  = UPLOADS_URL . 'teachers/';
 
-    protected function init() : void
+    protected function init(): void
     {
         $this->layout = 'teacher/layout';
     }
 
-    public function home() : void
+    public function home(): void
     {
         $this->view = 'teacher/home';
     }
 
     public function getTecEnabled()
     {
-        return json(['data' => (new Teacher())->getTeachersEnabled()]);
+        return json([
+            'data' => (new Teacher())->getTeachersEnabled()
+        ]);
     }
 
     public function deleteTeacherById()
     {
-        $id = $_POST["teacher_id"] ?? 0;
-        if($id <= 0)
-        {
+        $id = (int) input('teacher_id', 0);
+
+        if ($id <= 0) {
             return json_error("ID de profesor no válido.");
         }
+
         $teacherModel = new Teacher();
-        $teacher = $teacherModel->getTeacher((int) $id);
-        $result = $teacherModel->deleteTeacher($id);
-        if ($result) {
-            $this->deleteTeacherProfileImage($teacher['profile_img_path'] ?? null);
-            return json_success("Profesor dado de baja");
-        } else {
-            return json_error("Error al dar de baja al profesor");
+        $teacher = $teacherModel->getTeacher($id);
+
+        if (!$teacher) {
+            return json_error("Profesor no encontrado.");
         }
+
+        $result = $teacherModel->deleteTeacher($id);
+
+        if ($result) {
+
+            delete_file(
+                self::UPLOAD_PATH,
+                $teacher['profile_img_path'] ?? null
+            );
+
+            return json_success("Profesor dado de baja");
+        }
+
+        return json_error("Error al dar de baja al profesor");
     }
 
     public function getTeacherById(int $id)
     {
         $this->layout = null;
         $this->view = 'admin/modals/mod_teacher_modal';
-        return ['teacher' => (new Teacher())->getTeacher($id)];
+
+        return [
+            'teacher' => (new Teacher())->getTeacher($id)
+        ];
     }
 
     public function updateTeacher()
     {
-        $id = (int) ($_POST['id'] ?? 0);
+        $id = (int) input('id', 0);
+
         if ($id <= 0) {
-            return json_error("ID de profesor no válido.");
+            return json_error('ID de profesor no válido.');
         }
 
-        $fullName = trim((string) ($_POST['nameTeacher'] ?? ''));
-        $email = trim((string) ($_POST['emailTeacher'] ?? ''));
-        $phone = trim((string) ($_POST['phoneTeacher'] ?? ''));
-        $tutor = $_POST['tutor'];
+        $fullName = input('nameTeacher', '');
+        $email    = input('emailTeacher', '');
+        $phone    = input('phoneTeacher', '');
+        $tutor = input('tutor', null);
+
+        if ($tutor === null || $tutor === '') {
+            $tutor = 0;
+        }
+
+        $tutor = (int) $tutor;
+
+        if ($fullName === '' || $email === '') {
+            return json_error('Nombre y correo son requeridos.');
+        }
+
+        if ($error = validate_length($fullName, 2, 100, 'El nombre')) {
+            return json_error($error);
+        }
+
+        if ($error = validate_email($email, 100)) {
+            return json_error($error);
+        }
+
+        if ($phone !== '') {
+
+            if ($error = validate_regex(
+                $phone,
+                '/^[\d\s+\-]+$/',
+                'El teléfono contiene caracteres inválidos.'
+            )) {
+                return json_error($error);
+            }
+
+            if (strlen($phone) > 15) {
+                return json_error('El teléfono no puede superar 15 caracteres.');
+            }
+        }
 
         $teacherModel = new Teacher();
         $existing = $teacherModel->getTeacher($id);
 
-        $payloadError = TeacherUpdateValidator::validateUpdatePayload(
-            $teacherModel,
-            $id,
-            $existing,
-            $fullName,
-            $email,
-            $phone
-        );
-        if ($payloadError !== null) {
-            return json_error($payloadError);
+        if (!$existing) {
+            return json_error('Profesor no encontrado.');
+        }
+
+        if ((int) $existing['enabled'] === 0) {
+            return json_error('No se puede modificar un profesor dado de baja.');
         }
 
         $newProfileImgPath = null;
-        if (!empty($_FILES['profileImage']) && is_array($_FILES['profileImage'])) {
-            $fileErr = $_FILES['profileImage']['error'] ?? UPLOAD_ERR_NO_FILE;
-            if ($fileErr !== UPLOAD_ERR_NO_FILE) {
-                $imgError = TeacherUpdateValidator::validateProfileImageUpload($_FILES['profileImage']);
-                if ($imgError !== null) {
-                    return json_error($imgError);
-                }
 
-                $file = $_FILES['profileImage'];
-                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                $fileName = uniqid('teacher_') . '.' . $ext;
-                $uploadDir = $_SERVER['DOCUMENT_ROOT'] . self::TEACHER_IMG_DOCUMENT_SUBPATH;
+        if (!empty($_FILES['profileImage']['name'])) {
 
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
+            $imgError = validate_uploaded_file(
+                $_FILES['profileImage'],
+                ['jpg', 'jpeg', 'png', 'gif'],
+                ['image/jpeg', 'image/png', 'image/gif'],
+                5 * 1024 * 1024
+            );
 
-                $uploadPath = $uploadDir . $fileName;
+            if ($imgError !== null) {
+                return json_error($imgError);
+            }
 
-                if (!is_uploaded_file($file['tmp_name']) || !move_uploaded_file($file['tmp_name'], $uploadPath)) {
-                    return json_error("No se pudo guardar imagen.");
-                }
-                $newProfileImgPath = $fileName;
+            // BORRAR FOTO ANTERIOR
+            if (!empty($existing['profile_img_path'])) {
+
+                delete_file(
+                    self::UPLOAD_PATH,
+                    $existing['profile_img_path']
+                );
+            }
+
+            // GUARDAR NUEVA
+            $newProfileImgPath = upload_file(
+                $_FILES['profileImage'],
+                self::UPLOAD_PATH,
+                '',
+                'teacher_' . $id
+            );
+
+            if ($newProfileImgPath === null) {
+                return json_error('No se pudo guardar imagen.');
             }
         }
 
-        $result = $teacherModel->updateTeacher($id, $fullName, $email, $phone, $tutor, $newProfileImgPath);
+        $result = $teacherModel->updateTeacher(
+            $id,
+            $fullName,
+            $email,
+            $phone,
+            $tutor,
+            $newProfileImgPath
+        );
+
+        if (!$result) {
+            return json_error($teacherModel->lastError ?? 'Error desconocido');
+        }
+
         if ($result) {
+
             if ($newProfileImgPath !== null) {
-                $this->deleteTeacherProfileImage($existing['profile_img_path'] ?? null);
+
+                delete_file(
+                    self::UPLOAD_PATH,
+                    $existing['profile_img_path'] ?? null
+                );
             }
-            return json_success("Profesor actualizado correctamente.");
+
+            return json_success('Profesor actualizado correctamente.');
         }
 
         if ($newProfileImgPath !== null) {
-            $this->deleteTeacherProfileImage($newProfileImgPath);
+
+            delete_file(
+                self::UPLOAD_PATH,
+                $newProfileImgPath
+            );
         }
-        return json_error("Error al actualizar profesor.");
-        
+
+        return json_error('Error al actualizar profesor.');
     }
 
-    private function deleteTeacherProfileImage(?string $fileName): void
-    {
-        if ($fileName === null || $fileName === '') {
-            return;
-        }
-
-        $base = basename($fileName);
-        if ($base === '' || $base !== str_replace(['/', '\\', "\0"], '', $fileName)) {
-            return;
-        }
-
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . self::TEACHER_IMG_DOCUMENT_SUBPATH;
-        $realUploadDir = realpath($uploadDir);
-        if ($realUploadDir === false || !is_dir($realUploadDir)) {
-            return;
-        }
-
-        $candidate = $realUploadDir . DIRECTORY_SEPARATOR . $base;
-        $realFile = realpath($candidate);
-        if (
-            $realFile !== false
-            && is_file($realFile)
-            && strpos($realFile, $realUploadDir . DIRECTORY_SEPARATOR) === 0
-        ) {
-            @unlink($realFile);
-        }
-    }
     public function getTeacherByIdSchedule(int $id)
     {
         $this->layout = null;
         $this->view = 'admin/modals/add_schedule_modal';
-        return ['teacher' => (new Teacher())->getTeacher($id)];
+
+        return [
+            'teacher' => (new Teacher())->getTeacher($id)
+        ];
     }
 }
-?>

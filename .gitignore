@@ -6,3 +6,7 @@ src/app/config/app.php
 
 # Composer
 src/vendor/
+
+# Upload files
+src/public/uploads/*
+!src/public/uploads/.gitkeep

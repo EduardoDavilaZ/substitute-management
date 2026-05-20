@@ -31,25 +31,57 @@
          * @param string|null $profileImgPath Si se indica, actualiza profile_img_path; si es null, se conserva el valor actual.
          */
         public function updateTeacher(
-            int $id,
-            string $fullName,
-            string $email,
-            string $phone,
-            bool $tutor,
-            ?string $profileImgPath = null
-        ): bool {
-            if ($profileImgPath !== null) {
-                $res = $this->query(
-                    'UPDATE teachers SET full_name = ?, email = ?, phone = ?, profile_img_path = ?, is_tutor = ? WHERE id = ?',
-                    [$fullName, $email, $phone, $profileImgPath, $tutor, $id]
-                );
-            } else {
-                $res = $this->query(
-                    'UPDATE teachers SET full_name = ?, email = ?, phone = ?, is_tutor = ? WHERE id = ?',
-                    [$fullName, $email, $phone, $tutor, $id]
-                );
-            }
-            return $res['success'] ?? false;
-        }
+    int $id,
+    string $fullName,
+    string $email,
+    string $phone,
+    int $tutor,
+    ?string $profileImgPath = null
+): bool{
+
+    if ($profileImgPath !== null) {
+
+        $res = $this->update(
+            'UPDATE teachers 
+             SET full_name = ?, 
+                 email = ?, 
+                 phone = ?, 
+                 profile_img_path = ?, 
+                 is_tutor = ? 
+             WHERE id = ?',
+            [
+                $fullName,
+                $email,
+                $phone,
+                $profileImgPath,
+                $tutor,
+                $id
+            ]
+        );
+
+    } else {
+
+        $res = $this->update(
+            'UPDATE teachers 
+             SET full_name = ?, 
+                 email = ?, 
+                 phone = ?, 
+                 is_tutor = ? 
+             WHERE id = ?',
+            [
+                $fullName,
+                $email,
+                $phone,
+                $tutor,
+                $id
+            ]
+        );
     }
-?>
+
+    if (!($res['success'] ?? false)) {
+        die($res['message'] ?? 'Error desconocido en UPDATE');
+    }
+
+    return true;
+}
+}

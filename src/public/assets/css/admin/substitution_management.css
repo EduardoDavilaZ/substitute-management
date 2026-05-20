@@ -678,3 +678,10 @@ table#substitutions-table {
     padding-left: 0.5rem;
     font-weight: 500;
 }
+
+.dt-paging nav {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem !important;
+    justify-content: flex-end;
+}

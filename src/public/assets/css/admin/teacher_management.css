@@ -407,3 +407,10 @@ table#teachers-table {
         justify-content: center !important;
     }
 }
+
+.dt-paging nav {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem !important;
+    justify-content: flex-end;
+}

@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         className: 'btn btn-secondary btn-downlo mx-1', 
                         action: function () {
 
-                            var urlPlantilla = ASSETS_URL + 'scheduleTemplate/Horario-Calendario-Semanal.xlsx'; //Carmbiar el archivo hay uno de prueba
+                            var urlPlantilla = ASSETS_URL + 'docs/Horario-Calendario-Semanal.xlsx';
                             
                             var link = document.createElement('a');
                             link.href = urlPlantilla;
@@ -230,48 +230,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    $(document).on('input change', '#formModTeacher .form-control', function() {
+    $(document).on('input change', '#formModTeacher .input-validate', function() {
         validateField($(this));
     });
 
     $(document).on('click', '#btnSubmitGuard', function(e) {
         e.preventDefault();
-        
+
         var $form = $('#formModTeacher');
-        if ($form.length === 0) return false;
 
-        $form.find('input[name="nameTeacher"], input[name="emailTeacher"], input[name="phoneTeacher"]').each(function() {
-            validateField($(this));
-        });
+        var hasFile = $('input[name="profileImage"]')[0].files.length > 0;
 
-        if ($form.find('.is-invalid').length > 0) {
-            swal("Error", "Por favor, corrige los errores del formulario.", "error");
-            return false;
-        }
-
-        var formData = new FormData($form[0]);
-        var idTeacher = $form.attr('data-id') || $form.data('id');
-        formData.append('id', idTeacher);
-
-        $.ajax({
+        var ajaxConfig = {
             url: BASE_URL + "teacher/update-teacher",
             type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
             dataType: 'json',
             success: function(response) {
+
                 if (response.status === 'success') {
-                    swal("¡Modificado!", response.message, "success", { timer: 1500, buttons: false });
-                    
-                    if (typeof dtable !== 'undefined') {
-                        dtable.ajax.reload(null, false);
-                    }
-                    
-                    $('.modal').modal('hide');       
-                    $('#modal-container').empty();   
-                    $('.modal-backdrop').remove();   
-                    $('body').removeClass('modal-open').css('overflow', ''); 
+
+                    swal("¡Modificado!", response.message, "success", {
+                        timer: 1500,
+                        buttons: false
+                    });
+
+                    dtable.ajax.reload(null, false);
+
+                    $('.modal').modal('hide');
+                    $('#modal-container').empty();
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('overflow', '');
+
                 } else {
                     swal("Error", response.message, "error");
                 }
@@ -279,7 +268,30 @@ document.addEventListener('DOMContentLoaded', function () {
             error: function() {
                 swal("Error", "No se pudo actualizar el registro.", "error");
             }
-        });
+        };
+
+        if (hasFile) {
+
+            var formData = new FormData($form[0]);
+
+            formData.append('id', $form.data('id'));
+
+            ajaxConfig.data = formData;
+            ajaxConfig.contentType = false;
+            ajaxConfig.processData = false;
+
+        } else {
+
+            ajaxConfig.data = {
+                id: $form.data('id'),
+                nameTeacher: $('input[name="nameTeacher"]').val(),
+                emailTeacher: $('input[name="emailTeacher"]').val(),
+                phoneTeacher: $('input[name="phoneTeacher"]').val(),
+                tutor: $('#tutor').val()
+            };
+        }
+
+        $.ajax(ajaxConfig);
     });
     //--------------Charge Schedule
     $(document).on('click','.btn-charge',function(e){
