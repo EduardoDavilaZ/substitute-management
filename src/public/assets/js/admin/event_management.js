@@ -11,12 +11,10 @@ const EventManager = {
         $(document).on('submit', '#formEvent', (e) => this.handleSubmit(e));
         $(document).on('click', '#btnSubmitEvent', () => $('#formEvent').submit());
         
-        // Clases
         $(document).on('click', '#btnAddClassSelector', () => this.addClassSelector());
         $(document).on('click', '.btnRemoveClass', (e) => this.removeClassSelector(e));
         $(document).on('change', '.select-class-trigger', (e) => this.handleClassSelection(e));
 
-        // Profesores (Nuevos disparadores)
         $(document).on('click', '#btnAddTeacherSelector', () => this.addTeacherSelector());
         $(document).on('click', '.btnRemoveTeacher', (e) => this.removeTeacherSelector(e));
         $(document).on('change', '.select-teacher-trigger', (e) => this.handleTeacherSelection(e));
@@ -34,13 +32,10 @@ const EventManager = {
     
     handleSubmit: function(e) {
         e.preventDefault();
-        
-        // Limpiar selectores vacíos de clases antes de enviar
         $('.select-class-trigger').each(function() {
             if (!$(this).val()) { $(this).closest('.class-selector-item').remove(); }
         });
 
-        // Limpiar selectores vacíos de profesores antes de enviar
         $('.select-teacher-trigger').each(function() {
             if (!$(this).val()) { $(this).closest('.teacher-selector-item').remove(); }
         });
@@ -89,7 +84,6 @@ const EventManager = {
         });
     },
     
-    // Métodos lógicos para Clases
     addClassSelector: function() {
         const template = $('#classSelectorTemplate').html();
         $('#newClassesSelectors').append(template);
@@ -121,7 +115,6 @@ const EventManager = {
         $(e.currentTarget).closest('.class-selector-item').fadeOut(200, function() { $(this).remove(); });
     },
 
-    // Métodos lógicos para Profesores
     addTeacherSelector: function() {
         const template = $('#teacherSelectorTemplate').html();
         $('#newTeachersSelectors').append(template);

@@ -6,11 +6,6 @@ use App\Services\PdfService;
 
 final class ScheduleController extends Controller 
 {
-    protected function init() : void
-    {
-        $this->layout = 'teacher/layout';
-    }
-
     public function guardScheduleAssignment(int $id, string $day, int $period_id) : array
     {
         $this->view = 'admin/modals/guard_schedule_assignment';

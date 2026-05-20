@@ -134,21 +134,11 @@ final class TeacherController extends Controller
                 return json_error($imgError);
             }
 
-            // BORRAR FOTO ANTERIOR
-            if (!empty($existing['profile_img_path'])) {
-
-                delete_file(
-                    self::UPLOAD_PATH,
-                    $existing['profile_img_path']
-                );
-            }
-
             // GUARDAR NUEVA
             $newProfileImgPath = upload_file(
                 $_FILES['profileImage'],
                 self::UPLOAD_PATH,
-                '',
-                'teacher_' . $id
+                'teacher_'
             );
 
             if ($newProfileImgPath === null) {
