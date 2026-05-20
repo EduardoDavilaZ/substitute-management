@@ -7,7 +7,7 @@
             $id = $_POST["substitution_id"] ?? 0;
             if($id <= 0)
             {
-                return json_error("ID de evento no vàlido.");
+                return json_error("ID de la sustitución no vàlido.");
             }
             $model = new Substitution();
             $result = $model->deleteSubstitutions($id);

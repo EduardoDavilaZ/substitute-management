@@ -3,15 +3,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!calendarEl) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
+        initialView: isMobile ? 'listMonth' : 'dayGridMonth',
         weekends: false,
-        aspectRatio: 3.7,
+        aspectRatio: isMobile ? 0.85 : 3.7,
         contentHeight: 'auto',
         locale: 'es',
         timeZone: 'Europe/Madrid',
         themeSystem: 'bootstrap5',
-        headerToolbar: {
+        headerToolbar: isMobile ? {
+            left: 'prev,next',
+            center: 'title',
+            right: 'today,listMonth,dayGridMonth'
+        } : {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,listMonth'
@@ -24,6 +30,25 @@ document.addEventListener('DOMContentLoaded', function () {
         dayMaxEvents: true,
         displayEventTime: false,
         editable: false,
+        windowResize: function () {
+            const mobile = window.innerWidth < 768;
+            calendar.setOption('aspectRatio', mobile ? 0.85 : 3.7);
+            calendar.setOption('headerToolbar', mobile ? {
+                left: 'prev,next',
+                center: 'title',
+                right: 'today,listMonth,dayGridMonth'
+            } : {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,listMonth'
+            });
+
+            if (mobile && calendar.view.type === 'dayGridMonth') {
+                calendar.changeView('listMonth');
+            } else if (!mobile && calendar.view.type === 'listMonth') {
+                calendar.changeView('dayGridMonth');
+            }
+        },
         events: function (info, successCallback, failureCallback) {
             $.ajax({
                 url: BASE_URL + "substitution/get-substitutions",
@@ -45,9 +70,22 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (stage === 'PRIM') event.className = 'level-primary';
             else if (stage === 'CFGM') event.className = 'level-midlle-grade';
             else if (stage === 'CFGS') event.className = 'level-higher-grade';
+            else if (stage === 'INF') event.className = 'level-childish-grade';
             else event.className = 'level-default';
             
             return event;
+        },
+        eventClick: function (info) {
+            const mobile = window.innerWidth < 768;
+            if (mobile) {
+                let props = info.event.extendedProps;
+                swal({
+                    title: "Detalles de la Sustitución",
+                    text: `Clase: ${props.class || 'N/A'}\nProfesor Sustituido: ${props.absent_teacher || 'N/A'}\nSustituto: ${props.substitute_teacher || 'N/A'}`,
+                    icon: "info",
+                    button: "Cerrar"
+                });
+            }
         },
         eventMouseEnter: function (info) {
             let props = info.event.extendedProps;

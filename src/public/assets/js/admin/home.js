@@ -37,7 +37,7 @@ $(document).ready(function () {
             respuesta["teacher_absences"].forEach(teacher => {
 
                 const avatarHtml = teacher.profile_img_path
-                    ? `<img src="${ASSETS_URL + 'img/' + teacher.profile_img_path}" class="rounded-circle object-fit-cover" style="width: 80px; height: 80px;">`
+                    ? `<img src="${ASSETS_URL + 'imgTeacher/' + teacher.profile_img_path}" class="rounded-circle object-fit-cover" style="width: 80px; height: 80px;">`
                     : `<i class="bi bi-person-circle text-secondary" style="font-size: 80px;"></i>`;
 
                 $('#teachers_absences').append(`
