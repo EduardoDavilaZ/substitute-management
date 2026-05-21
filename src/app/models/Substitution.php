@@ -93,8 +93,13 @@
                             WHERE id = ?
                             AND status = 'PENDIENTE'
                             AND enabled = 1;",[$selectedTeacher, $substitutionId]);
-            //Me queda sumar el contador
-            return $res['success'] ? true : false;
+            if($res['success']){
+                return $this->incraseCounter($selectedTeacher);
+            }
+        }
+        private function incraseCounter (int $selectedTeacher){
+            $res = $this->query("UPDATE teachers SET substitution_counter = substitution_counter + 1 WHERE id = ?",[$selectedTeacher]);
+            return (bool)$res['success'];
         }
     }
 ?>
