@@ -115,17 +115,27 @@ final class ScheduleController extends Controller
         download_excel($writer, 'libro_guardias_' . date('Ymd'));
     }
 
-    public function exportPdf() : void 
+    public function exportPdf(): void
     {
         $periodsList = (new Period())->getPeriods();
         $schedules = (new Schedule())->getGuardSchedules();
+
         $days = ['L', 'M', 'X', 'J', 'V'];
-        
+
         $guards = [];
+
         foreach ($schedules as $s) {
             $guards["{$s['day']}-{$s['period_id']}"][] = $s;
         }
 
+        $html = $this->buildGuardSchedulePdfHtml($periodsList, $guards, $days);
+        $pdf = PdfService::create($html);
+
+        download_pdf($pdf, 'libro_guardias_' . date('Ymd'));
+    }
+
+    private function buildGuardSchedulePdfHtml(array $periodsList, array $guards, array $days ): string 
+    {
         $html = "
             <style>
                 body {
@@ -133,14 +143,13 @@ final class ScheduleController extends Controller
                     color: #334155;
                     font-size: 11px;
                 }
-                .report-header td {
-                    background-color: transparent !important;
-                }
+
                 table.data-table {
                     width: 100%;
                     border-collapse: collapse;
                     margin-top: 12px;
                 }
+
                 table.data-table th,
                 table.data-table td {
                     border: 1px solid #e2e8f0;
@@ -148,6 +157,7 @@ final class ScheduleController extends Controller
                     text-align: center;
                     vertical-align: middle;
                 }
+
                 table.data-table th {
                     background-color: #0F4C81;
                     color: #ffffff;
@@ -156,38 +166,60 @@ final class ScheduleController extends Controller
                     font-size: 9px;
                     letter-spacing: 0.5px;
                 }
+
                 table.data-table tbody tr:nth-child(even) td {
                     background-color: #e0f2fe;
                 }
+
                 table.data-table tbody tr:nth-child(odd) td {
                     background-color: #ffffff;
                 }
+
                 table.data-table td strong {
                     color: #0c3c66;
                 }
             </style>
-            " . pdf_report_header_html('Libro de Guardias') . "
-            <table class=\"data-table\">
+        ";
+
+        $html .= PdfService::reportHeader('Libro de Guardias');
+
+        $html .= '
+            <table class="data-table">
                 <thead>
-                    <tr><th>HORA</th><th>LUNES</th><th>MARTES</th><th>MIÉRCOLES</th><th>JUEVES</th><th>VIERNES</th></tr>
+                    <tr><th>HORA</th><th>LUNES</th><th>MARTES</th><th>MIÉRCOLES</th><th>JUEVES</th><th>VIERNES</th>
+                    </tr>
                 </thead>
-                <tbody>";
+                <tbody>
+        ';
 
-                foreach ($periodsList as $p) {
-                    $timeRange = substr($p['start_time'], 0, 5) . " - " . substr($p['end_time'], 0, 5);
-                    $html .= "<tr><td><strong>{$p['name']}</strong><br>{$timeRange}</td>";
-                    
-                    foreach ($days as $day) {
-                        $key = "$day-{$p['id']}";
-                        $teachers = $guards[$key] ?? [];
-                        $names = array_map(fn($t) => $t['full_name'], $teachers);
-                        $html .= "<td>" . implode('<br>', $names) . "</td>";
-                    }
-                    $html .= "</tr>";
-                }
-        $html .= "</tbody></table>";
+        foreach ($periodsList as $p) {
+            $timeRange = substr($p['start_time'], 0, 5) . ' - ' . substr($p['end_time'], 0, 5);
+            $html .= "
+                <tr>
+                    <td>
+                        <strong>{$p['name']}</strong><br>
+                        {$timeRange}
+                    </td>
+            ";
 
-        $writer = PdfService::create($html);
-        download_pdf($writer, 'libro_guardias_' . date('Ymd') . '.pdf');
+            foreach ($days as $day) {
+                $key = "$day-{$p['id']}";
+                $teachers = $guards[$key] ?? [];
+                $names = array_map(
+                    fn($t) => $t['full_name'],
+                    $teachers
+                );
+                $html .= '
+                    <td>' . implode('<br>', $names) . '</td>
+                ';
+            }
+            $html .= '</tr>';
+        }
+
+        $html .= '
+                </tbody>
+            </table>
+        ';
+        return $html;
     }
 }

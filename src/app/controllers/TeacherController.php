@@ -3,7 +3,6 @@
 final class TeacherController extends Controller
 {
     private const UPLOAD_PATH = UPLOADS_PATH . 'teachers/';
-    private const UPLOAD_URL  = UPLOADS_URL . 'teachers/';
 
     protected function init(): void
     {
@@ -70,10 +69,10 @@ final class TeacherController extends Controller
             return json_error('ID de profesor no válido.');
         }
 
-        $fullName = input('nameTeacher', '');
-        $email    = input('emailTeacher', '');
-        $phone    = input('phoneTeacher', '');
-        $tutor = input('tutor', null);
+        $fullName   = input('nameTeacher', '');
+        $email      = input('emailTeacher', '');
+        $phone      = input('phoneTeacher', '');
+        $tutor      = input('tutor', null);
 
         if ($tutor === null || $tutor === '') {
             $tutor = 0;
@@ -94,12 +93,7 @@ final class TeacherController extends Controller
         }
 
         if ($phone !== '') {
-
-            if ($error = validate_regex(
-                $phone,
-                '/^[\d\s+\-]+$/',
-                'El teléfono contiene caracteres inválidos.'
-            )) {
+            if ($error = validate_regex($phone, '/^[\d\s+\-]+$/', 'El teléfono contiene caracteres inválidos.')) {
                 return json_error($error);
             }
 
@@ -122,7 +116,6 @@ final class TeacherController extends Controller
         $newProfileImgPath = null;
 
         if (!empty($_FILES['profileImage']['name'])) {
-
             $imgError = validate_uploaded_file(
                 $_FILES['profileImage'],
                 ['jpg', 'jpeg', 'png', 'gif'],
@@ -134,50 +127,28 @@ final class TeacherController extends Controller
                 return json_error($imgError);
             }
 
-            // GUARDAR NUEVA
-            $newProfileImgPath = upload_file(
-                $_FILES['profileImage'],
-                self::UPLOAD_PATH,
-                'teacher_'
-            );
+            $newProfileImgPath = upload_file($_FILES['profileImage'], self::UPLOAD_PATH, 'teacher_');
 
             if ($newProfileImgPath === null) {
                 return json_error('No se pudo guardar imagen.');
             }
         }
 
-        $result = $teacherModel->updateTeacher(
-            $id,
-            $fullName,
-            $email,
-            $phone,
-            $tutor,
-            $newProfileImgPath
-        );
+        $result = $teacherModel->updateTeacher($id, $fullName, $email, $phone, $tutor, $newProfileImgPath);
 
         if (!$result) {
             return json_error($teacherModel->lastError ?? 'Error desconocido');
         }
 
         if ($result) {
-
             if ($newProfileImgPath !== null) {
-
-                delete_file(
-                    self::UPLOAD_PATH,
-                    $existing['profile_img_path'] ?? null
-                );
+                delete_file(self::UPLOAD_PATH, $existing['profile_img_path'] ?? null);
             }
-
             return json_success('Profesor actualizado correctamente.');
         }
 
         if ($newProfileImgPath !== null) {
-
-            delete_file(
-                self::UPLOAD_PATH,
-                $newProfileImgPath
-            );
+            delete_file(self::UPLOAD_PATH, $newProfileImgPath);
         }
 
         return json_error('Error al actualizar profesor.');
