@@ -20,7 +20,11 @@ define("DEFAULT_METHOD", "index");
 /**
  * URLs (Browser / Assets)
  */
-define("BASE_URL", "http://localhost/");
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php');
+$basePath = ($scriptPath !== '/') ? rtrim($scriptPath, '/') . '/' : '/';
+define("BASE_URL", $protocol . $host . $basePath);
 
 define("ASSETS_URL", BASE_URL . "assets/");
 
@@ -34,6 +38,7 @@ define("UPLOADS_URL", BASE_URL . "uploads/");
 /**
  * Paths (Filesystem / Backend)
  */
+
 define("PUBLIC_PATH", BASE_PATH . "public/");
 define("UPLOADS_PATH", PUBLIC_PATH . "uploads/");
 define("UPLOADS_IMG_PATH", UPLOADS_PATH . "img/");

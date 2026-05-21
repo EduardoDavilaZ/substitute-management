@@ -2,9 +2,13 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-session_start();
+
+require_once '../../vendor/autoload.php';
+
 require_once '../app/config/app.php';
 require_once '../app/helpers/app.php';
+
+session_start();
 
 $clean_url = trim($_GET['url'] ?? '', '/');
 $url_parts = explode('/', $clean_url);
