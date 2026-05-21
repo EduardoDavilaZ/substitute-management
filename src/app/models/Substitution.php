@@ -9,8 +9,26 @@
 
         public function getSubstitution(int $id) : array
         {
-            $res = $this->find('substitutions', $id);
+            $res = $this->query("SELECT
+                sub.id AS id,
+                t_abs.full_name AS absent,
+                sub.absence_detail_id as detailId,
+                c.name AS class,
+                sub.date AS date,
+                p.name AS name_hour,
+                a.is_justified AS justify,
+                sub.status AS state,
+                sub.absent_teacher_id
+            FROM substitutions sub
+            LEFT JOIN teachers t_abs ON sub.absent_teacher_id = t_abs.id
+            LEFT JOIN classes c ON sub.class_id = c.id
+            LEFT JOIN absence_period ap ON sub.absence_detail_id = ap.id
+            LEFT JOIN periods p ON ap.period_id = p.id
+            LEFT JOIN absences a ON ap.absence_id = a.id
+            WHERE sub.enabled = TRUE AND sub.id = ?",[$id]);
+
             return $res['success'] ? $res['data'] : [];
+            
         }
 
         public function countTodaySubstitutions(string $date) : int
@@ -24,7 +42,7 @@
                                     ELT(WEEKDAY(s.date) + 1, 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') AS dia,c.name AS class_name 
                                 FROM substitutions s 
                                 JOIN classes c ON s.class_id = c.id 
-                                WHERE s.date = ? AND s.substitute_teacher_id IS NULL;", [$date]);
+                                WHERE s.date = ? AND s.status = 'PENDIENTE';", [$date]);
             return $res['success'] ? $res['data'] : [];
         }
 
@@ -52,8 +70,36 @@
         }
         public function deleteSubstitutions(int $id): bool
         {   
-            $res = $this->query("UPDATE substitutions SET enabled = 0 WHERE id = ?;",[$id]);
+            $res = $this->query("UPDATE substitutions 
+                                SET enabled = 0, status = 'CANCELADO' 
+                                WHERE id = ?;",[$id]);
             return $res['success'] ? true : false;
+        }
+        public function assign(){
+            $substitutionId = $_POST['idTeacher'] ?? 0;
+            $teacherToday = $_POST['teacherToday'] ?? '';
+            $teacherFree = $_POST['teacherFree'] ?? '';
+
+            if (!$substitutionId || (!$teacherToday && !$teacherFree)) {
+                return false;
+            }
+
+            $selectedTeacher = $teacherToday ?: $teacherFree;
+
+            $res = $this->query("UPDATE substitutions
+                            SET substitute_teacher_id = ?,
+                                status = 'CONFIRMADO',
+                                updated_at = NOW()
+                            WHERE id = ?
+                            AND status = 'PENDIENTE'
+                            AND enabled = 1;",[$selectedTeacher, $substitutionId]);
+            if($res['success']){
+                return $this->incraseCounter($selectedTeacher);
+            }
+        }
+        private function incraseCounter (int $selectedTeacher){
+            $res = $this->query("UPDATE teachers SET substitution_counter = substitution_counter + 1 WHERE id = ?",[$selectedTeacher]);
+            return (bool)$res['success'];
         }
     }
 ?>

@@ -6,7 +6,7 @@
                 <div class="calendar-legend mt-5">
                     <h6 class="fw-bold mb-4 text-primary-dark small uppercase letter-spacing">Leyenda</h6>
                     <div class="legend-item mb-3">
-                        <span class="dot" style="background: #eafa0b;"></span> INFANTIL
+                        <span class="dot" style="background: #0bcafa;"></span> INFANTIL
                     </div>
                     <div class="legend-item mb-3">
                         <span class="dot" style="background: #f39c12;"></span> PRIMARIA

@@ -15,13 +15,6 @@
                         <option value="PENDIENTE">Pendientes</option>
                     </select>
                 </div>
-                <div class="filter-group select-group">
-                    <select name="justifies" id="justifies">
-                        <option value="">Todas las justificaciones</option>
-                        <option value="1">Justificados</option>
-                        <option value="0">Sin justificar</option>
-                    </select>
-                </div>
                 <div class="filter-group date-group">
                     <input type="date" id="date-from" class="input-white" placeholder="dd/mm/aaaa">
                     <span class="date-separator">–</span>
@@ -43,7 +36,6 @@
                     <th>Clase</th>
                     <th class="text-center">Fecha</th>
                     <th class="text-center">Hora</th>
-                    <th class="text-center">Justificación</th>
                     <th class="text-center">Estado</th>
                     <th class="text-center">Sustituto</th>
                     <th class="text-center">Detalles de ausencia</th>

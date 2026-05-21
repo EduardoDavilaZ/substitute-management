@@ -11,13 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
             { data: 'date_absence' },
             { data: 'name_hour' },
             {
-                data: 'justify',
-                className: 'text-center',
-                render: function (data) {
-                    return data == 1 ? '<span class="badge bg-success">Justificada</span>' : '<span class="badge bg-danger">Sin justificar</span>';
-                }
-            },
-            {
                 data: 'state',
                 className: 'text-center',
                 render: function (data) {
@@ -27,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     return `<span class="badge ${badgeClass}">${data}</span>`;
                 }
             },
-            { data: 'sustitute', className: 'text-center' },
+            {
+                data:'substitute',
+            },
             {
                 data: null,
                 orderable: false,
@@ -35,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 render: function (row) {
                     return `
                         <div class="boxButton">
-                            <button type="button" class="btn btn-info btn-sm view-details" data-id="${row.id}" title="Ver detalles completos">
+                            <button type="button" class="btn btn-info btn-sm view-details" data-detail-id="${row.id}" title="Ver detalles completos">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
                         </div>`;
@@ -46,12 +41,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 orderable: false,
                 className: 'text-center',
                 render: function (row) {
+                    const isDisabled = row.state !== 'PENDIENTE'; 
+                    
                     return `
-                        <div class="boxButton">
-                            <button type="button" class="btn btn-primary btn-sm assign-substitute" data-id="${row.id}">
-                                <i class="bi bi-person-plus-fill me-2"></i> Asignar
-                            </button>
-                        </div>`;
+                    <div class="boxButton">
+                        <button type="button" 
+                                class="btn btn-primary btn-sm assign-substitute ${isDisabled ? 'disabled' : ''}" 
+                                data-assig-id="${row.id}"
+                                ${isDisabled ? 'disabled' : ''}>
+                            <i class="bi bi-person-plus-fill me-2"></i> Asignar
+                        </button>
+                    </div>`;
                 }
             },
             {
@@ -59,9 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 orderable: false,
                 className: 'text-center',
                 render: function (row) {
+                    const isDisabled = row.state !== 'PENDIENTE';
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button class="btn btn-action btn-delete" data-del-id="${row.id}"><i class="bi bi-trash fs-4"></i></button>
+                        <div class="boxButton d-flex justify-content-center align-items-center ${isDisabled ? 'disabled' : ''}">
+                            <button class="btn btn-action btn-delete" data-del-id="${row.id}"${isDisabled ? 'disabled' : ''}><i class="bi bi-trash fs-4"></i></button>
                         </div>`;
                 }
             }
@@ -74,11 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 orderSequence: ['asc', 'desc']
             },
             {
-                targets: [7, 8],
+                targets: [6, 7, 8],
                 orderable: false
             }
         ],
-        order: [[5, 'desc']],
+        order: [[4, 'desc']],
         lengthChange: false,
         info: false,
         searching: true,
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
                             className: 'btn btn-pdf mx-1',
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6],
+                                columns: [0, 1, 2, 3, 4, 5],
                                 stripHtml: true,
                             },
                         },
@@ -323,6 +324,60 @@ document.addEventListener('DOMContentLoaded', function () {
                         swal("Error", "No se pudo completar la petición de borrado.", "error");
                     }
                 });
+            }
+        });
+    });
+
+    $('#substitutions-table').on('click','.assign-substitute',function(e){
+        e.preventDefault();
+        var btn = $(this);
+
+        var id = btn.data('assig-id');
+
+        const url = `${BASE_URL}substitution/get-substitution-assig/${id}`;
+        Modal.show(url);
+    });
+    $('#substitutions-table').on('click','.view-details',function(e){
+        e.preventDefault();
+        var btn = $(this);
+        var id = btn.data('detail-id');
+        const url = `${BASE_URL}absence/get-data-view/${id}`;
+        Modal.show(url);
+    });
+    $(document).on('click','#btnSubmitAssig',function(e){
+        e.preventDefault();
+        var form = $('#formAssign');
+
+        if (form.length === 0) {
+            swal("Error", "No se pudo encontrar el formulario", "error");
+            return;
+        }
+
+        const data = new FormData(form[0]);
+
+        $.ajax({
+            url: BASE_URL + "substitution/assing-substitute",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function (response) {
+                console.log('Respuesta:', response);
+                if (response.status === 'success') {
+                    swal("¡Sustitución Asignada!", response.message, "success", {
+                        timer: 1500,
+                        buttons: false
+                    });
+                    var dtable = $('table#substitutions-table').DataTable();
+                    dtable.ajax.reload();
+                    $('#modal-container .modal').modal('hide');
+                } else {
+                    swal("Error", response.message, "error");
+                }
+            },
+            error: function () {
+                swal("Error", "No se pudo completar la petición de asignar.", "error");
             }
         });
     });
