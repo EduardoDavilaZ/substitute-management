@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="results-info">
-                <span id="record-count">0</span> resultado(s)
+                <span id="record-count">0</span>&nbsp;<span>resultado(s)</span> 
             </div>
         </div>
 

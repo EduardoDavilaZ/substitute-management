@@ -79,7 +79,6 @@ table#substitutions-table {
 .dt-orderable-desc .dt-column-order {
     color: var(--text-on-primary) !important;
 }
-
 /* Ensure arrows are visible even if default DT CSS is missing */
 .dt-column-order::before,
 .dt-column-order::after {

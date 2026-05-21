@@ -89,7 +89,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     {
                         extend: 'excel',
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel',
-                        className: 'btn btn-excel mx-1'
+                        className: 'btn btn-excel mx-1',
+                        exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5,6],
+                                stripHtml: true,
+                            },
                     },
                     DataTablesPdfTheme.pdfButton(
                         {
