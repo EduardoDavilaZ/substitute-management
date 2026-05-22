@@ -2,4 +2,4 @@
 src/vendor/
 
 # Environment variables
-.env
+src/.env

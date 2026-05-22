@@ -5,9 +5,9 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use Dotenv\Dotenv;
 
-require __DIR__ .'/../../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../../../');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
 final class EmailService {
@@ -28,7 +28,7 @@ final class EmailService {
             $mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_FROM_NAME'] ?? 'Gestión de Sustituciones');
             $mail->addAddress($arrayTeacher['email'], $arrayTeacher['name']);
 
-            $logoPath = __DIR__ . '/../../../src/public/assets/img/isotype.png';
+            $logoPath = __DIR__ . '/../../public/assets/img/isotype.png';
             if (file_exists($logoPath)) {
                 $mail->addEmbeddedImage($logoPath, 'logo_centro');
             }
