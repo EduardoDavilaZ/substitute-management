@@ -10,3 +10,6 @@ src/vendor/
 # Upload files
 src/public/uploads/*
 !src/public/uploads/.gitkeep
+
+# .env
+src/.env
