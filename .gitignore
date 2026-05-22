@@ -1,9 +1,3 @@
-# Database configuration
-src/app/config/database.php
-
-# Global configuration
-src/app/config/app.php
-
 # Composer
 src/vendor/
 
