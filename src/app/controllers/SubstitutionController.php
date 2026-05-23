@@ -60,6 +60,7 @@ use App\Services\EmailService as EmailService;
                     EmailService::sendMail($arrayTeacher, $data['affair'], $data['body']);
                     
                 } catch (\Exception $e) {
+                    echo $e->getMessage(); die();
                     $mensajeSuccess = "Sustitución asignada en el sistema, pero no se pudo enviar el correo de notificación.";          
                 }
 
