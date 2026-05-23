@@ -3,10 +3,11 @@
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE classes (
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id TINYINT UNSIGNED NOT NULL,
     code CHAR(10) NOT NULL,
     name VARCHAR(50) NOT NULL,
     stage ENUM('ESO', 'BACH', 'CFGM', 'CFGS', 'PRIM') NOT NULL,
+	enabled BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT pk_classes PRIMARY KEY (id)
 );
 
@@ -19,17 +20,16 @@ CREATE TABLE periods (
 );
 
 CREATE TABLE teachers (
-    id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id SMALLINT UNSIGNED NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(20) NULL UNIQUE,
     password_hash CHAR(60) NOT NULL,
     profile_img_path VARCHAR(255) NULL,
     substitution_counter TINYINT UNSIGNED DEFAULT 0,
-	is_a_tutor BOOLEAN DEFAULT FALSE,
-    CONSTRAINT pk_teachers PRIMARY KEY (id),
-	CONSTRAINT un_email UNIQUE (email),
-	CONSTRAINT un_phone UNIQUE (phone)
+    is_tutor BOOLEAN default 0,
+	enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT pk_teachers PRIMARY KEY (id)
 );
 
 -- -----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ CREATE TABLE teachers (
 
 CREATE TABLE schedules (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    class_id TINYINT UNSIGNED NULL, -- Cambiado de group_id
+    class_id TINYINT UNSIGNED NULL,
     teacher_id SMALLINT UNSIGNED NOT NULL,
     period_id TINYINT UNSIGNED NOT NULL,
     day ENUM('L', 'M', 'X', 'J', 'V') NOT NULL, 
@@ -50,8 +50,11 @@ CREATE TABLE schedules (
 
 CREATE TABLE events (
     id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    description VARCHAR(255) NOT NULL,
-    date DATE NOT NULL,
+	title VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    start_date DATE NOT NULL,
+	end_date DATE NOT NULL,
+	enabled BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT pk_events PRIMARY KEY (id)
 );
 
@@ -61,6 +64,14 @@ CREATE TABLE event_schedules (
     CONSTRAINT pk_event_schedules PRIMARY KEY (event_id, schedule_id),
     CONSTRAINT fk_ev_sch_event FOREIGN KEY (event_id) REFERENCES events(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_ev_sch_schedule FOREIGN KEY (schedule_id) REFERENCES schedules(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE event_teachers (
+    event_id SMALLINT UNSIGNED NOT NULL,
+    teacher_id SMALLINT UNSIGNED NOT NULL,
+    CONSTRAINT pk_event_teachers PRIMARY KEY (event_id, teacher_id),
+    CONSTRAINT fk_ev_tch_event FOREIGN KEY (event_id) REFERENCES events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_ev_tch_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- -----------------------------------------------------------------------------
@@ -86,6 +97,7 @@ CREATE TABLE absence_period (
     absence_id SMALLINT UNSIGNED NOT NULL,
     period_id TINYINT UNSIGNED NOT NULL,
     instruction_material_url VARCHAR(255) NULL,
+	comments TEXT NULL,
     is_cover_generated BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT pk_absence_period PRIMARY KEY (id),
     CONSTRAINT fk_details_absence FOREIGN KEY (absence_id) REFERENCES absences(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -105,7 +117,7 @@ CREATE TABLE substitutions (
     
     is_notified BOOLEAN DEFAULT FALSE, 
     status ENUM('PENDIENTE', 'CONFIRMADO', 'CANCELADO') DEFAULT 'PENDIENTE',
-    is_enabled BOOLEAN DEFAULT TRUE,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
