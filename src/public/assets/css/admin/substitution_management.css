@@ -8,12 +8,39 @@
     box-shadow: 0 20px 50px rgba(15, 23, 42, 0.04);
     margin-top: 2rem;
     border: 1px solid rgba(226, 232, 240, 0.8);
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+
+        &::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+
+            &:hover {
+                background: #94a3b8;
+            }
+        }
+    }
 }
 
 table#substitutions-table {
     border-collapse: separate;
     border-spacing: 0 10px;
     width: 100% !important;
+    min-width: 960px;
+    table-layout: auto;
     border: none;
     margin-top: 1.5rem !important;
 
@@ -70,6 +97,7 @@ table#substitutions-table {
             font-weight: 600;
             background-color: #ffffff;
             transition: all 0.2s ease;
+            white-space: nowrap;
 
             &:first-child {
                 border-left: 1px solid #f1f5f9;
