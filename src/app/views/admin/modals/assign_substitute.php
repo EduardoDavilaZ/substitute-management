@@ -16,7 +16,7 @@
 <p>Ausencia de <strong><?= htmlspecialchars($name) ?></strong><br> Dia: <strong><?= htmlspecialchars($date) ?></strong></p>
 
 <form action="" method="POST" id="formAssign">
-    <input type="hidden" name="idTeacher" value="<?= $substitution['id']?>">
+    <input type="hidden" name="idSubstitution" value="<?= $substitution['id']?>">
     <div class="mb-3">
         <label for="teacherToday" class="form-label small fw-bold">Profesores asignados para esta hora</label>
         <select name="teacherToday" id="teacherToday" class="form-select form-control input-validate">

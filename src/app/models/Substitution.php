@@ -76,7 +76,7 @@
             return $res['success'] ? true : false;
         }
         public function assign(){
-            $substitutionId = $_POST['idTeacher'] ?? 0;
+            $substitutionId = $_POST['idSubstitution'] ?? 0;
             $teacherToday = $_POST['teacherToday'] ?? '';
             $teacherFree = $_POST['teacherFree'] ?? '';
 
