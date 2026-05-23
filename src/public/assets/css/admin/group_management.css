@@ -1,0 +1,340 @@
+#groups-table-container {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.04);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+
+    table#groups-table {
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        width: 100% !important;
+        table-layout: fixed;
+        border: none;
+        margin-top: 1.5rem !important;
+
+        thead th {
+            background-color: var(--primary);
+            color: var(--text-on-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            padding: 1rem 1.2rem;
+            border: none;
+            text-align: left;
+
+            &:nth-child(3) { width: 12% !important; }
+            &:nth-child(4) { width: 10% !important; }
+            &:nth-child(5) { width: 10% !important; }
+
+            &:first-child {
+                border-top-left-radius: 14px;
+                border-bottom-left-radius: 14px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 14px;
+                border-bottom-right-radius: 14px;
+            }
+
+            &.text-center {
+                text-align: center;
+            }
+
+            &.dt-orderable-asc, &.dt-orderable-desc {
+                cursor: pointer;
+                transition: background 0.2s;
+                position: relative;
+                padding-right: 2.2rem !important;
+
+                &:hover {
+                    background-color: var(--primary-dark);
+
+                    .dt-column-order { opacity: 0.8; }
+                }
+
+                .dt-column-order {
+                    color: var(--text-on-primary) !important;
+                }
+            }
+
+            &.dt-ordering-asc .dt-column-order {
+                opacity: 1;
+                &::after { opacity: 0.2; }
+                &::before { opacity: 1; }
+            }
+
+            &.dt-ordering-desc .dt-column-order {
+                opacity: 1;
+                &::before { opacity: 0.2; }
+                &::after { opacity: 1; }
+            }
+        }
+
+        tbody {
+            td {
+                padding: 0.9rem 1.2rem;
+                vertical-align: middle;
+                border-top: 1px solid #f1f5f9;
+                border-bottom: 1px solid #f1f5f9;
+                color: #334155;
+                font-size: 0.6rem;
+                font-weight: 600;
+                background-color: #ffffff;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 0;
+
+                &:first-child {
+                    border-left: 4px solid var(--primary) !important;
+                    border-top-left-radius: 14px;
+                    border-bottom-left-radius: 14px;
+                }
+
+                &:last-child {
+                    border-right: 1px solid #f1f5f9;
+                    border-top-right-radius: 14px;
+                    border-bottom-right-radius: 14px;
+                }
+            }
+
+            tr:hover td {
+                background-color: #f1f5f9;
+                transform: translateY(-1px);
+            }
+        }
+    }
+
+    .dt-container {
+        width: 100% !important;
+
+        .dt-scroll {
+            width: 100% !important;
+        }
+    }
+
+    .dt-column-order {
+        position: absolute !important;
+        right: 0.8rem !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        opacity: 0.35;
+        transition: all 0.2s ease;
+        display: flex !important;
+        flex-direction: column;
+
+        &::before, &::after {
+            display: inline-block;
+            font-family: "bootstrap-icons" !important;
+            font-size: 0.75rem;
+            line-height: 0.6rem;
+            content: "" !important;
+        }
+    }
+
+    .dt-orderable-asc .dt-column-order::before {
+        content: "\F235" !important;
+        margin-bottom: 2px;
+    }
+
+    .dt-orderable-desc .dt-column-order::after {
+        content: "\F229" !important;
+    }
+
+    .dt-paging {
+        text-align: right;
+        margin-top: 2rem;
+
+        .dt-paging-button {
+            border-radius: 12px;
+            border: none;
+            padding: 0.6rem 1.1rem;
+            font-weight: 700;
+            transition: all 0.2s;
+
+            &.current {
+                background: #1e293b;
+                color: white !important;
+                box-shadow: 0 4px 10px rgba(30, 41, 59, 0.2);
+            }
+        }
+
+        nav {
+            display: flex;
+            flex-direction: row;
+            gap: .5rem !important;
+            justify-content: flex-end;
+        }
+    }
+
+    .dt-search {
+        display: flex;
+        align-items: center;
+
+        label { display: none; }
+
+        input {
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.88rem;
+            color: #334155;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            outline: none;
+            min-width: 250px;
+
+            &:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.15);
+                background-color: #ffffff;
+            }
+        }
+    }
+
+    .dt-layout-row {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+    }
+
+    .dt-layout-cell {
+        margin-bottom: 1.5rem;
+
+        &.dt-layout-start { flex: 0 0 auto; }
+        &.dt-layout-end {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+
+    .dt-buttons {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+    }
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+
+    &::-webkit-scrollbar { height: 6px; }
+    &::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+        &:hover { background: #94a3b8; }
+    }
+}
+
+@media (max-width: 992px) {
+    #groups-table-container {
+        padding: 1.5rem !important;
+        border-radius: 16px !important;
+        margin-top: 1.5rem !important;
+
+        table#groups-table {
+            table-layout: auto !important;
+
+            tbody td {
+                white-space: normal !important;
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
+            }
+        }
+
+        .dt-layout-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1.2rem !important;
+        }
+
+        .dt-layout-cell.dt-layout-end {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            gap: 1rem !important;
+            display: flex !important;
+        }
+
+        .dt-search {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: stretch !important;
+
+            input {
+                width: 100% !important;
+                min-width: 0 !important;
+                flex: 1 1 auto !important;
+            }
+        }
+
+        .dt-buttons {
+            width: 100% !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+            margin-top: 0.5rem !important;
+            display: flex !important;
+
+            .btn {
+                flex: 1 1 auto !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    #groups-table-container {
+        padding: 1rem !important;
+        border-radius: 12px !important;
+        margin-top: 1rem !important;
+
+        table#groups-table {
+            thead th {
+                padding: 0.8rem 0.6rem !important;
+                font-size: 0.62rem !important;
+                letter-spacing: 0.5px !important;
+            }
+
+            tbody td {
+                padding: 0.75rem 0.6rem !important;
+                font-size: 0.8rem !important;
+            }
+        }
+
+        .dt-paging {
+            text-align: center !important;
+            display: flex !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+            gap: 0.35rem !important;
+            margin-top: 1.5rem !important;
+
+            .dt-paging-button {
+                padding: 0.4rem 0.75rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 8px !important;
+                margin: 0 !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+    }
+
+    .text-title {
+        font-size: 1.75rem !important;
+        text-align: center !important;
+        margin-bottom: 1rem !important;
+    }
+}

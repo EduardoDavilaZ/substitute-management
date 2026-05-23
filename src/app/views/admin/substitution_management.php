@@ -59,6 +59,5 @@
 
 <?php
     push_css('admin/substitution_management.css');
-    push_js('admin/datatables_export.js');
     push_js('admin/substitution_management.js');
 ?>

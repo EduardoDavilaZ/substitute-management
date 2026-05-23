@@ -101,5 +101,41 @@
             $res = $this->query("UPDATE teachers SET substitution_counter = substitution_counter + 1 WHERE id = ?",[$selectedTeacher]);
             return (bool)$res['success'];
         }
+
+        /**
+         * Genera sustituciones pendientes a partir de absence_period no procesados.
+         * Reutilizable desde eventos, formulario de ausencias, etc.
+         */
+        public function generateSubstitutionsFromAbsencePeriods(): bool
+        {
+            $sqlInsert = "INSERT INTO substitutions (absence_detail_id, schedule_id, absent_teacher_id, class_id, date)
+                SELECT ap.id, s.id, a.teacher_id, s.class_id, a.date
+                FROM absence_period ap
+                JOIN absences a ON ap.absence_id = a.id
+                JOIN schedules s ON s.teacher_id = a.teacher_id
+                    AND s.period_id = ap.period_id
+                    AND s.day = (
+                        CASE DAYOFWEEK(a.date)
+                            WHEN 2 THEN 'L'
+                            WHEN 3 THEN 'M'
+                            WHEN 4 THEN 'X'
+                            WHEN 5 THEN 'J'
+                            WHEN 6 THEN 'V'
+                        END
+                    )
+                WHERE ap.is_cover_generated = FALSE
+                AND s.class_id IS NOT NULL";
+
+            $resInsert = $this->insert($sqlInsert, []);
+            if (!$resInsert['success']) {
+                return false;
+            }
+
+            $resUpdate = $this->update(
+                "UPDATE absence_period SET is_cover_generated = TRUE WHERE is_cover_generated = FALSE",
+                []
+            );
+
+            return $resUpdate['success'];
+        }
     }
-?>

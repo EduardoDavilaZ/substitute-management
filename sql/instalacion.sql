@@ -3,7 +3,7 @@
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE classes (
-    id TINYINT UNSIGNED NOT NULL,
+    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
     code CHAR(10) NOT NULL,
     name VARCHAR(50) NOT NULL,
     stage ENUM('ESO', 'BACH', 'CFGM', 'CFGS', 'PRIM') NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE classes (
 );
 
 CREATE TABLE periods (
-    id TINYINT UNSIGNED NOT NULL,
+    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	name CHAR(7) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE periods (
 );
 
 CREATE TABLE teachers (
-    id SMALLINT UNSIGNED NOT NULL,
+    id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(20) NULL UNIQUE,

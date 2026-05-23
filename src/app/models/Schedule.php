@@ -22,8 +22,54 @@ final class Schedule extends Model
         return isset($res['data'][0]) ? $res['data'][0] : $res['data'];
     }
 
+    public function countGuardHoursByTeacher(int $teacherId, int $excludeScheduleId = 0): int
+    {
+        $sql = "SELECT COUNT(*) AS count FROM schedules
+                WHERE teacher_id = ? AND class_id IS NULL";
+        $params = [$teacherId];
+
+        if ($excludeScheduleId > 0) {
+            $sql .= " AND id != ?";
+            $params[] = $excludeScheduleId;
+        }
+
+        $res = $this->query($sql, $params, false);
+        return $res['success'] ? (int) ($res['data']['count'] ?? 0) : 0;
+    }
+
+    public function getGuardHourLimit(int $teacherId): int
+    {
+        $teacher = (new Teacher())->getTeacher($teacherId);
+        if (empty($teacher)) {
+            return 0;
+        }
+
+        return ((int) ($teacher['is_tutor'] ?? 0)) === 1 ? 1 : 2;
+    }
+
+    public function validateGuardAssignment(int $teacherId, int $excludeScheduleId = 0): ?string
+    {
+        $max = $this->getGuardHourLimit($teacherId);
+        if ($max === 0) {
+            return 'Profesor no encontrado.';
+        }
+
+        $current = $this->countGuardHoursByTeacher($teacherId, $excludeScheduleId);
+
+        if ($current >= $max) {
+            $role = $max === 1 ? 'tutor' : 'no tutor';
+            return "Este profesor es {$role} y ya tiene el máximo de {$max} hora(s) de guardia asignada(s). No se pueden añadir más.";
+        }
+
+        return null;
+    }
+
     public function setGuardPeriod(int $teacher_id, int $period_id, string $day) : bool 
     {
+        if ($this->validateGuardAssignment($teacher_id) !== null) {
+            return false;
+        }
+
         $sql1 = "SELECT id FROM schedules 
                     WHERE teacher_id = :teacher_id 
                     AND period_id = :period_id 
@@ -56,6 +102,10 @@ final class Schedule extends Model
 
     public function updateGuardPeriod(int $schedule_id, int $teacher_id): bool
     {
+        if ($this->validateGuardAssignment($teacher_id, $schedule_id) !== null) {
+            return false;
+        }
+
         $sql = "UPDATE schedules SET teacher_id = :teacher_id WHERE id = :id";
         
         $res = $this->update($sql, [

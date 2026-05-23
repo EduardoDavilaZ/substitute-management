@@ -24,6 +24,5 @@
 
 <?php
     push_css('admin/teacher_management.css');
-    push_js('admin/datatables_export.js');
     push_js('admin/management_teachers.js');
 ?>

@@ -39,13 +39,19 @@ final class ScheduleController extends Controller
         }
 
         extract($fields);
-        $success = (new Schedule())->setGuardPeriod($teacher_id, $period_id, $day);
-        
-        if ($success) {
-            json_success("La asignación se realizó correctamente.");
-        } else {
-            json_error("No se pudo guardar la asignación en la base de datos.");
+
+        $scheduleModel = new Schedule();
+        $guardError = $scheduleModel->validateGuardAssignment((int) $teacher_id);
+
+        if ($guardError !== null) {
+            json_error($guardError);
         }
+
+        if ($scheduleModel->setGuardPeriod((int) $teacher_id, (int) $period_id, $day)) {
+            json_success("La asignación se realizó correctamente.");
+        }
+
+        json_error("No se pudo guardar la asignación en la base de datos.");
     }
 
     public function updateGuardPeriod() : void 
@@ -58,13 +64,18 @@ final class ScheduleController extends Controller
             return;
         }
 
-        $result = (new Schedule())->updateGuardPeriod($id, $teacher_id);
-        
-        if ($result) {
-            json_success("El profesor ha sido actualizado correctamente.");
-        } else {
-            json_error("No se pudo actualizar la asignación.");
+        $scheduleModel = new Schedule();
+        $guardError = $scheduleModel->validateGuardAssignment((int) $teacher_id, (int) $id);
+
+        if ($guardError !== null) {
+            json_error($guardError);
         }
+
+        if ($scheduleModel->updateGuardPeriod((int) $id, (int) $teacher_id)) {
+            json_success("El profesor ha sido actualizado correctamente.");
+        }
+
+        json_error("No se pudo actualizar la asignación.");
     }
 
     public function deleteGuardPeriod() : void 
