@@ -1,7 +1,7 @@
 <?php
     modal_start([
         'title' => 'Detalles de la ausencia',
-        'size' => 'modal-md',
+        'size' => 'modal-lg',
     ]);
     $data = $data ?? [];
 ?>
