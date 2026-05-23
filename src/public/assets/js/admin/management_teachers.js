@@ -14,16 +14,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (data) {
                     if (!data || data.trim() === '') {
-                        return '<span class="text-muted fst-italic" style="font-size: 0.85rem;">Sin teléfono registrado</span>';
+                        return '<span class="text-muted-custom fst-italic">Sin teléfono</span>';
                     }
                     return data;
                 }
             },
             { data: 'substitution_counter', className: 'text-center' },
-            {   data: 'is_tutor',
+            {   
+                data: 'is_tutor',
                 className: 'text-center',
                 render: function (data) {
-                    return (data === 1) ? 'SI' : 'NO'  
+                    return (data === 1) 
+                        ? '<span class="badge-status badge-blue">SÍ</span>' 
+                        : '<span class="badge-status badge-gray">NO</span>';
                 }
             },
             {
@@ -32,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (row) {
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button type="button" class="btn btn-action mod-teacher" data-mod-id="${row.id}">
-                                <i class="bi bi-pencil-square fs-4 text-primary"></i>
+                        <div class="boxButton center">
+                            <button type="button" class="btn-edit mod-teacher fs-6" data-mod-id="${row.id}" title="Editar Profesor">
+                                <i class="bi bi-pencil-square"></i>
                             </button>
                         </div>`;
                 }
@@ -45,8 +48,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (row) {
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button class="btn btn-action btn-delete" data-del-id="${row.id}"><i class="bi bi-trash fs-4"></i></button>
+                        <div class="boxButton center">
+                            <button type="button" class="btn-delete fs-6" data-del-id="${row.id}" title="Eliminar Profesor">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>`;
                 }
             },
@@ -56,11 +61,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (row) {
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button class="btn btn-action btn-charge" data-schedule-id="${row.id}"><i class="bi bi-calendar3 fs-4"></i></button>
+                        <div class="boxButton center">
+                            <button type="button" class="btn btn-action btn-charge fs-6" data-schedule-id="${row.id}" title="Cargar Horario">
+                                <i class="bi bi-calendar3"></i>
+                            </button>
                         </div>`;
                 }
-            },
+            }
         ],
         lengthChange: false,
         info: false,

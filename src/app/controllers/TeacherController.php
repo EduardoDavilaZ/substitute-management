@@ -146,11 +146,7 @@ final class TeacherController extends Controller
             }
             return json_success('Profesor actualizado correctamente.');
         }
-
-        if ($newProfileImgPath !== null) {
-            delete_file(self::UPLOAD_PATH, $newProfileImgPath);
-        }
-
+        
         return json_error('Error al actualizar profesor.');
     }
 
