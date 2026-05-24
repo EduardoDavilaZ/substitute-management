@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * Get BASE_URL from protocol, host and base path
+ */
+function getBaseUrl(): string
+{
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+    $basePath = rtrim($scriptPath, '/\\');
+    return $protocol . $host . $basePath. '/';
+}
+
+/**
  * Generate a full URL based on the application's BASE_URL.
  */
 function url(string $path = ''): string 
@@ -111,5 +123,3 @@ function abort(int $code = 404): void
     
     exit;
 }
-
-?>

@@ -1,6 +1,9 @@
 .event-container {
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
+    background-color: rgb(246, 250, 254);
+    border: 1px solid var(--bg-blue);
+    transition: border-color 0.3s ease;
 
     & > div {
         display: flex;
@@ -19,8 +22,10 @@
             .event-group {
                 padding: 4px 12px;
                 border-radius: var(--radius-md);
-                border: 1px solid black;
+                border: 1px solid var(--blue);
                 font-size: .6rem;
+                background-color: var(--bg-blue);
+                color: var(--blue)
             }
         }
     }
@@ -34,4 +39,23 @@
     .event-date {
         font-size: .8rem;
     }
+
+    &:hover {
+        border: 1px solid var(--blue);
+    }
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid #7a96e0 !important;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: white;
+    transition: background 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #7a96e0 !important;
+    position: relative;
 }

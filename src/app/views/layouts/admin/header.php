@@ -1,6 +1,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="icon" type="image/x-icon" href="<?= asset_url('isotype.ico', 'img') ?>">
 
 <title>Gestión de Guardias</title>
 
@@ -28,6 +29,9 @@
 <?= js('datatables/buttons-3.2.6.dataTables.js', 'vendor') ?>
 <?= js('datatables/buttons-3.2.6.html5.min.js', 'vendor') ?>
 <?= js('datatables/buttons-3.2.6.print.min.js', 'vendor') ?>
+
+<?= js('flatpickr/flatpickr.js', 'vendor') ?>
+<?= js('flatpickr/es.js', 'vendor') ?>
 
 <?= js('app.js') ?>
 <?= css('app.css') ?>

@@ -23,7 +23,8 @@
         </a>
     </div>
 
-    <table class="schedule-table table-responsive mx-auto w-100">
+    <div class="schedule-table-wrapper">
+    <table class="schedule-table mx-auto w-100">
         <thead>
             <tr>
                 <th class="p-2 text-center">HORA</th>
@@ -91,6 +92,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
 </main>
 
 <?php

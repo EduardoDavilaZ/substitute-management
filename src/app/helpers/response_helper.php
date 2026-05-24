@@ -30,5 +30,3 @@ function json_success(string $message, array|object $data = [], int $status = 20
         'data' => $data
     ], $status);
 }
-
-?>

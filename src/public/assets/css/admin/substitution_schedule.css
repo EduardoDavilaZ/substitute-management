@@ -1,15 +1,49 @@
+.schedule-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 2rem 0;
+    padding-bottom: 0.5rem;
+
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+
+        &:hover {
+            background: #94a3b8;
+        }
+    }
+}
+
 .schedule-table {
     --table-border: #dddddd;
     background-color: var(--surface);
     border-radius: var(--radius-lg) !important;
-    border-collapse: separate !important; 
+    border-collapse: separate !important;
     border-spacing: 0;
     overflow: hidden;
     border: .5px solid var(--table-border);
-    margin: 2rem 0;
+    min-width: 720px;
+    margin: 0;
 
     th, td {
         border: .5px solid var(--table-border);
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    td.schedule-slot {
+        white-space: normal;
+        min-width: 140px;
     }
 
     .schedule-slot{

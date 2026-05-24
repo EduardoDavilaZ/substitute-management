@@ -23,5 +23,3 @@ function clear_buffer() : void
         ob_end_clean();
     }
 }
-
-?>
