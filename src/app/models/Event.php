@@ -245,6 +245,10 @@ final class Event extends Model
                 }
             }
 
+            if (!(new Substitution())->generateSubstitutionsFromAbsencePeriods()) {
+                throw new Exception('Failed to generate substitutions from absence periods.');
+            }
+
             $this->commit();
             return true;
 

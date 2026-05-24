@@ -14,15 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: 'state',
                 className: 'text-center',
                 render: function (data) {
-                    let badgeClass = 'bg-secondary';
-                    if (data === 'CONFIRMADO') badgeClass = 'bg-success';
-                    if (data === 'PENDIENTE') badgeClass = 'bg-warning';
-                    return `<span class="badge ${badgeClass}">${data}</span>`;
+                    let badgeClass = 'badge-blue';
+                    if (data === 'CONFIRMADO') badgeClass = 'badge-green';
+                    if (data === 'PENDIENTE') badgeClass = 'badge-yellow';
+                    return `<span class="badge-status ${badgeClass}">${data}</span>`;
                 }
             },
-            {
-                data:'substitute',
-            },
+            { data: 'substitute' },
             {
                 data: null,
                 orderable: false,
@@ -33,25 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <button type="button" class="btn btn-info btn-sm view-details" data-detail-id="${row.id}" title="Ver detalles completos">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
-                        </div>`;
-                }
-            },
-            {
-                data: null,
-                orderable: false,
-                className: 'text-center',
-                render: function (row) {
-                    const isDisabled = row.state !== 'PENDIENTE'; 
-                    
-                    return `
-                    <div class="boxButton">
-                        <button type="button" 
-                                class="btn btn-primary btn-sm assign-substitute ${isDisabled ? 'disabled' : ''}" 
-                                data-assig-id="${row.id}"
-                                ${isDisabled ? 'disabled' : ''}>
-                            <i class="bi bi-person-plus-fill me-2"></i> Asignar
-                        </button>
-                    </div>`;
+                        </div>`;;
                 }
             },
             {
@@ -61,8 +41,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 render: function (row) {
                     const isDisabled = row.state !== 'PENDIENTE';
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center ${isDisabled ? 'disabled' : ''}">
-                            <button class="btn btn-action btn-delete" data-del-id="${row.id}"${isDisabled ? 'disabled' : ''}><i class="bi bi-trash fs-4"></i></button>
+                        <div class="boxButton">
+                            <button type="button"
+                                    class="btn btn-primary btn-sm assign-substitute ${isDisabled ? 'disabled' : ''}"
+                                    data-assig-id="${row.id}"
+                                    ${isDisabled ? 'disabled' : ''}>
+                                <i class="bi bi-person-plus-fill me-2"></i> Asignar
+                            </button>
+                        </div>`;
+                }
+            },
+            {
+                data: null,
+                orderable: false,
+                className: 'text-center',
+                render: function (row) {
+                    const isDisabled = row.state !== 'PENDIENTE';
+                    return `
+                        <div class="boxButton center ${isDisabled ? 'disabled' : ''}">
+                            <button class="btn-delete fs-4" data-del-id="${row.id}" ${isDisabled ? 'disabled' : ''}>
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>`;
                 }
             }
@@ -70,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         columnDefs: [
             {
                 targets: '_all',
-                defaultContent: '<i class="text-muted">(no asignado)</i>',
+                defaultContent: '<i class="text-muted-custom">(no asignado)</i>',
                 orderable: true,
                 orderSequence: ['asc', 'desc']
             },
@@ -90,16 +89,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     {
                         extend: 'excel',
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Exportar a Excel',
-                        className: 'btn btn-excel mx-1',
+                        className: 'btn-excel btn mx-1',
                         exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5,6],
-                                stripHtml: true,
-                            },
+                            columns: [0, 1, 2, 3, 4, 5, 6],
+                            stripHtml: true,
+                        },
                     },
                     DataTablesPdfTheme.pdfButton(
                         {
                             text: '<i class="bi bi-file-earmark-pdf"></i> Descargar pdf',
-                            className: 'btn btn-pdf mx-1',
+                            className: 'btn-pdf btn mx-1',
                             exportOptions: {
                                 columns: [0, 1, 2, 3, 4, 5],
                                 stripHtml: true,
@@ -127,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $('#record-count').text(api.page.info().recordsDisplay);
         }
     });
+
     /**
      * Search teacher 
      */

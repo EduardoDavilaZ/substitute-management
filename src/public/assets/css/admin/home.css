@@ -1,122 +1,121 @@
-.kpi-card {
-    background-color: white;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    padding: 1.25rem;
-    height: 100%;
-}
-
-.kpi-label {
-    color: var(--text-muted);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 0.25rem;
-}
-
-.kpi-value {
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: var(--text-main);
-    margin: 0.25rem 0 0.1rem;
-    line-height: 1;
-}
-
-.kpi-icon {
-    border-radius: var(--radius-md);
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    flex-shrink: 0;
-}
-
-.icon-people {
-    background-color: var(--bg-blue);
-}
-
-.icon-people i {
-    color: var(--blue);
-}
-
-.icon-shield {
-    background-color: var(--bg-green);
-}
-
-.icon-shield i {
-    color: var(--green);
-}
-
-.icon-book {
-    background-color: var(--bg-yellow);
-}
-
-.icon-book i {
-    color: var(--yellow);
-}
-
-.icon-calendar {
-    background-color: var(--bg-red);
-}
-
-.icon-calendar i {
-    color: var(--red);
-}
-
+.kpi-label, 
 .section-title {
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-muted);
+}
+
+.kpi-card {
+    background-color: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(15, 76, 129, 0.2);
+    }
+    
+    .kpi-label {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .kpi-value {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: var(--text-main);
+        margin: 0.25rem 0 0.1rem;
+        line-height: 1;
+    }
+
+    .kpi-icon {
+        border-radius: var(--radius-md);
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        flex-shrink: 0;
+
+        &.icon-people {
+            background-color: var(--bg-blue);
+            & i { color: var(--blue); }
+        }
+
+        &.icon-shield {
+            background-color: var(--bg-green);
+            & i { color: var(--green); }
+        }
+
+        &.icon-book {
+            background-color: var(--bg-yellow);
+            & i { color: var(--yellow); }
+        }
+
+        &.icon-calendar {
+            background-color: var(--bg-red);
+            & i { color: var(--red); }
+        }
+    }
+}
+
+.section-title {
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border);
 }
 
-#teachers_absences .kpi-card {
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    background-color: var(--bg-blue);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: var(--blue);
-    border: 1px solid rgba(15, 76, 129, 0.15);
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    max-width: 50%;
-    margin: 0 auto;
-}
+#teachers_absences {
+    & .kpi-card {
+        background-color: var(--bg-blue);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: var(--blue);
+        border: 1px solid rgba(15, 76, 129, 0.15);
+        text-align: center;
+        
+        max-width: 50%;
+        margin: 0 auto;
+    }
 
-#teachers_absences .kpi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(15, 76, 129, 0.2);
-}
+    & .card-text {
+        color: var(--blue);
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
 
-#teachers_absences .card-text {
-    color: var(--blue);
-    font-weight: 600;
-    font-size: 0.8rem;
-}
+    & .text-muted {
+        color: var(--text-muted) !important;
+        font-size: 0.75rem;
+    }
 
-#teachers_absences .text-muted {
-    color: var(--text-muted) !important;
-    font-size: 0.75rem;
-}
-
-#teachers_absences img {
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    & img {
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
 }
 
 #pending-substitutions {
     max-height: 360px;
     overflow-y: auto;
     padding-right: 4px;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+    }
 }
 
 .pending-group {
@@ -129,35 +128,22 @@
     justify-content: space-between;
     padding: 0.6rem 0.75rem;
     transition: background 0.15s ease, transform 0.15s ease;
-}
 
-.pending-group:hover {
-    background: #eef2f7;
-    transform: translateX(3px);
-}
+    &:hover {
+        background: #eef2f7;
+        transform: translateX(3px);
+    }
 
-.pending-group .day {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-main);
-}
+    & .day {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-main);
+    }
 
-.pending-group .icon-alert i {
-    color: var(--yellow);
-    font-size: 1rem;
-}
-
-#pending-substitutions::-webkit-scrollbar {
-    width: 4px;
-}
-
-#pending-substitutions::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#pending-substitutions::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
+    & .icon-alert i {
+        color: var(--yellow);
+        font-size: 1rem;
+    }
 }
 
 #weekly-substitutions-chart {

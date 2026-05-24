@@ -21,5 +21,3 @@ final class RoleController extends Controller
         redirect($target);
     }
 }
-
-?>

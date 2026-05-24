@@ -13,4 +13,3 @@
             return ['data' => $results[0] ?? []];
         }
     }
-?>

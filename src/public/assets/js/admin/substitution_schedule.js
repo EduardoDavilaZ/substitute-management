@@ -48,18 +48,35 @@ const GuardSchedule = {
             processData: isFormData ? false : true,
             dataType: 'json',
             success: (res) => {
-                swal({ 
-                    icon: 'success', 
-                    title: '¡Éxito!', 
-                    text: res.message || 'Cambios guardados.' 
+                if (res.status === 'error') {
+                    swal({
+                        icon: 'error',
+                        title: 'No se puede asignar',
+                        text: res.message || 'No se pueden añadir más horas de guardia.'
+                    });
+                    return;
+                }
+
+                swal({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: res.message || 'Cambios guardados.'
                 }).then(() => location.reload());
             },
             error: (xhr) => {
-                console.error("Error:", xhr.responseText);
-                swal({ 
-                    icon: 'error', 
-                    title: 'Oops...', 
-                    text: 'Hubo un error al procesar la petición.' 
+                let text = 'Hubo un error al procesar la petición.';
+                try {
+                    const res = JSON.parse(xhr.responseText);
+                    if (res.message) {
+                        text = res.message;
+                    }
+                } catch (e) {
+                    console.error('Error:', xhr.responseText);
+                }
+                swal({
+                    icon: 'error',
+                    title: 'No se puede asignar',
+                    text: text
                 });
             }
         });

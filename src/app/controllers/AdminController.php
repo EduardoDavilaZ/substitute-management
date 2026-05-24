@@ -55,5 +55,3 @@ final class AdminController extends Controller
         $this->view = 'admin/group_management';
     }
 }
-
-?>

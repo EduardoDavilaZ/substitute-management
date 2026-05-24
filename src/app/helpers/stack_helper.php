@@ -41,5 +41,3 @@ function push_css(string $path, string $type = 'css', string $attrs = ''): void
 {
     push('styles', css($path, $type, $attrs));
 }
-
-?>

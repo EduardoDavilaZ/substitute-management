@@ -42,11 +42,13 @@
     --yellow: #92400e;
     --green: #03543f;
     --blue: #0c3c66;
+    --gray: #575757;
 
     --bg-red: #fde2e2;
     --bg-yellow: #fef3c7;
     --bg-green: #def7ec;
     --bg-blue: #dce8fa;
+    --bg-gray: #f6f6f6;
 }
 
 html,

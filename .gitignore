@@ -1,5 +1,9 @@
 # Composer
 src/vendor/
 
-# Environment variables
+# Upload files
+src/public/uploads/*
+!src/public/uploads/.gitkeep
+
+# .env
 src/.env

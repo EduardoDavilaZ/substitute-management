@@ -27,12 +27,10 @@ function db_nest(array $rows, array $config): array
 
             $id_val = $row[$id_column] ?? null;
 
-            // Skip nesting for this row if the primary identifier is missing
             if ($id_val === null) {
                 break;
             }
 
-            // Create the entry if it hasn't been initialized in the result tree
             if (!isset($current[$id_val])) {
                 if ($prefix) {
                     $item_data = [];
@@ -44,10 +42,7 @@ function db_nest(array $rows, array $config): array
                     }
                     $current[$id_val] = $item_data;
                 } else {
-                    // SOLUCIÓN: Si no hay prefijo, solo tomamos las columnas 
-                    // que NO pertenecen a otros contenedores (no tienen otros prefijos)
                     $item_data = [];
-                    // Obtenemos todos los prefijos definidos en el resto del config
                     $all_prefixes = array_filter(array_column($config, 'prefix'));
                     
                     foreach ($row as $key => $value) {
@@ -58,7 +53,6 @@ function db_nest(array $rows, array $config): array
                                 break;
                             }
                         }
-                        // Si la columna no pertenece a un hijo, pertenece al padre
                         if (!$is_child_data) {
                             $item_data[$key] = $value;
                         }
@@ -71,7 +65,6 @@ function db_nest(array $rows, array $config): array
                 }
             }
 
-            // Move the pointer deeper into the structure for the next configuration level
             if ($container) {
                 $current = &$current[$id_val][$container];
             }

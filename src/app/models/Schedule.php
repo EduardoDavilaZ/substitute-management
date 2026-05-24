@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+use App\Services\TemplateService;
 
 final class Schedule extends Model
 {
@@ -22,8 +24,54 @@ final class Schedule extends Model
         return isset($res['data'][0]) ? $res['data'][0] : $res['data'];
     }
 
+    public function countGuardHoursByTeacher(int $teacherId, int $excludeScheduleId = 0): int
+    {
+        $sql = "SELECT COUNT(*) AS count FROM schedules
+                WHERE teacher_id = ? AND class_id IS NULL";
+        $params = [$teacherId];
+
+        if ($excludeScheduleId > 0) {
+            $sql .= " AND id != ?";
+            $params[] = $excludeScheduleId;
+        }
+
+        $res = $this->query($sql, $params, false);
+        return $res['success'] ? (int) ($res['data']['count'] ?? 0) : 0;
+    }
+
+    public function getGuardHourLimit(int $teacherId): int
+    {
+        $teacher = (new Teacher())->getTeacher($teacherId);
+        if (empty($teacher)) {
+            return 0;
+        }
+
+        return ((int) ($teacher['is_tutor'] ?? 0)) === 1 ? 1 : 2;
+    }
+
+    public function validateGuardAssignment(int $teacherId, int $excludeScheduleId = 0): ?string
+    {
+        $max = $this->getGuardHourLimit($teacherId);
+        if ($max === 0) {
+            return 'Profesor no encontrado.';
+        }
+
+        $current = $this->countGuardHoursByTeacher($teacherId, $excludeScheduleId);
+
+        if ($current >= $max) {
+            $role = $max === 1 ? 'tutor' : 'no tutor';
+            return "Este profesor es {$role} y ya tiene el máximo de {$max} hora(s) de guardia asignada(s). No se pueden añadir más.";
+        }
+
+        return null;
+    }
+
     public function setGuardPeriod(int $teacher_id, int $period_id, string $day) : bool 
     {
+        if ($this->validateGuardAssignment($teacher_id) !== null) {
+            return false;
+        }
+
         $sql1 = "SELECT id FROM schedules 
                     WHERE teacher_id = :teacher_id 
                     AND period_id = :period_id 
@@ -56,6 +104,10 @@ final class Schedule extends Model
 
     public function updateGuardPeriod(int $schedule_id, int $teacher_id): bool
     {
+        if ($this->validateGuardAssignment($teacher_id, $schedule_id) !== null) {
+            return false;
+        }
+
         $sql = "UPDATE schedules SET teacher_id = :teacher_id WHERE id = :id";
         
         $res = $this->update($sql, [
@@ -113,6 +165,116 @@ final class Schedule extends Model
                             AND s.`day` = ?",[$id,$letterDay]);
         return $res['success'] ? $res['data'] : [];
     }
+
+    public function importTeacherSchedule(int $teacherId, string $filePath): array
+    {
+        $teacher = (new Teacher())->getTeacher($teacherId);
+
+        if (empty($teacher) || (int) ($teacher['enabled'] ?? 0) === 0) {
+            return ['success' => false, 'message' => 'Profesor no encontrado o dado de baja.'];
+        }
+
+        try {
+            $parsed = TemplateService::parseTeacherScheduleFile($filePath, $teacherId);
+        } catch (\Throwable $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+
+        $codeMap = (new Classes())->getActiveClassCodeMap();
+        $entries = [];
+        $invalidCodes = [];
+
+        $deduped = [];
+
+        foreach ($parsed['entries'] as $entry) {
+
+            $code = strtoupper($entry['code']);
+
+            $key = $entry['period_id'] . '-' . $entry['day'];
+
+            /*
+            * GUARDIA
+            */
+            if (($entry['is_guard'] ?? false) === true) {
+
+                $deduped[$key] = [
+                    'period_id' => (int) $entry['period_id'],
+                    'day'       => $entry['day'],
+                    'class_id'  => null,
+                ];
+
+                continue;
+            }
+
+            /*
+            * Clase lectiva normal
+            */
+            if (!isset($codeMap[$code])) {
+                $invalidCodes[] = $code;
+                continue;
+            }
+
+            $deduped[$key] = [
+                'period_id' => (int) $entry['period_id'],
+                'day'       => $entry['day'],
+                'class_id'  => $codeMap[$code],
+            ];
+        }
+
+        $entries = array_values($deduped);
+
+        if (!empty($invalidCodes)) {
+            return [
+                'success' => false,
+                'message' => 'Códigos de clase no válidos: ' . implode(', ', array_unique($invalidCodes)),
+            ];
+        }
+
+        if (!$this->replaceTeacherClassSchedules($teacherId, $entries)) {
+            return ['success' => false, 'message' => 'Error al guardar el horario en la base de datos.'];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Horario importado correctamente (' . count($entries) . ' asignaciones).',
+            'count'   => count($entries),
+        ];
+    }
+
+    public function replaceTeacherClassSchedules(int $teacherId, array $entries): bool
+    {
+        $sqlDelete = 'DELETE FROM schedules WHERE teacher_id = ?;';
+        $sqlInsert = 'INSERT INTO schedules (teacher_id, period_id, day, class_id) VALUES (?, ?, ?, ?)';
+
+        try {
+            $this->beginTransaction();
+
+            $deleteRes = $this->query($sqlDelete, [$teacherId]);
+            if (!$deleteRes['success']) {
+                throw new \RuntimeException('No se pudo limpiar el horario anterior.');
+            }
+
+            foreach ($entries as $entry) {
+                $insertRes = $this->insert($sqlInsert, [
+                    $teacherId,
+                    $entry['period_id'],
+                    $entry['day'],
+                    $entry['class_id'],
+                ]);
+
+                if (!$insertRes['success']) {
+                    throw new \RuntimeException('Error al insertar una asignación de horario.');
+                }
+            }
+
+            $this->commit();
+            return true;
+        } catch (\Throwable) {
+            $this->rollBack();
+            return false;
+        }
+    }
+
     public function getTeacherFree(int $id,string $date): array
     {
         $res = $this->query("SELECT 
@@ -147,5 +309,3 @@ final class Schedule extends Model
         return $res['success'] ? $res['data'] : [];
     }
 }
-
-?>

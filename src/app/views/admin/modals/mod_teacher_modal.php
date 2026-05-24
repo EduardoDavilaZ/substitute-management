@@ -7,7 +7,7 @@
         'size' => 'modal-md',
     ]);
 ?>
-<form id="formModTeacher" data-id="<?= $teacher['id'] ?? 0 ?>">
+<form id="formModTeacher" data-id="<?= (int)($teacher['id'] ?? 0) ?>">
     <div class="mb-3">
         <label class="form-label small fw-bold">Nombre Completo</label>
         <input type="text" name="nameTeacher" class="form-control input-validate" value="<?= htmlspecialchars($teacher['full_name'] ?? '') ?>">
@@ -30,7 +30,11 @@
         <label class="form-label small fw-bold">Imagen de Perfil</label>
         <?php if (!empty($teacher['profile_img_path'])): ?>
             <div class="mb-2">
-                <img src="<?= ASSETS_URL . 'imgTeacher/' . htmlspecialchars($teacher['profile_img_path']) ?>" alt="Imagen de perfil" style="max-width: 100px; border-radius: 4px;">
+                <img 
+                    src="<?= UPLOADS_URL . 'teachers/' . htmlspecialchars($teacher['profile_img_path']) ?>"
+                    alt="Imagen de perfil"
+                    style="max-width: 100px; border-radius: 4px;"
+                >
             </div>
         <?php endif; ?>
         <input type="file" name="profileImage" class="form-control input-validate">

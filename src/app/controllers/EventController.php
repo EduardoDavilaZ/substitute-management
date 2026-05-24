@@ -72,4 +72,4 @@ final class EventController extends Controller
             json_error("No se pudo eliminar el evento. Es posible que no exista.");
         }
     }
-}
+}   
