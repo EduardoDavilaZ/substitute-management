@@ -3,9 +3,57 @@
 require_once __DIR__ . '/../services/ExcelService.php';
 use App\Services\ExcelService;
 use App\Services\PdfService;
+use App\Services\TemplateService;
 
 final class ScheduleController extends Controller 
 {
+    public function downloadScheduleTemplate(): never
+    {
+        try {
+            $writer = (new TemplateService())->generateUniversalScheduleTemplate();
+        } catch (\Throwable $e) {
+            http_response_code(500);
+            exit($e->getMessage());
+        }
+
+        download_excel($writer, 'Plantilla_Gestion_Profesores_' . date('Ymd'));
+    }
+
+    public function uploadTeacherSchedule(): never
+    {
+        $teacherId = (int) input('teacher_id', 0);
+
+        if ($teacherId <= 0) {
+            json_error('ID de profesor no válido.');
+        }
+
+        if (empty($_FILES['schedule']['name'])) {
+            json_error('Debe seleccionar un archivo Excel.');
+        }
+
+        $fileError = validate_uploaded_file(
+            $_FILES['schedule'],
+            ['xlsx'],
+            [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/octet-stream',
+            ],
+            5 * 1024 * 1024
+        );
+
+        if ($fileError !== null) {
+            json_error($fileError);
+        }
+
+        $result = (new Schedule())->importTeacherSchedule($teacherId, $_FILES['schedule']['tmp_name']);
+
+        if ($result['success']) {
+            json_success($result['message'], ['count' => $result['count'] ?? 0]);
+        }
+
+        json_error($result['message']);
+    }
+
     public function guardScheduleAssignment(int $id, string $day, int $period_id) : array
     {
         $this->view = 'admin/modals/guard_schedule_assignment';

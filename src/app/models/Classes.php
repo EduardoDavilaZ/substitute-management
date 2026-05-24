@@ -18,6 +18,26 @@ final class Classes extends Model
         return $res['data'] ?? [];
     }
 
+    public function getActiveClassCodes(): array
+    {
+        $res = $this->query(
+            "SELECT code FROM classes WHERE enabled = 1 ORDER BY code ASC"
+        );
+
+        return $res['data'] ?? [];
+    }
+
+    /** @return array<string, int> código en mayúsculas => id */
+    public function getActiveClassCodeMap(): array
+    {
+        $map = [];
+        foreach ($this->getClassesEnabled() as $row) {
+            $map[strtoupper(trim((string) $row['code']))] = (int) $row['id'];
+        }
+
+        return $map;
+    }
+
     public function getClass(int $id): array
     {
         $res = $this->find('classes', $id);

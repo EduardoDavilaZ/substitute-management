@@ -99,19 +99,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     ),
                     {
                         text: '<i class="bi bi-download"></i> Descargar Plantilla',
-                        className: 'btn btn-secondary btn-downlo mx-1', 
+                        className: 'btn btn-secondary btn-downlo mx-1',
                         action: function () {
-
-                            var urlPlantilla = ASSETS_URL + 'docs/Horario-Calendario-Semanal.xlsx';
-                            
-                            var link = document.createElement('a');
-                            link.href = urlPlantilla;
-                            
-                            link.download = 'Plantilla_Gestion_Profesores.xlsx'; 
-                            
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                            window.location.href = BASE_URL + 'schedule/download-schedule-template';
                         }
                     }
                 ]
@@ -300,10 +290,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
         $.ajax(ajaxConfig);
     });
-    //--------------Charge Schedule
-    $(document).on('click','.btn-charge',function(e){
+    $(document).on('click', '.btn-charge', function (e) {
         e.preventDefault();
         var id = $(this).data('schedule-id');
         Modal.show(`${BASE_URL}teacher/get-teacher-by-id-schedule/${id}`);
+    });
+
+    $(document).on('click', '#btnSubmitSchedule', function (e) {
+        e.preventDefault();
+
+        var $form = $('#formUploadSchedule');
+        var teacherId = parseInt($form.data('teacher-id'), 10);
+
+        if (!teacherId) {
+            swal('Error', 'Profesor no identificado.', 'error');
+            return;
+        }
+
+        var fileInput = $form.find('input[name="schedule"]')[0];
+
+        if (!fileInput.files.length) {
+            swal('Error', 'Seleccione un archivo Excel.', 'error');
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('teacher_id', teacherId);
+        formData.append('schedule', fileInput.files[0]);
+
+        $.ajax({
+            url: BASE_URL + 'schedule/upload-teacher-schedule',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    swal('¡Importado!', response.message, 'success', {
+                        timer: 2000,
+                        buttons: false
+                    });
+
+                    $('.modal').modal('hide');
+                    $('#modal-container').empty();
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('overflow', '');
+                } else {
+                    swal('Error', response.message, 'error');
+                }
+            },
+            error: function (xhr) {
+                var text = 'No se pudo importar el horario.';
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                    if (res.message) {
+                        text = res.message;
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+                swal('Error', text, 'error');
+            }
+        });
     });
 });

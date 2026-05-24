@@ -23,7 +23,6 @@
             border: none;
             text-align: left;
 
-            &:nth-child(3) { width: 12% !important; }
             &:nth-child(4) { width: 10% !important; }
             &:nth-child(5) { width: 10% !important; }
 
