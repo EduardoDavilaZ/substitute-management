@@ -25,6 +25,26 @@ final class Absence extends Model
                             WHERE DATE = ?", [$date]);
         return $res['success'] ? $res['data'] : [];
     }
+    public function getAbsencesHistory() : array
+    {
+        $res = $this->query("SELECT
+                                ab.id,
+                                ta.full_name AS absent,
+                                COUNT(s.id) AS absent_hours,
+                                ab.is_justified AS justify,
+                                ab.date AS date_absence,
+                                ab.reason AS reason,
+                                GROUP_CONCAT(DISTINCT ts.full_name ORDER BY ts.full_name SEPARATOR ', ') AS sustitute
+                            FROM substitutions s
+                            JOIN teachers ta ON s.absent_teacher_id = ta.id
+                            JOIN absence_period a ON s.absence_detail_id = a.id
+                            JOIN absences ab ON a.absence_id = ab.id
+                            LEFT JOIN teachers ts ON s.substitute_teacher_id = ts.id
+                            WHERE s.enabled=1
+                            GROUP BY ab.id, ta.full_name, ab.is_justified, ab.date, ab.reason");
+        return $res['success'] ? $res['data'] : [];
+    }
+
     public function getAbsencesDetails() : array
     {
         $res = $this->query("SELECT 
