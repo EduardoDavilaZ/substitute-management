@@ -96,35 +96,10 @@ final class Substitution extends Model
         if($res['success']){
             return $this->incraseCounter($selectedTeacher);
         }
-    }
-    private function incraseCounter (int $selectedTeacher){
-        $res = $this->query("UPDATE teachers SET substitution_counter = substitution_counter + 1 WHERE id = ?",[$selectedTeacher]);
-        return (bool)$res['success'];
-    }
-
-    public function generateSubstitutionsFromAbsencePeriods(): bool
-    {
-        $sqlInsert = "INSERT INTO substitutions (absence_detail_id, schedule_id, absent_teacher_id, class_id, date)
-            SELECT ap.id, s.id, a.teacher_id, s.class_id, a.date
-            FROM absence_period ap
-            JOIN absences a ON ap.absence_id = a.id
-            JOIN schedules s ON s.teacher_id = a.teacher_id
-                AND s.period_id = ap.period_id
-                AND s.day = (
-                    CASE DAYOFWEEK(a.date)
-                        WHEN 2 THEN 'L'
-                        WHEN 3 THEN 'M'
-                        WHEN 4 THEN 'X'
-                        WHEN 5 THEN 'J'
-                        WHEN 6 THEN 'V'
-                    END
-                )
-            WHERE ap.is_cover_generated = FALSE
-            AND s.class_id IS NOT NULL";
-
-        $resInsert = $this->insert($sqlInsert, []);
-        if (!$resInsert['success']) {
-            return false;
+        public function deleteSubstitutions(int $id): bool
+        {   
+            $res = $this->query("UPDATE substitutions SET is_enabled = 0 WHERE id = ?;",[$id]);
+            return $res['success'] ? true : false;
         }
 
         $resUpdate = $this->update(
