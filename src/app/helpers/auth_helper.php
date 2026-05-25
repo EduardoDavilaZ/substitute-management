@@ -42,5 +42,3 @@ function logout(): void
     session_destroy();
     redirect('login');
 }
-
-?>

@@ -20,7 +20,7 @@ define("DEFAULT_METHOD", "index");
 /**
  * URLs (Browser / Assets)
  */
-define("BASE_URL", "http://localhost/");
+define("BASE_URL", getBaseUrl());
 
 define("ASSETS_URL", BASE_URL . "assets/");
 
@@ -37,5 +37,3 @@ define("UPLOADS_URL", BASE_URL . "uploads/");
 define("PUBLIC_PATH", BASE_PATH . "public/");
 define("UPLOADS_PATH", PUBLIC_PATH . "uploads/");
 define("UPLOADS_IMG_PATH", UPLOADS_PATH . "img/");
-
-?>

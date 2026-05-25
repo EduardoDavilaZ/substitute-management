@@ -92,7 +92,7 @@ $(document).ready(function () {
                             grid: {
                                 drawTicks: false,
                                 drawOnChartArea: true,
-                                color: 'rgba(72, 187, 120, 0.2)'
+                                color: 'rgba(15, 76, 129, 0.15)'
                             },
                             ticks: {
                                 stepSize: 2,

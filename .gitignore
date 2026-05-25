@@ -1,8 +1,9 @@
-# Database configuration
-src/app/config/database.php
-
-# Global configuration
-src/app/config/app.php
-
 # Composer
 src/vendor/
+
+# Upload files
+src/public/uploads/*
+!src/public/uploads/.gitkeep
+
+# .env
+src/.env

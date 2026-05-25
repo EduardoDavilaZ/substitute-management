@@ -14,16 +14,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (data) {
                     if (!data || data.trim() === '') {
-                        return '<span class="text-muted fst-italic" style="font-size: 0.85rem;">Sin teléfono registrado</span>';
+                        return '<span class="text-muted-custom fst-italic">Sin teléfono</span>';
                     }
                     return data;
                 }
             },
             { data: 'substitution_counter', className: 'text-center' },
-            {   data: 'is_tutor',
+            {   
+                data: 'is_tutor',
                 className: 'text-center',
                 render: function (data) {
-                    return (data === 1) ? 'SI' : 'NO'  
+                    return (data === 1) 
+                        ? '<span class="badge-status badge-blue">SÍ</span>' 
+                        : '<span class="badge-status badge-gray">NO</span>';
                 }
             },
             {
@@ -32,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (row) {
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button type="button" class="btn btn-action mod-teacher" data-mod-id="${row.id}">
-                                <i class="bi bi-pencil-square fs-4 text-primary"></i>
+                        <div class="boxButton center">
+                            <button type="button" class="btn-edit mod-teacher fs-6" data-mod-id="${row.id}" title="Editar Profesor">
+                                <i class="bi bi-pencil-square"></i>
                             </button>
                         </div>`;
                 }
@@ -45,8 +48,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (row) {
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button class="btn btn-action btn-delete" data-del-id="${row.id}"><i class="bi bi-trash fs-4"></i></button>
+                        <div class="boxButton center">
+                            <button type="button" class="btn-delete fs-6" data-del-id="${row.id}" title="Eliminar Profesor">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>`;
                 }
             },
@@ -56,11 +61,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 className: 'text-center',
                 render: function (row) {
                     return `
-                        <div class="boxButton d-flex justify-content-center align-items-center">
-                            <button class="btn btn-action btn-charge" data-schedule-id="${row.id}"><i class="bi bi-calendar3 fs-4"></i></button>
+                        <div class="boxButton center">
+                            <button type="button" class="btn btn-action btn-charge fs-6" data-schedule-id="${row.id}" title="Cargar Horario">
+                                <i class="bi bi-calendar3"></i>
+                            </button>
                         </div>`;
                 }
-            },
+            }
         ],
         lengthChange: false,
         info: false,
@@ -92,19 +99,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     ),
                     {
                         text: '<i class="bi bi-download"></i> Descargar Plantilla',
-                        className: 'btn btn-secondary btn-downlo mx-1', 
+                        className: 'btn btn-secondary btn-downlo mx-1',
                         action: function () {
-
-                            var urlPlantilla = ASSETS_URL + 'scheduleTemplate/Horario-Calendario-Semanal.xlsx'; //Carmbiar el archivo hay uno de prueba
-                            
-                            var link = document.createElement('a');
-                            link.href = urlPlantilla;
-                            
-                            link.download = 'Plantilla_Gestion_Profesores.xlsx'; 
-                            
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                            window.location.href = BASE_URL + 'schedule/download-schedule-template';
                         }
                     }
                 ]
@@ -230,48 +227,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    $(document).on('input change', '#formModTeacher .form-control', function() {
+    $(document).on('input change', '#formModTeacher .input-validate', function() {
         validateField($(this));
     });
 
     $(document).on('click', '#btnSubmitGuard', function(e) {
         e.preventDefault();
-        
+
         var $form = $('#formModTeacher');
-        if ($form.length === 0) return false;
 
-        $form.find('input[name="nameTeacher"], input[name="emailTeacher"], input[name="phoneTeacher"]').each(function() {
-            validateField($(this));
-        });
+        var hasFile = $('input[name="profileImage"]')[0].files.length > 0;
 
-        if ($form.find('.is-invalid').length > 0) {
-            swal("Error", "Por favor, corrige los errores del formulario.", "error");
-            return false;
-        }
-
-        var formData = new FormData($form[0]);
-        var idTeacher = $form.attr('data-id') || $form.data('id');
-        formData.append('id', idTeacher);
-
-        $.ajax({
+        var ajaxConfig = {
             url: BASE_URL + "teacher/update-teacher",
             type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
             dataType: 'json',
             success: function(response) {
+
                 if (response.status === 'success') {
-                    swal("¡Modificado!", response.message, "success", { timer: 1500, buttons: false });
-                    
-                    if (typeof dtable !== 'undefined') {
-                        dtable.ajax.reload(null, false);
-                    }
-                    
-                    $('.modal').modal('hide');       
-                    $('#modal-container').empty();   
-                    $('.modal-backdrop').remove();   
-                    $('body').removeClass('modal-open').css('overflow', ''); 
+
+                    swal("¡Modificado!", response.message, "success", {
+                        timer: 1500,
+                        buttons: false
+                    });
+
+                    dtable.ajax.reload(null, false);
+
+                    $('.modal').modal('hide');
+                    $('#modal-container').empty();
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('overflow', '');
+
                 } else {
                     swal("Error", response.message, "error");
                 }
@@ -279,12 +265,93 @@ document.addEventListener('DOMContentLoaded', function () {
             error: function() {
                 swal("Error", "No se pudo actualizar el registro.", "error");
             }
-        });
+        };
+
+        if (hasFile) {
+
+            var formData = new FormData($form[0]);
+
+            formData.append('id', $form.data('id'));
+
+            ajaxConfig.data = formData;
+            ajaxConfig.contentType = false;
+            ajaxConfig.processData = false;
+
+        } else {
+
+            ajaxConfig.data = {
+                id: $form.data('id'),
+                nameTeacher: $('input[name="nameTeacher"]').val(),
+                emailTeacher: $('input[name="emailTeacher"]').val(),
+                phoneTeacher: $('input[name="phoneTeacher"]').val(),
+                tutor: $('#tutor').val()
+            };
+        }
+
+        $.ajax(ajaxConfig);
     });
-    //--------------Charge Schedule
-    $(document).on('click','.btn-charge',function(e){
+    $(document).on('click', '.btn-charge', function (e) {
         e.preventDefault();
         var id = $(this).data('schedule-id');
         Modal.show(`${BASE_URL}teacher/get-teacher-by-id-schedule/${id}`);
+    });
+
+    $(document).on('click', '#btnSubmitSchedule', function (e) {
+        e.preventDefault();
+
+        var $form = $('#formUploadSchedule');
+        var teacherId = parseInt($form.data('teacher-id'), 10);
+
+        if (!teacherId) {
+            swal('Error', 'Profesor no identificado.', 'error');
+            return;
+        }
+
+        var fileInput = $form.find('input[name="schedule"]')[0];
+
+        if (!fileInput.files.length) {
+            swal('Error', 'Seleccione un archivo Excel.', 'error');
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('teacher_id', teacherId);
+        formData.append('schedule', fileInput.files[0]);
+
+        $.ajax({
+            url: BASE_URL + 'schedule/upload-teacher-schedule',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    swal('¡Importado!', response.message, 'success', {
+                        timer: 2000,
+                        buttons: false
+                    });
+
+                    $('.modal').modal('hide');
+                    $('#modal-container').empty();
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('overflow', '');
+                } else {
+                    swal('Error', response.message, 'error');
+                }
+            },
+            error: function (xhr) {
+                var text = 'No se pudo importar el horario.';
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                    if (res.message) {
+                        text = res.message;
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+                swal('Error', text, 'error');
+            }
+        });
     });
 });

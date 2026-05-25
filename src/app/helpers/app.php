@@ -26,6 +26,3 @@ foreach (glob(__DIR__ . '/*.php') as $helper)
     }
     require_once $helper;
 }
-
-?>
-

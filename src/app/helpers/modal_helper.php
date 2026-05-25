@@ -39,5 +39,3 @@ function modal_end(array $buttons = []) : void
         </div>
     </div>";
 }
-
-?>
