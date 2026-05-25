@@ -4,8 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../app/helpers/app.php';
 require_once '../app/config/app.php';
+require_once '../app/helpers/app.php';
 
 session_start();
 
@@ -13,7 +13,7 @@ $clean_url = trim($_GET['url'] ?? '', '/');
 $url_parts = explode('/', $clean_url);
 
 $controller_name = empty($url_parts[0]) 
-    ? DEFAULT_CONTROLLER 
+    ? DEFAULT_CONTROLLER
     : parse_controller_name($url_parts[0]);
 
 $controller_path = CONTROLLERS_PATH . $controller_name . '.php';

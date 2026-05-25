@@ -17,6 +17,17 @@ main,
     background-color: var(--surface);
 }
 
+.teacher-bg {
+    flex: 1 0 auto;
+    background: linear-gradient(
+        135deg,
+        var(--primary-dark) 0%,
+        var(--primary) 40%,
+        var(--primary-light) 70%,
+        var(--highlight) 100%
+    );
+}
+
 .nav-custom-link {
     transition: background-color 0.2s;
     &:hover{
@@ -28,6 +39,52 @@ main,
 .active{
     background-color: var(--primary-dark) !important;
     color: var(--text-on-primary) !important;
+}
+
+
+.top-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem 1rem 1rem;
+    flex-wrap: wrap;
+
+    .nav-pill {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.25rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        i {
+            font-size: 1.2rem;
+        }
+
+        &.active {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+
+            i {
+                color: var(--primary);
+            }
+        }
+    }
 }
 
 footer {

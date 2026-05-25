@@ -37,3 +37,24 @@ define("UPLOADS_URL", BASE_URL . "uploads/");
 define("PUBLIC_PATH", BASE_PATH . "public/");
 define("UPLOADS_PATH", PUBLIC_PATH . "uploads/");
 define("UPLOADS_IMG_PATH", UPLOADS_PATH . "img/");
+
+/**
+ * Get BASE_URL from protocol, host and base path
+ */
+function getBaseUrl(): string
+{
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    $scriptPath = dirname($scriptName);
+    
+    $scriptPath = str_replace('\\', '/', $scriptPath);
+    
+    if (basename($scriptPath) === 'public') {
+        $scriptPath = dirname($scriptPath);
+    }
+    
+    $basePath = rtrim($scriptPath, '/');
+    
+    return $protocol . $host . $basePath . '/';
+}

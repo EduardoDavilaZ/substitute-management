@@ -9,9 +9,47 @@ final class TeacherController extends Controller
         $this->layout = 'teacher/layout';
     }
 
-    public function home(): void
+    public function home(): array
     {
+        $id = $_SESSION['user_id'];
+
         $this->view = 'teacher/home';
+
+        return [
+            'teacher' => (new Teacher())->getTeacher($id)
+        ];
+    }
+
+    public function absences(): void
+    {
+        $id = $_SESSION['user_id'];
+
+        $this->view = 'teacher/absences';
+    }
+
+    public function generateAbsence(): array
+    {
+        $id = $_SESSION['user_id'];
+
+        $this->view = 'teacher/generate_absence';
+
+        return [
+            'periods' => (new Period())->getPeriods()
+        ];
+    }
+
+    public function schedule(): void
+    {
+        $id = $_SESSION['user_id'];
+
+        $this->view = 'teacher/schedule';
+    }
+
+    public function substitutions(): void
+    {
+        $id = $_SESSION['user_id'];
+
+        $this->view = 'teacher/substitutions';
     }
 
     public function getTecEnabled()
@@ -51,7 +89,7 @@ final class TeacherController extends Controller
         return json_error("Error al dar de baja al profesor");
     }
 
-    public function getTeacherById(int $id)
+    public function getTeacherById(int $id): array
     {
         $this->layout = null;
         $this->view = 'admin/modals/mod_teacher_modal';
@@ -150,7 +188,7 @@ final class TeacherController extends Controller
         return json_error('Error al actualizar profesor.');
     }
 
-    public function getTeacherByIdSchedule(int $id)
+    public function getTeacherByIdSchedule(int $id): array
     {
         $this->layout = null;
         $this->view = 'admin/modals/add_schedule_modal';
