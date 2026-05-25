@@ -12,11 +12,10 @@
     <?php
 
     include_once('menu.php'); 
-    echo $content; 
+    echo $content;
     include_once('footer.php');
     stack('scripts'); 
     
     ?>
-    <div id="modal-container"></div>
 </body>
 </html>
