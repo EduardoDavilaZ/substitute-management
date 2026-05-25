@@ -84,7 +84,7 @@
     <!------------------------------------------------ Ausencias de la semana ---------------------------------------------------->
     <div class="row row-cols-1 p-2">
         <div class="kpi-card p-2">
-            <span class="section-title">Ausencias del día</span>
+            <span class="section-title">Ausencias de la semana</span>
             <div id="teachers_absences" class="row row-cols-3 row-cols-md-6 row-cols-lg-12">
             </div>
         </div>
