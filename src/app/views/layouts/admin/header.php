@@ -3,6 +3,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 <title>Gestión de Guardias</title>
+<link rel="icon" type="image/png" href="<?= asset_url('isotype.png', 'img') ?>">
 
 <meta name="description" content="Sistema de gestión de guardias y horarios para profesores.">
 <meta name="author" content="Fundación Loyola">

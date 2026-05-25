@@ -52,7 +52,7 @@
         }
         public function deleteSubstitutions(int $id): bool
         {   
-            $res = $this->query("UPDATE substitutions SET enabled = 0 WHERE id = ?;",[$id]);
+            $res = $this->query("UPDATE substitutions SET is_enabled = 0 WHERE id = ?;",[$id]);
             return $res['success'] ? true : false;
         }
     }
