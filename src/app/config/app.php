@@ -45,7 +45,16 @@ function getBaseUrl(): string
 {
     $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-    $basePath = rtrim($scriptPath, '/\\');
-    return $protocol . $host . $basePath. '/';
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    $scriptPath = dirname($scriptName);
+    
+    $scriptPath = str_replace('\\', '/', $scriptPath);
+    
+    if (basename($scriptPath) === 'public') {
+        $scriptPath = dirname($scriptPath);
+    }
+    
+    $basePath = rtrim($scriptPath, '/');
+    
+    return $protocol . $host . $basePath . '/';
 }
