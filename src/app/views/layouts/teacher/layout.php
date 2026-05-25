@@ -8,14 +8,13 @@
 
     ?>
 </head>
-<body class="bg-app">
-    <?php 
-
-        include_once('menu.php'); 
-        require $view_file; 
-        include_once('footer.php');
-        stack('scripts'); 
-        
+<body class="teacher-bg">
+    <?php
+    
+    echo $content;
+    include_once('footer.php');
+    stack('scripts'); 
+    
     ?>
 </body>
 </html>
