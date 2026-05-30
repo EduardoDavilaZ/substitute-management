@@ -29,32 +29,32 @@ document.addEventListener('DOMContentLoaded', function () {
                         : '<span class="badge-status badge-gray">NO</span>';
                 }
             },
-            {
-                data: null,
-                orderable: false,
-                className: 'text-center',
-                render: function (row) {
-                    return `
-                        <div class="boxButton center">
-                            <button type="button" class="btn-edit mod-teacher fs-6" data-mod-id="${row.id}" title="Editar Profesor">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                        </div>`;
-                }
-            },
-            {
-                data: null,
-                orderable: false,
-                className: 'text-center',
-                render: function (row) {
-                    return `
-                        <div class="boxButton center">
-                            <button type="button" class="btn-delete fs-6" data-del-id="${row.id}" title="Eliminar Profesor">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>`;
-                }
-            },
+            // {
+            //     data: null,
+            //     orderable: false,
+            //     className: 'text-center',
+            //     render: function (row) {
+            //         return `
+            //             <div class="boxButton center">
+            //                 <button type="button" class="btn-edit mod-teacher fs-6" data-mod-id="${row.id}" title="Editar Profesor">
+            //                     <i class="bi bi-pencil-square"></i>
+            //                 </button>
+            //             </div>`;
+            //     }
+            // },
+            // {
+            //     data: null,
+            //     orderable: false,
+            //     className: 'text-center',
+            //     render: function (row) {
+            //         return `
+            //             <div class="boxButton center">
+            //                 <button type="button" class="btn-delete fs-6" data-del-id="${row.id}" title="Eliminar Profesor">
+            //                     <i class="bi bi-trash"></i>
+            //                 </button>
+            //             </div>`;
+            //     }
+            // },
             {
                 data: null,
                 orderable: false,
@@ -94,8 +94,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                 columns: [0, 1, 2, 3],
                                 stripHtml: true,
                             },
+                            customize: function (doc) {
+                                doc.pageMargins = [60, 48, 60, 56];
+
+                                doc.content.forEach(function(element) {
+                                    if (element.table) {
+                                        element.table.widths = [160, 305, 90, 80];
+                                    }
+                                });
+                            }
                         },
-                        { title: 'Gestión de profesores' }
+                        { 
+                            title: 'Gestión de profesores', 
+                            orientation: 'landscape' 
+                        }
                     ),
                     {
                         text: '<i class="bi bi-download"></i> Descargar Plantilla',
@@ -119,63 +131,63 @@ document.addEventListener('DOMContentLoaded', function () {
                 orderSequence: ['asc', 'desc']
             },
             {
-                targets: [5, 6, 7],
+                targets: [5],
                 orderable: false
             }
         ],
         order: [[0, 'asc']]
     });
-
-    $('#teachers-table').on('click', '.btn-delete', function () {
-        var btn = $(this);
-        var $tr = btn.closest('tr');
+    ///---------------DELETE
+    // $('#teachers-table').on('click', '.btn-delete', function () {
+    //     var btn = $(this);
+    //     var $tr = btn.closest('tr');
         
-        if ($tr.hasClass('child')) {
-            $tr = $tr.prev('.parent');
-        }
+    //     if ($tr.hasClass('child')) {
+    //         $tr = $tr.prev('.parent');
+    //     }
 
-        var id = btn.data('del-id');
+    //     var id = btn.data('del-id');
 
-        swal({
-            title: "¿Estás seguro?",
-            text: "Una vez eliminado, no podrás recuperar este registro.",
-            icon: "warning",
-            buttons: ["Cancelar", "Sí, eliminar"],
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
-                $.ajax({
-                    url: BASE_URL + "teacher/delete-teacher-by-id",
-                    type: "POST",
-                    data: {
-                        teacher_id: id
-                    },
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.status === 'success') {
-                            dtable.row($tr).remove().draw(false);
-                            swal("¡Eliminado!", response.message, "success", {
-                                timer: 1500,
-                                buttons: false
-                            });
-                        } else {
-                            swal("Error", response.message, "error");
-                        }
-                    },
-                    error: function () {
-                        swal("Error", "No se pudo completar la petición de borrado.", "error");
-                    }
-                });
-            }
-        });
-    });
+    //     swal({
+    //         title: "¿Estás seguro?",
+    //         text: "Una vez eliminado, no podrás recuperar este registro.",
+    //         icon: "warning",
+    //         buttons: ["Cancelar", "Sí, eliminar"],
+    //         dangerMode: true,
+    //     })
+    //     .then((willDelete) => {
+    //         if (willDelete) {
+    //             $.ajax({
+    //                 url: BASE_URL + "teacher/delete-teacher-by-id",
+    //                 type: "POST",
+    //                 data: {
+    //                     teacher_id: id
+    //                 },
+    //                 dataType: 'json',
+    //                 success: function (response) {
+    //                     if (response.status === 'success') {
+    //                         dtable.row($tr).remove().draw(false);
+    //                         swal("¡Eliminado!", response.message, "success", {
+    //                             timer: 1500,
+    //                             buttons: false
+    //                         });
+    //                     } else {
+    //                         swal("Error", response.message, "error");
+    //                     }
+    //                 },
+    //                 error: function () {
+    //                     swal("Error", "No se pudo completar la petición de borrado.", "error");
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
     ///---------------MODIFY
-    $('#teachers-table').on('click', '.mod-teacher', function(e) {
-        e.preventDefault();
-        var id = $(this).data('mod-id');
-        Modal.show(`${BASE_URL}teacher/get-teacher-by-id/${id}`);
-    });
+    // $('#teachers-table').on('click', '.mod-teacher', function(e) {
+    //     e.preventDefault();
+    //     var id = $(this).data('mod-id');
+    //     Modal.show(`${BASE_URL}teacher/get-teacher-by-id/${id}`);
+    // });
 
 
     function validateField(input) {
