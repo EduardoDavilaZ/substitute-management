@@ -3,6 +3,7 @@
 final class TeacherController extends Controller
 {
     private const UPLOAD_PATH = UPLOADS_PATH . 'teachers/';
+    private const ABSENCE_UPLOAD_PATH = UPLOADS_PATH . 'absences/';
 
     protected function init(): void
     {
@@ -20,11 +21,15 @@ final class TeacherController extends Controller
         ];
     }
 
-    public function absences(): void
+    public function absences(): array
     {
         $id = $_SESSION['user_id'];
 
         $this->view = 'teacher/absences';
+
+        return [
+            'absences' => (new Absence())->getAbsencesByTeacher($id)
+        ];
     }
 
     public function generateAbsence(): array
@@ -34,22 +39,206 @@ final class TeacherController extends Controller
         $this->view = 'teacher/generate_absence';
 
         return [
-            'periods' => (new Period())->getPeriods()
+            'periods' => (new Period())->getTeachingPeriods()
         ];
     }
 
-    public function schedule(): void
+    public function storeAbsence(): never
+    {
+        $teacherId = (int) ($_SESSION['user_id'] ?? 0);
+        $date = input('date', '');
+        $absenceType = input('absence_type', '');
+        $description = input('description', '');
+        $notes = input('notes', '');
+        $periods = $_POST['periods'] ?? [];
+
+        if ($teacherId <= 0) {
+            json_error('Sesion no valida.', 401);
+        }
+
+        if ($date === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            json_error('Debes indicar una fecha valida.');
+        }
+
+        $dayOfWeek = (int) (new DateTime($date))->format('N');
+        if ($dayOfWeek > 5) {
+            json_error('Solo se pueden informar ausencias en dias lectivos.');
+        }
+
+        if ($description === '') {
+            json_error('Debes indicar el motivo de la ausencia.');
+        }
+
+        if ($error = validate_length($description, 3, 255, 'El motivo')) {
+            json_error($error);
+        }
+
+        if ($notes !== '' && mb_strlen($notes) > 1000) {
+            json_error('Las indicaciones no pueden superar 1000 caracteres.');
+        }
+
+        if (!is_array($periods) || empty($periods)) {
+            json_error('Selecciona al menos una hora afectada.');
+        }
+
+        $periodIds = array_values(array_filter(array_map('intval', $periods), fn($id) => $id > 0));
+        if (empty($periodIds)) {
+            json_error('Selecciona al menos una hora afectada.');
+        }
+
+        $uploadedFiles = [];
+        $proofFilePath = null;
+
+        if (!empty($_FILES['justification']['name'])) {
+            $fileError = validate_uploaded_file(
+                $_FILES['justification'],
+                ['pdf'],
+                ['application/pdf'],
+                5 * 1024 * 1024
+            );
+
+            if ($fileError !== null) {
+                json_error($fileError);
+            }
+
+            $filename = upload_file($_FILES['justification'], self::ABSENCE_UPLOAD_PATH, 'proof_');
+            if ($filename === null) {
+                json_error('No se pudo guardar el justificante.');
+            }
+
+            $uploadedFiles[] = $filename;
+            $proofFilePath = '/uploads/absences/' . $filename;
+        }
+
+        $materialsByPeriod = $this->uploadAbsenceMaterials($periodIds, $uploadedFiles);
+        $typeLabels = [
+            'medical' => 'Medica',
+            'personal' => 'Personal',
+            'training' => 'Formacion',
+            'other' => 'Otra',
+        ];
+
+        $reason = $description;
+        if (isset($typeLabels[$absenceType])) {
+            $reason = $typeLabels[$absenceType] . ' - ' . $description;
+        }
+
+        $result = (new Absence())->createTeacherAbsence(
+            $teacherId,
+            $date,
+            $reason,
+            $periodIds,
+            $proofFilePath,
+            $materialsByPeriod,
+            $notes !== '' ? $notes : null
+        );
+
+        if (!$result['success']) {
+            foreach ($uploadedFiles as $filename) {
+                delete_file(self::ABSENCE_UPLOAD_PATH, $filename);
+            }
+
+            json_error($result['message'] ?? 'No se pudo registrar la ausencia.');
+        }
+
+        json_success('Ausencia registrada correctamente.', [
+            'redirect' => url('teacher/absences'),
+            'absence_id' => $result['absence_id'] ?? null,
+            'substitutions' => $result['substitutions'] ?? 0,
+        ]);
+    }
+
+    private function uploadAbsenceMaterials(array $periodIds, array &$uploadedFiles): array
+    {
+        $materialsByPeriod = [];
+        $materials = $_FILES['materials'] ?? null;
+
+        if (!is_array($materials) || empty($materials['name'])) {
+            return $materialsByPeriod;
+        }
+
+        $allowedExtensions = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'];
+        $allowedMimeTypes = [
+            'application/pdf',
+            'image/png',
+            'image/jpeg',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/zip',
+            'application/octet-stream',
+        ];
+
+        foreach ($periodIds as $periodId) {
+            if (empty($materials['name'][$periodId]) || !is_array($materials['name'][$periodId])) {
+                continue;
+            }
+
+            $urls = [];
+
+            foreach ($materials['name'][$periodId] as $index => $name) {
+                if ($name === '') {
+                    continue;
+                }
+
+                $file = [
+                    'name' => $name,
+                    'type' => $materials['type'][$periodId][$index] ?? '',
+                    'tmp_name' => $materials['tmp_name'][$periodId][$index] ?? '',
+                    'error' => $materials['error'][$periodId][$index] ?? UPLOAD_ERR_NO_FILE,
+                    'size' => $materials['size'][$periodId][$index] ?? 0,
+                ];
+
+                $fileError = validate_uploaded_file($file, $allowedExtensions, $allowedMimeTypes, 5 * 1024 * 1024);
+                if ($fileError !== null) {
+                    foreach ($uploadedFiles as $filename) {
+                        delete_file(self::ABSENCE_UPLOAD_PATH, $filename);
+                    }
+
+                    json_error($fileError);
+                }
+
+                $filename = upload_file($file, self::ABSENCE_UPLOAD_PATH, 'material_');
+                if ($filename === null) {
+                    foreach ($uploadedFiles as $storedFile) {
+                        delete_file(self::ABSENCE_UPLOAD_PATH, $storedFile);
+                    }
+
+                    json_error('No se pudo guardar un material adjunto.');
+                }
+
+                $uploadedFiles[] = $filename;
+                $urls[] = '/uploads/absences/' . $filename;
+            }
+
+            if (!empty($urls)) {
+                $materialsByPeriod[$periodId] = implode(',', $urls);
+            }
+        }
+
+        return $materialsByPeriod;
+    }
+
+    public function schedule(): array
     {
         $id = $_SESSION['user_id'];
 
         $this->view = 'teacher/schedule';
+
+        return [
+            'periods' => (new Period())->getTeachingPeriods(),
+            'schedule' => (new Schedule())->getTeacherSchedule($id)
+        ];
     }
 
-    public function substitutions(): void
+    public function substitutions(): array
     {
         $id = $_SESSION['user_id'];
 
         $this->view = 'teacher/substitutions';
+
+        return [
+            'substitutions' => (new Substitution())->getSubstitutionsBySubstitute($id)
+        ];
     }
 
     public function getTecEnabled()
