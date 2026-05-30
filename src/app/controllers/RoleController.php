@@ -16,8 +16,12 @@ final class RoleController extends Controller
     {
         $_SESSION['user_role'] = $rol;
         $_SESSION['user_id'] = 1;
-        
-        $target = ($rol === 'admin') ? 'admin/home' : 'teacher/home';
+
+        $target = match ($rol) {
+            'Coordinador' => 'admin/home',
+            'admin'       => 'admin/home',
+            default       => 'teacher/home',
+        };
         redirect($target);
     }
 }

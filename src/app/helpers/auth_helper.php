@@ -1,44 +1,70 @@
 <?php
 
-/**
- * Starts the session if it hasn't been started yet.
- */
-function init_session(): void 
+function init_session(): void
 {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 }
 
-/**
- * Middleware: Redirects to login if the user is not authenticated.
- * @return void
- */
-function auth(): void 
+function auth(): void
 {
-    init_session();
-    
-    if (!isset($_SESSION['user_id'])) {
+    if (!is_logged()) {
         redirect('');
     }
 }
 
-/**
- * Check if the user is currently logged in.
- * @return bool
- */
-function is_logged(): bool 
+function is_logged(): bool
 {
+    $usuario = JWTMiddleware::getUsuario();
+    if ($usuario !== null && isset($usuario['user_id'])) {
+        return true;
+    }
+
     init_session();
     return isset($_SESSION['user_id']);
 }
 
-/**
- * Log out the user and destroy the session.
- */
-function logout(): void 
+function current_user_id(): ?int
 {
+    $usuario = JWTMiddleware::getUsuario();
+    if ($usuario !== null) {
+        return $usuario['user_id'] ?? null;
+    }
+
+    init_session();
+    return $_SESSION['user_id'] ?? null;
+}
+
+function current_user_role(): ?string
+{
+    $usuario = JWTMiddleware::getUsuario();
+    if ($usuario !== null) {
+        return $usuario['rol'] ?? null;
+    }
+
+    init_session();
+    return $_SESSION['user_role'] ?? null;
+}
+
+function logout(): void
+{
+    setcookie('auth_token', '', [
+        'expires'  => time() - 3600,
+        'path'     => '/',
+        'secure'   => isset($_SERVER['HTTPS']),
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
+
     init_session();
     session_destroy();
-    redirect('login');
+
+    $intranetUrl = $_ENV['INTRANET_URL'] ?? '';
+    if ($intranetUrl !== '' && str_starts_with($intranetUrl, 'http')) {
+        header("Location: " . $intranetUrl);
+    } else {
+        redirect($intranetUrl);
+    }
+    exit;
 }

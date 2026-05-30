@@ -9,7 +9,8 @@
                 <div class="col-lg-4 text-center ">
 
                     <?php if (!empty($teacher['profile_img_path'])): ?>
-                        <img src="<?= UPLOADS_URL . 'teachers/' . htmlspecialchars($teacher['profile_img_path']) ?>"
+                        <?php $imgSrc = (str_starts_with($teacher['profile_img_path'], 'http')) ? $teacher['profile_img_path'] : UPLOADS_URL . 'teachers/' . $teacher['profile_img_path']; ?>
+                        <img src="<?= htmlspecialchars($imgSrc) ?>"
                             alt="Foto de perfil de <?= htmlspecialchars($teacher['full_name']) ?>"
                             class="profile-picture">
                     <?php else: ?>

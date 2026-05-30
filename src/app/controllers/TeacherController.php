@@ -11,7 +11,7 @@ final class TeacherController extends Controller
 
     public function home(): array
     {
-        $id = $_SESSION['user_id'];
+        $id = current_user_id();
 
         $this->view = 'teacher/home';
 
@@ -22,14 +22,14 @@ final class TeacherController extends Controller
 
     public function absences(): void
     {
-        $id = $_SESSION['user_id'];
+        $id = current_user_id();
 
         $this->view = 'teacher/absences';
     }
 
     public function generateAbsence(): array
     {
-        $id = $_SESSION['user_id'];
+        $id = current_user_id();
 
         $this->view = 'teacher/generate_absence';
 
@@ -40,14 +40,14 @@ final class TeacherController extends Controller
 
     public function schedule(): void
     {
-        $id = $_SESSION['user_id'];
+        $id = current_user_id();
 
         $this->view = 'teacher/schedule';
     }
 
     public function substitutions(): void
     {
-        $id = $_SESSION['user_id'];
+        $id = current_user_id();
 
         $this->view = 'teacher/substitutions';
     }

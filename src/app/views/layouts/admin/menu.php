@@ -70,9 +70,9 @@
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <button type="submit" class="nav-link btn btn-link border-0 shadow-none text-white fw-medium px-3 rounded nav-custom-link">
+                    <a href="<?= url('auth/logout') ?>" class="nav-link btn btn-link border-0 shadow-none text-white fw-medium px-3 rounded nav-custom-link">
                         <i class="bi bi-arrow-right-square"></i> Cerrar sesión
-                    </button>
+                    </a>
                 </li>
             </ul>
         </div>
