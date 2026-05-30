@@ -1,0 +1,266 @@
+.teacher-section-page {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.teacher-panel {
+    max-width: 1600px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+}
+
+.teacher-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.teacher-panel-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.teacher-panel-title {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.teacher-panel-subtitle {
+    color: var(--text-muted);
+    font-size: 0.83rem;
+}
+
+.teacher-info-card {
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.card-topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.date-badge,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.date-badge {
+    background: var(--bg-blue);
+    color: var(--primary-dark);
+}
+
+.status-confirmado {
+    background: var(--bg-green);
+    color: var(--green);
+}
+
+.status-pendiente {
+    background: var(--bg-yellow);
+    color: var(--yellow);
+}
+
+.status-cancelado {
+    background: var(--bg-red);
+    color: var(--red);
+}
+
+.card-title {
+    color: var(--primary-dark);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.detail-grid div {
+    background: #f8fbff;
+    border: 1px solid #dbeafe;
+    border-radius: var(--radius-md);
+    padding: 1rem 1.1rem;
+}
+
+.detail-grid span,
+.period-cell span,
+.schedule-slot span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.detail-grid strong {
+    display: block;
+    color: var(--text-main);
+    font-size: 0.92rem;
+}
+
+.card-note {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #f8fbff;
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius-lg);
+}
+
+.empty-state i {
+    display: block;
+    color: var(--primary);
+    font-size: 2.4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    color: var(--primary-dark);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+}
+
+.teacher-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #fff;
+}
+
+.teacher-table {
+    min-width: 760px;
+}
+
+.teacher-table thead th {
+    background: var(--primary);
+    color: #fff;
+    border: 0;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+}
+
+.teacher-table tbody td,
+.teacher-table tbody th {
+    border-color: var(--border);
+    padding: 0.5rem 0.75rem;
+}
+
+.period-list {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.coverage-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.coverage-summary span {
+    background: var(--bg-blue);
+    color: var(--primary-dark);
+    border-radius: 999px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.schedule-table {
+    min-width: 920px;
+}
+
+.period-cell {
+    width: 120px;
+    background: #f8fbff;
+}
+
+.schedule-slot {
+    min-height: 52px;
+    border-radius: var(--radius-md);
+    padding: 0.45rem 0.7rem;
+}
+
+.class-slot {
+    background: var(--bg-blue);
+    color: var(--primary-dark);
+}
+
+.guard-slot {
+    background: var(--bg-green);
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.free-slot {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+    .teacher-panel {
+        padding: 1.75rem;
+    }
+
+    .teacher-panel-header {
+        align-items: flex-start;
+    }
+
+    .teacher-panel-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.45rem;
+    }
+
+    .teacher-panel-title {
+        font-size: 1.5rem;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

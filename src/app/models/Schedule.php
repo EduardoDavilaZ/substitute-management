@@ -24,6 +24,29 @@ final class Schedule extends Model
         return isset($res['data'][0]) ? $res['data'][0] : $res['data'];
     }
 
+    public function getTeacherSchedule(int $teacherId): array
+    {
+        $sql = "SELECT
+                    s.id,
+                    s.day,
+                    s.period_id,
+                    p.name AS period_name,
+                    p.start_time,
+                    p.end_time,
+                    c.code AS class_code,
+                    c.name AS class_name,
+                    c.stage AS class_stage
+                FROM schedules s
+                JOIN periods p ON s.period_id = p.id
+                LEFT JOIN classes c ON s.class_id = c.id
+                WHERE s.teacher_id = ?
+                ORDER BY p.start_time ASC,
+                    FIELD(s.day, 'L', 'M', 'X', 'J', 'V')";
+
+        $res = $this->query($sql, [$teacherId]);
+        return $res['success'] ? $res['data'] : [];
+    }
+
     public function countGuardHoursByTeacher(int $teacherId, int $excludeScheduleId = 0): int
     {
         $sql = "SELECT COUNT(*) AS count FROM schedules

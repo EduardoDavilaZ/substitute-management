@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         order: [[0, 'asc']]
     });
-    ///---------------DELETE
+
     $('#teachers-table').on('click', '.btn-delete', function () {
         var btn = $(this);
         var $tr = btn.closest('tr');
