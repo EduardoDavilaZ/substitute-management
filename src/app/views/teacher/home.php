@@ -2,7 +2,7 @@
     $teacher = $teacher ?? [];
 ?>
 
-<div class="teacher-bg py-5">
+<div class="home-page">
     <div class="container">
         <div class="dashboard-card">
             <div class="row align-items-center">
