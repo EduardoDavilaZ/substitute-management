@@ -45,12 +45,22 @@ final class TeacherController extends Controller
 
     public function storeAbsence(): never
     {
-        $teacherId = (int) ($_SESSION['user_id'] ?? 0);
-        $date = input('date', '');
+        $teacherId   = (int) ($_SESSION['user_id'] ?? 0);
+        $date        = input('date', '');
         $absenceType = input('absence_type', '');
         $description = input('description', '');
-        $notes = input('notes', '');
-        $periods = $_POST['periods'] ?? [];
+        $notes       = input('notes', '');
+        $periods     = $_POST['periods'] ?? [];
+
+        $typeLabels = [
+            'medical'  => 'Medica',
+            'personal' => 'Personal',
+            'training' => 'Formacion',
+            'other'    => 'Otra',
+        ];
+        $reason = isset($typeLabels[$absenceType])
+            ? $typeLabels[$absenceType] . ' - ' . $description
+            : $description;
 
         if ($teacherId <= 0) {
             json_error('Sesion no valida.', 401);
@@ -60,8 +70,7 @@ final class TeacherController extends Controller
             json_error('Debes indicar una fecha valida.');
         }
 
-        $dayOfWeek = (int) (new DateTime($date))->format('N');
-        if ($dayOfWeek > 5) {
+        if ((new DateTime($date))->format('N') > 5) {
             json_error('Solo se pueden informar ausencias en dias lectivos.');
         }
 
@@ -111,17 +120,6 @@ final class TeacherController extends Controller
         }
 
         $materialsByPeriod = $this->uploadAbsenceMaterials($periodIds, $uploadedFiles);
-        $typeLabels = [
-            'medical' => 'Medica',
-            'personal' => 'Personal',
-            'training' => 'Formacion',
-            'other' => 'Otra',
-        ];
-
-        $reason = $description;
-        if (isset($typeLabels[$absenceType])) {
-            $reason = $typeLabels[$absenceType] . ' - ' . $description;
-        }
 
         $result = (new Absence())->createTeacherAbsence(
             $teacherId,
@@ -130,20 +128,19 @@ final class TeacherController extends Controller
             $periodIds,
             $proofFilePath,
             $materialsByPeriod,
-            $notes !== '' ? $notes : null
+            $notes ?: null
         );
 
         if (!$result['success']) {
             foreach ($uploadedFiles as $filename) {
                 delete_file(self::ABSENCE_UPLOAD_PATH, $filename);
             }
-
             json_error($result['message'] ?? 'No se pudo registrar la ausencia.');
         }
 
         json_success('Ausencia registrada correctamente.', [
-            'redirect' => url('teacher/absences'),
-            'absence_id' => $result['absence_id'] ?? null,
+            'redirect'      => url('teacher/absences'),
+            'absence_id'    => $result['absence_id'] ?? null,
             'substitutions' => $result['substitutions'] ?? 0,
         ]);
     }
@@ -154,7 +151,7 @@ final class TeacherController extends Controller
         $materials = $_FILES['materials'] ?? null;
 
         if (!is_array($materials) || empty($materials['name'])) {
-            return $materialsByPeriod;
+            return [];
         }
 
         $allowedExtensions = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'];
@@ -169,49 +166,43 @@ final class TeacherController extends Controller
         ];
 
         foreach ($periodIds as $periodId) {
-            if (empty($materials['name'][$periodId]) || !is_array($materials['name'][$periodId])) {
-                continue;
-            }
+            if (!isset($materials['name'][$periodId]) || !is_array($materials['name'][$periodId])) {
+                // no hay archivos para este periodo
+            } else {
+                $urls = [];
 
-            $urls = [];
+                foreach (array_filter($materials['name'][$periodId]) as $index => $name) {
+                    $file = [
+                        'name'     => $name,
+                        'type'     => $materials['type'][$periodId][$index] ?? '',
+                        'tmp_name' => $materials['tmp_name'][$periodId][$index] ?? '',
+                        'error'    => $materials['error'][$periodId][$index] ?? UPLOAD_ERR_NO_FILE,
+                        'size'     => $materials['size'][$periodId][$index] ?? 0,
+                    ];
 
-            foreach ($materials['name'][$periodId] as $index => $name) {
-                if ($name === '') {
-                    continue;
-                }
-
-                $file = [
-                    'name' => $name,
-                    'type' => $materials['type'][$periodId][$index] ?? '',
-                    'tmp_name' => $materials['tmp_name'][$periodId][$index] ?? '',
-                    'error' => $materials['error'][$periodId][$index] ?? UPLOAD_ERR_NO_FILE,
-                    'size' => $materials['size'][$periodId][$index] ?? 0,
-                ];
-
-                $fileError = validate_uploaded_file($file, $allowedExtensions, $allowedMimeTypes, 5 * 1024 * 1024);
-                if ($fileError !== null) {
-                    foreach ($uploadedFiles as $filename) {
-                        delete_file(self::ABSENCE_UPLOAD_PATH, $filename);
+                    $fileError = validate_uploaded_file($file, $allowedExtensions, $allowedMimeTypes, 5 * 1024 * 1024);
+                    if ($fileError !== null) {
+                        foreach ($uploadedFiles as $uploadedFile) {
+                            delete_file(self::ABSENCE_UPLOAD_PATH, $uploadedFile);
+                        }
+                        json_error($fileError);
                     }
 
-                    json_error($fileError);
-                }
-
-                $filename = upload_file($file, self::ABSENCE_UPLOAD_PATH, 'material_');
-                if ($filename === null) {
-                    foreach ($uploadedFiles as $storedFile) {
-                        delete_file(self::ABSENCE_UPLOAD_PATH, $storedFile);
+                    $filename = upload_file($file, self::ABSENCE_UPLOAD_PATH, 'material_');
+                    if ($filename === null) {
+                        foreach ($uploadedFiles as $uploadedFile) {
+                            delete_file(self::ABSENCE_UPLOAD_PATH, $uploadedFile);
+                        }
+                        json_error('No se pudo guardar un material adjunto.');
                     }
 
-                    json_error('No se pudo guardar un material adjunto.');
+                    $uploadedFiles[] = $filename;
+                    $urls[] = '/uploads/absences/' . $filename;
                 }
 
-                $uploadedFiles[] = $filename;
-                $urls[] = '/uploads/absences/' . $filename;
-            }
-
-            if (!empty($urls)) {
-                $materialsByPeriod[$periodId] = implode(',', $urls);
+                if (!empty($urls)) {
+                    $materialsByPeriod[$periodId] = implode(',', $urls);
+                }
             }
         }
 

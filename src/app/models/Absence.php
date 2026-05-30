@@ -20,8 +20,7 @@ final class Absence extends Model
             $this->beginTransaction();
 
             $absenceRes = $this->insert(
-                "INSERT INTO absences (teacher_id, reason, date, proof_file_path, is_justified)
-                 VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO absences (teacher_id, reason, date, proof_file_path, is_justified) VALUES (?, ?, ?, ?, ?)",
                 [
                     $teacherId,
                     $reason,
@@ -35,21 +34,18 @@ final class Absence extends Model
                 throw new RuntimeException($absenceRes['message'] ?? 'No se pudo registrar la ausencia.');
             }
 
-            $absenceId = (int) $absenceRes['lastInsertId'];
-            $createdPeriods = 0;
+            $absenceId            = (int) $absenceRes['lastInsertId'];
+            $createdPeriods       = 0;
             $createdSubstitutions = 0;
 
             foreach ($periodIds as $periodId) {
-                $materialUrl = $materialsByPeriod[$periodId] ?? null;
-
                 $periodRes = $this->insert(
                     "INSERT INTO absence_period
-                        (absence_id, period_id, instruction_material_url, comments, is_cover_generated)
-                     VALUES (?, ?, ?, ?, TRUE)",
+                        (absence_id, period_id, instruction_material_url, comments, is_cover_generated) VALUES (?, ?, ?, ?, TRUE)",
                     [
                         $absenceId,
                         $periodId,
-                        $materialUrl,
+                        $materialsByPeriod[$periodId] ?? null,
                         $notes ?: null,
                     ]
                 );
@@ -90,9 +86,9 @@ final class Absence extends Model
                          VALUES (?, ?, ?, ?, ?)",
                         [
                             $absencePeriodId,
-                            (int) $schedule['id'],
+                            $schedule['id'],
                             $teacherId,
-                            (int) $schedule['class_id'],
+                            $schedule['class_id'],
                             $date,
                         ]
                     );
@@ -108,18 +104,14 @@ final class Absence extends Model
             $this->commit();
 
             return [
-                'success' => true,
-                'absence_id' => $absenceId,
-                'periods' => $createdPeriods,
+                'success'       => true,
+                'absence_id'    => $absenceId,
+                'periods'       => $createdPeriods,
                 'substitutions' => $createdSubstitutions,
             ];
         } catch (Throwable $e) {
             $this->rollBack();
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -135,112 +127,126 @@ final class Absence extends Model
         return $res['success'] ? $res['data'] : [];
     }
 
-    public function getAbsencesByTeacher(int $teacherId): array
+    public function getAbsencesByTeacher(int $teacherId) : array
     {
         $sql = "SELECT
-                    a.id,
-                    a.reason,
-                    a.date,
-                    a.proof_file_path,
-                    a.is_justified,
-                    a.created_at,
+                    absences.id,
+                    absences.reason,
+                    absences.date,
+                    absences.proof_file_path,
+                    absences.is_justified,
+                    absences.created_at,
                     GROUP_CONCAT(
-                        DISTINCT p.name
-                        ORDER BY p.start_time
+                        DISTINCT periods.name
+                        ORDER BY periods.start_time
                         SEPARATOR ', '
                     ) AS periods,
-                    COUNT(DISTINCT ap.id) AS affected_periods,
-                    SUM(CASE WHEN s.status = 'PENDIENTE' THEN 1 ELSE 0 END) AS pending_substitutions,
-                    SUM(CASE WHEN s.status = 'CONFIRMADO' THEN 1 ELSE 0 END) AS confirmed_substitutions,
-                    SUM(CASE WHEN s.status = 'CANCELADO' THEN 1 ELSE 0 END) AS cancelled_substitutions
-                FROM absences a
-                LEFT JOIN absence_period ap ON ap.absence_id = a.id
-                LEFT JOIN periods p ON ap.period_id = p.id
-                LEFT JOIN substitutions s ON s.absence_detail_id = ap.id AND s.enabled = 1
-                WHERE a.teacher_id = ?
-                GROUP BY a.id, a.reason, a.date, a.proof_file_path, a.is_justified, a.created_at
-                ORDER BY a.date DESC, a.created_at DESC";
+                    COUNT(DISTINCT absence_period.id) AS affected_periods,
+                    SUM(CASE WHEN substitutions.status = 'PENDIENTE'  THEN 1 ELSE 0 END) AS pending_substitutions,
+                    SUM(CASE WHEN substitutions.status = 'CONFIRMADO' THEN 1 ELSE 0 END) AS confirmed_substitutions,
+                    SUM(CASE WHEN substitutions.status = 'CANCELADO'  THEN 1 ELSE 0 END) AS cancelled_substitutions
+                FROM absences
+                LEFT JOIN absence_period ON absence_period.absence_id = absences.id
+                LEFT JOIN periods ON absence_period.period_id = periods.id
+                LEFT JOIN substitutions ON substitutions.absence_detail_id = absence_period.id AND substitutions.enabled = 1
+                WHERE absences.teacher_id = ?
+                GROUP BY absences.id, absences.reason, absences.date, absences.proof_file_path, absences.is_justified, absences.created_at
+                ORDER BY absences.date DESC, absences.created_at DESC";
 
         $res = $this->query($sql, [$teacherId]);
         return $res['success'] ? $res['data'] : [];
     }
-    
+
     public function countAbsencesByDate(string $date) : int
     {
-        $res = $this->query("SELECT COUNT(*) as count FROM absences WHERE date = ?", [$date]);
-        return $res['success'] ? (int)$res['data'][0]['count'] : 0;
+        $res = $this->query("SELECT COUNT(*) AS count FROM absences WHERE date = ?", [$date]);
+        return $res['success'] ? (int) $res['data'][0]['count'] : 0;
     }
+
     public function getTeacherAbsencesToday(string $date) : array
     {
-        $res = $this->query("SELECT t.full_name ,t.profile_img_path
-                            FROM absences a JOIN teachers t ON a.teacher_id = t.id
-                            WHERE DATE = ?", [$date]);
+        $sql = "SELECT
+                    teachers.full_name,
+                    teachers.profile_img_path
+                FROM absences
+                JOIN teachers ON absences.teacher_id = teachers.id
+                WHERE absences.date = ?";
+
+        $res = $this->query($sql, [$date]);
         return $res['success'] ? $res['data'] : [];
     }
+
     public function getAbsencesHistory() : array
     {
-        $res = $this->query("SELECT
-                                ab.id,
-                                ta.full_name AS absent,
-                                COUNT(s.id) AS absent_hours,
-                                ab.is_justified AS justify,
-                                ab.date AS date_absence,
-                                ab.reason AS reason,
-                                GROUP_CONCAT(DISTINCT ts.full_name ORDER BY ts.full_name SEPARATOR ', ') AS sustitute
-                            FROM substitutions s
-                            JOIN teachers ta ON s.absent_teacher_id = ta.id
-                            JOIN absence_period a ON s.absence_detail_id = a.id
-                            JOIN absences ab ON a.absence_id = ab.id
-                            LEFT JOIN teachers ts ON s.substitute_teacher_id = ts.id
-                            WHERE s.enabled=1
-                            GROUP BY ab.id, ta.full_name, ab.is_justified, ab.date, ab.reason");
+        $sql = "SELECT
+                    absences.id,
+                    absent_teacher.full_name AS absent,
+                    COUNT(substitutions.id) AS absent_hours,
+                    absences.is_justified AS justify,
+                    absences.date AS date_absence,
+                    absences.reason,
+                    GROUP_CONCAT(DISTINCT substitute_teacher.full_name ORDER BY substitute_teacher.full_name SEPARATOR ', ') AS sustitute
+                FROM substitutions
+                JOIN teachers AS absent_teacher          ON substitutions.absent_teacher_id = absent_teacher.id
+                JOIN absence_period                      ON substitutions.absence_detail_id = absence_period.id
+                JOIN absences                            ON absence_period.absence_id = absences.id
+                LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
+                WHERE substitutions.enabled = 1
+                GROUP BY absences.id, absent_teacher.full_name, absences.is_justified, absences.date, absences.reason";
+
+        $res = $this->query($sql);
         return $res['success'] ? $res['data'] : [];
     }
 
     public function getAbsencesDetails() : array
     {
-        $res = $this->query("SELECT 
-                                s.id,
-                                c.name AS class, 
-                                ta.full_name AS absent, 
-                                p.name AS name_hour, 
-                                ts.full_name AS substitute, 
-                                s.`status` AS state, 
-                                ab.date AS date_absence,
-                                ab.reason AS reason,
-                                ab.proof_file_path AS material
-                            FROM substitutions s 
-                            JOIN classes c ON s.class_id = c.id
-                            JOIN teachers ta ON s.absent_teacher_id = ta.id
-                            LEFT JOIN teachers ts ON s.substitute_teacher_id = ts.id 
-                            JOIN absence_period a ON s.absence_detail_id = a.id
-                            JOIN schedules sc ON s.schedule_id = sc.id
-                            JOIN periods p ON sc.period_id = p.id
-                            LEFT JOIN absences ab ON a.absence_id = ab.id
-                            WHERE s.enabled = 1 
-                            AND s.status IN ('PENDIENTE', 'CONFIRMADO');"); 
+        $sql = "SELECT
+                    substitutions.id,
+                    classes.name AS class,
+                    absent_teacher.full_name AS absent,
+                    periods.name AS name_hour,
+                    substitute_teacher.full_name AS substitute,
+                    substitutions.status AS state,
+                    absences.date AS date_absence,
+                    absences.reason,
+                    absences.proof_file_path AS material
+                FROM substitutions
+                JOIN classes ON substitutions.class_id = classes.id
+                JOIN teachers AS absent_teacher ON substitutions.absent_teacher_id = absent_teacher.id
+                LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
+                JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
+                JOIN schedules ON substitutions.schedule_id = schedules.id
+                JOIN periods ON schedules.period_id = periods.id
+                JOIN absences ON absence_period.absence_id = absences.id
+                WHERE substitutions.enabled = 1
+                    AND substitutions.status IN ('PENDIENTE', 'CONFIRMADO')";
+
+        $res = $this->query($sql);
         return $res['success'] ? $res['data'] : [];
     }
-    public function getAbsencesDetailsById(int $id){
-        $res = $this->query("SELECT
-                            s.id,
-                            c.name AS class,
-                            ta.full_name AS absent,
-                            p.name AS name_hour,
-                            ab.is_justified AS justify,
-                            s.`status` AS state,
-                            ab.date AS date_absence,
-                            ab.reason AS reason,
-                            ab.proof_file_path AS material
-                            FROM substitutions s
-                            JOIN classes c ON s.class_id = c.id
-                            JOIN teachers ta ON s.absent_teacher_id = ta.id
-                            JOIN absence_period a ON s.absence_detail_id = a.id
-                            JOIN schedules sc ON s.schedule_id = sc.id
-                            JOIN periods p ON sc.period_id = p.id
-                            LEFT JOIN absences ab ON a.absence_id = ab.id
-                            WHERE s.id = ?", [$id]);
 
+    public function getAbsencesDetailsById(int $id) : array
+    {
+        $sql = "SELECT
+                    substitutions.id,
+                    classes.name AS class,
+                    teachers.full_name AS absent,
+                    periods.name AS name_hour,
+                    absences.is_justified AS justify,
+                    substitutions.status AS state,
+                    absences.date AS date_absence,
+                    absences.reason,
+                    absences.proof_file_path AS material
+                FROM substitutions
+                JOIN classes        ON substitutions.class_id = classes.id
+                JOIN teachers       ON substitutions.absent_teacher_id = teachers.id
+                JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
+                JOIN schedules      ON substitutions.schedule_id = schedules.id
+                JOIN periods        ON schedules.period_id = periods.id
+                JOIN absences       ON absence_period.absence_id = absences.id
+                WHERE substitutions.id = ?";
+
+        $res = $this->query($sql, [$id]);
         return $res['success'] ? $res['data'] : [];
     }
 }
