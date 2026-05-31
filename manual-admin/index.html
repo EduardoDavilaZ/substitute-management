@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario — Gestión de Guardias (Coordinador)</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:    #4f46e5;
+      --primary-dk: #3730a3;
+      --accent:     #06b6d4;
+      --success:    #16a34a;
+      --warning:    #d97706;
+      --danger:     #dc2626;
+      --bg:         #f8fafc;
+      --surface:    #ffffff;
+      --border:     #e2e8f0;
+      --text:       #1e293b;
+      --muted:      #64748b;
+      --sidebar-w:  260px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    nav#sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--primary-dk);
+      color: #fff;
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      padding-bottom: 2rem;
+      z-index: 100;
+    }
+    nav#sidebar .brand { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.15); }
+    nav#sidebar .brand h1 { font-size: 1.15rem; font-weight: 700; }
+    nav#sidebar .brand p  { font-size: .75rem; opacity: .65; margin-top: .2rem; }
+    nav#sidebar ul { list-style: none; padding: .75rem 0; }
+    nav#sidebar ul li a {
+      display: block; padding: .55rem 1.25rem;
+      color: rgba(255,255,255,.8); text-decoration: none;
+      font-size: .875rem; border-left: 3px solid transparent; transition: all .15s;
+    }
+    nav#sidebar ul li a:hover,
+    nav#sidebar ul li a.active { color: #fff; background: rgba(255,255,255,.1); border-left-color: var(--accent); }
+    nav#sidebar .section-label {
+      font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: rgba(255,255,255,.4); padding: 1.25rem 1.25rem .35rem;
+    }
+
+    main { margin-left: var(--sidebar-w); flex: 1; padding: 2.5rem 2rem 4rem; max-width: 900px; }
+
+    .hero {
+      background: #ffffff; border: 2px solid var(--border); border-radius: 16px;
+      padding: 3rem 2.5rem; margin-bottom: 2.5rem; text-align: center;
+    }
+    .hero h1 { font-size: 2rem; font-weight: 800; color: var(--text); margin-top: 1rem; }
+    .hero p  { margin-top: .5rem; font-size: 1rem; color: var(--text); }
+    .hero .hero-logo { width: 110px; }
+    .hero .subtitle { font-size: 1.2rem; color: var(--primary); font-weight: 600; }
+    .hero-authors { color: var(--text); }
+    .badge-version {
+      display: inline-block; background: var(--bg); color: var(--muted);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: .25rem .85rem; font-size: .8rem; margin-top: 1.5rem;
+    }
+
+    section { margin-bottom: 3rem; scroll-margin-top: 1.5rem; }
+    section h2 {
+      font-size: 1.35rem; font-weight: 700; color: var(--primary);
+      border-bottom: 2px solid var(--border); padding-bottom: .5rem; margin-bottom: 1.25rem;
+    }
+    section h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 .5rem; color: var(--text); }
+    section p, section li { font-size: .9375rem; line-height: 1.7; color: #334155; }
+    section ul, section ol { padding-left: 1.5rem; margin-bottom: .75rem; }
+    section li { margin-bottom: .35rem; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .card-icon { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    .card-icon .icon { font-size: 2rem; margin-bottom: .5rem; }
+    .card-icon p { font-size: .85rem; color: var(--muted); margin: 0; }
+    .card-icon strong { display: block; font-size: .9rem; margin-bottom: .2rem; }
+
+    .steps { counter-reset: step; }
+    .step { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
+    .step-num {
+      counter-increment: step; min-width: 2rem; height: 2rem;
+      background: var(--primary); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 700; flex-shrink: 0;
+    }
+    .step-num::before { content: counter(step); }
+    .step-body { padding-top: .25rem; }
+    .step-body strong { display: block; margin-bottom: .2rem; }
+
+    .alert { border-radius: 10px; padding: .85rem 1.1rem; font-size: .875rem; margin-bottom: 1rem; display: flex; gap: .6rem; align-items: flex-start; }
+    .alert-info    { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .alert-warning { background: #fffbeb; border-left: 4px solid var(--warning); color: #92400e; }
+    .alert-danger  { background: #fef2f2; border-left: 4px solid var(--danger);  color: #991b1b; }
+    .alert-success { background: #f0fdf4; border-left: 4px solid var(--success); color: #14532d; }
+
+    .tag { display: inline-block; border-radius: 999px; padding: .15rem .65rem; font-size: .75rem; font-weight: 600; margin-right: .3rem; }
+    .tag-admin   { background: #fee2e2; color: #991b1b; }
+    .tag-user    { background: #dbeafe; color: #1e40af; }
+    .tag-green   { background: #d1fae5; color: #065f46; }
+    .tag-yellow  { background: #fef9c3; color: #854d0e; }
+    .tag-blue    { background: #dbeafe; color: #1e40af; }
+    .tag-purple  { background: #ede9fe; color: #5b21b6; }
+    .tag-orange  { background: #ffedd5; color: #9a3412; }
+    .tag-red     { background: #fee2e2; color: #991b1b; }
+    .tag-cyan    { background: #cffafe; color: #155e75; }
+
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; margin-bottom: 1rem; }
+    th { background: var(--bg); font-weight: 600; text-align: left; padding: .6rem .75rem; border-bottom: 2px solid var(--border); }
+    td { padding: .55rem .75rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+
+    code { background: #f1f5f9; border-radius: 4px; padding: .1rem .4rem; font-size: .85em; font-family: 'Cascadia Code', 'Fira Code', monospace; color: #0f172a; }
+
+    .screenshot { width: 100%; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.08); margin: 1rem 0; }
+    .screenshot-caption { font-size: .8rem; color: var(--muted); text-align: center; margin-top: -.5rem; margin-bottom: 1rem; }
+
+    footer { text-align: center; font-size: .8rem; color: var(--muted); margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+    @media (max-width: 768px) {
+      nav#sidebar { width: 100%; min-height: auto; position: relative; }
+      main { margin-left: 0; padding: 1.5rem 1rem; }
+      body { flex-direction: column; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 1.5cm 2cm; }
+      body { display: block; background: #fff; color: #000; font-size: 11pt; }
+      nav#sidebar { display: none; }
+      main { margin: 0; padding: 0; max-width: 100%; }
+      .hero {
+        background: #fff !important;
+        color: #000 !important;
+        border: 2pt solid #e2e8f0 !important;
+        border-radius: 12pt;
+        padding: 3rem 2rem;
+        text-align: center;
+        page-break-after: always;
+        min-height: 80vh;
+        display: flex; flex-direction: column; justify-content: center;
+      }
+      .hero h1 { font-size: 26pt; color: #1e293b !important; margin-top: 1rem; }
+      .hero p  { font-size: 13pt; color: #1e293b !important; }
+      .hero .subtitle { font-size: 14pt; color: #4f46e5 !important; font-weight: 600; margin-top: 1rem; }
+      .hero .hero-authors { font-size: 11pt; color: #1e293b !important; }
+      .hero .badge-version { border: 1pt solid #e2e8f0; color: #64748b; background: #f8fafc; }
+      .hero .hero-logo { display: block; margin: 0 auto 1rem; width: 110px; }
+      .hero h1 { font-size: 22pt; color: #4f46e5; }
+      .hero p  { font-size: 12pt; }
+      .badge-version { border: 1px solid #ccc; color: #333; background: #f5f5f5; }
+      section { page-break-inside: avoid; margin-bottom: 1.5rem; }
+      section h2 { font-size: 14pt; color: #3730a3; border-bottom: 1.5pt solid #3730a3; padding-bottom: 4pt; margin-bottom: 10pt; }
+      section h3 { font-size: 11pt; margin: 10pt 0 4pt; }
+      section p, section li { font-size: 10.5pt; line-height: 1.6; }
+      .card { border: 1pt solid #ccc; border-radius: 6pt; padding: 10pt 12pt; margin-bottom: 8pt; box-shadow: none; }
+      .alert { border-radius: 4pt; padding: 8pt 10pt; font-size: 10pt; border-left-width: 3pt; }
+      .step-num { background: #4f46e5; color: #fff; width: 1.4rem; height: 1.4rem; font-size: 8pt; }
+      table { font-size: 10pt; }
+      th { background: #f0f0f0 !important; }
+      footer { border-top: 1pt solid #ccc; margin-top: 2rem; font-size: 9pt; text-align: center; }
+      #btn-imprimir { display: none; }
+      .steps, table, .card { page-break-inside: avoid; }
+      .screenshot { box-shadow: none; border: 1pt solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="brand">
+    <img src="img/logo.png" alt="Logo" style="width:36px;border-radius:6px;margin-bottom:.5rem;display:block">
+    <h1>Gestión de Guardias</h1>
+    <p>Manual de Usuario · v1.0</p>
+  </div>
+  <ul>
+    <li class="section-label">Introducción</li>
+    <li><a href="#intro">¿Qué es Gestión de Guardias?</a></li>
+    <li><a href="#acceso">Acceso a la aplicación</a></li>
+
+    <li class="section-label">Gestión de guardias</li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#libro-guardias">Libro de guardias</a></li>
+    <li><a href="#sustituciones">Sustituciones</a></li>
+    <li><a href="#calendario">Calendario</a></li>
+    <li><a href="#historial-ausencias">Historial de ausencias</a></li>
+
+    <li class="section-label">Configuración</li>
+    <li><a href="#eventos">Gestión de eventos</a></li>
+    <li><a href="#profesores">Gestión de profesores</a></li>
+    <li><a href="#grupos">Gestión de grupos</a></li>
+
+    <li class="section-label">Resolución de problemas</li>
+    <li><a href="#problemas">Problemas frecuentes</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <div id="btn-imprimir" style="text-align:right;margin-bottom:.75rem">
+    <button onclick="window.print()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:.5rem 1.1rem;font-size:.875rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem">
+      🖨️ Guardar como PDF
+    </button>
+    <small style="display:block;font-size:.7rem;color:var(--muted);margin-top:.3rem">Al imprimir, desmarca "Encabezados y pies de página" en el diálogo de impresión.</small>
+  </div>
+
+  <div class="hero">
+    <img src="img/logo.png" alt="Gestión de Guardias" class="hero-logo" style="border-radius:12px;margin:0 auto;display:block;background:#fff;padding:10px;box-shadow:0 4px 12px rgba(0,0,0,.08)">
+    <h1>Gestión de Guardias</h1>
+    <p class="subtitle">Manual de Usuario — Coordinador</p>
+    <p style="margin-top:1.5rem">Guía completa para la administración del sistema de guardias y sustituciones.</p>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+      <p class="hero-authors" style="font-size:.9rem">Desarrollado por</p>
+      <p style="font-weight:600;margin-top:.3rem;color:var(--text)">Eduardo Davilá · Miguel Albenca · Francisco M. Carrillo</p>
+    </div>
+    <span class="badge-version">Versión 1.0 · Mayo 2026</span>
+  </div>
+
+  <!-- INTRODUCCIÓN -->
+  <section id="intro">
+    <h2>¿Qué es Gestión de Guardias?</h2>
+    <p>
+      <strong>Gestión de Guardias</strong> es una aplicación web del ecosistema EVG (Escuela Virgen de Guadalupe)
+      que permite al equipo directivo o coordinadores gestionar las ausencias del profesorado,
+      asignar sustituciones, administrar el libro de guardias, crear eventos académicos
+      y mantener el catálogo de profesores y grupos.
+    </p>
+    <p>La aplicación está dividida en dos roles:</p>
+    <ul>
+      <li><span class="tag tag-user">Profesor</span> — Comunicar ausencias, ver horario y consultar guardias.</li>
+      <li><span class="tag tag-admin">Coordinador</span> — Gestión completa de guardias, sustituciones, eventos, profesores y grupos.</li>
+    </ul>
+    <p>Este manual está dirigido al perfil de <strong>Coordinador</strong>.</p>
+  </section>
+
+  <!-- ACCESO -->
+  <section id="acceso">
+    <h2>Acceso a la aplicación</h2>
+    <p>Para acceder a Gestión de Guardias como coordinador:</p>
+    <ol>
+      <li>Abre tu navegador y ve a: <a href="https://01.proyectos.esvirgua.com/guardias/" target="_blank">https://01.proyectos.esvirgua.com/guardias/</a></li>
+      <li>Selecciona el rol <strong>Coordinador</strong> en la pantalla de bienvenida.</li>
+      <li>Inicia sesión con tus credenciales de la Intranet EVG.</li>
+      <li>Accederás al panel de administración con el menú de navegación superior.</li>
+    </ol>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard">
+    <h2>Dashboard</h2>
+    <p>
+      El panel principal del coordinador muestra un resumen visual del estado del centro
+      con los siguientes indicadores (KPIs) que se cargan automáticamente:
+    </p>
+
+    <div class="card-grid">
+      <div class="card-icon">
+        <div class="icon">👤</div>
+        <strong>Profesores activos</strong>
+        <p>Número total de profesores dados de alta</p>
+      </div>
+      <div class="card-icon">
+        <div class="icon">🛡️</div>
+        <strong>Guardias de hoy</strong>
+        <p>Sustituciones asignadas para el día actual</p>
+      </div>
+      <div class="card-icon">
+        <div class="icon">📚</div>
+        <strong>Clases activas</strong>
+        <p>Grupos disponibles en el centro</p>
+      </div>
+      <div class="card-icon">
+        <div class="icon">📅</div>
+        <strong>Ausencias hoy</strong>
+        <p>Ausencias registradas para hoy</p>
+      </div>
+    </div>
+
+    <p>Además, el dashboard incluye:</p>
+    <ul>
+      <li><strong>Gráfico semanal</strong> — Línea con el número de sustituciones por día (lunes a viernes).</li>
+      <li><strong>Guardias pendientes</strong> — Lista de sustituciones de hoy que aún no tienen sustituto asignado.</li>
+      <li><strong>Profesores ausentes hoy</strong> — Cuadrícula con fotos y nombres de los profesores que están ausentes.</li>
+    </ul>
+
+    <img src="img/01-dashboard.png" alt="Dashboard del coordinador" class="screenshot">
+    <p class="screenshot-caption">Panel principal con KPIs, gráfico semanal y listado de ausentes</p>
+  </section>
+
+  <!-- LIBRO DE GUARDIAS -->
+  <section id="libro-guardias">
+    <h2>Libro de guardias</h2>
+    <p>
+      El <strong>Libro de guardias</strong> es una cuadrícula que organiza las guardias
+      por horas lectivas (filas) y días de la semana (columnas: L, M, X, J, V).
+    </p>
+
+    <h3>Visualizar guardias</h3>
+    <p>Cada celda puede contener hasta 2 profesores de guardia. Se muestra:</p>
+    <ul>
+      <li>Nombre del profesor.</li>
+      <li>Contador de sustituciones realizadas (badge).</li>
+      <li>Icono de edición (lápiz) para cambiar el profesor.</li>
+      <li>Icono de eliminación (papelera) para quitar la guardia.</li>
+    </ul>
+    <p>Las celdas vacías muestran el botón <strong>"Añadir profesor 1/2"</strong>.</p>
+
+    <h3>Añadir una guardia</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Haz clic en "Añadir profesor"</strong>
+          <p>En la celda del día y hora deseados.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Selecciona el profesor</strong>
+          <p>Elige de la lista desplegable de todos los profesores disponibles.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Confirma la asignación</strong>
+          <p>Haz clic en "Realizar Asignación". El sistema valida que el profesor no supere el límite de horas (tutores: máx. 1h, no tutores: máx. 2h).</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Exportar el libro</h3>
+    <p>Puedes descargar el libro de guardias completo en los siguientes formatos:</p>
+    <ul>
+      <li><strong>Excel (XLSX)</strong> — Tabla con horas, días y profesores asignados.</li>
+      <li><strong>PDF</strong> — Documento estilizado con logo, cabecera azul y filas alternas.</li>
+    </ul>
+
+    <div class="alert alert-warning">
+      <strong>⚠️</strong>
+      <span>Los tutores solo pueden tener 1 hora de guardia a la semana. El resto de profesores, hasta 2 horas.</span>
+    </div>
+
+    <img src="img/02-libro-guardias.png" alt="Libro de guardias" class="screenshot">
+    <p class="screenshot-caption">Cuadrícula del libro de guardias con asignaciones por día y hora</p>
+  </section>
+
+  <!-- SUSTITUCIONES -->
+  <section id="sustituciones">
+    <h2>Sustituciones</h2>
+    <p>
+      La tabla de <strong>Sustituciones</strong> lista todas las ausencias del profesorado
+      con el estado de cada sustitución. Es el panel central para la gestión diaria.
+    </p>
+
+    <h3>Columnas de la tabla</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Columna</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Profesor ausente</td><td>Nombre del profesor que falta</td></tr>
+        <tr><td>Clase</td><td>Grupo afectado</td></tr>
+        <tr><td>Fecha</td><td>Día de la ausencia</td></tr>
+        <tr><td>Hora</td><td>Periodo lectivo</td></tr>
+        <tr><td>Estado</td><td><span class="tag tag-green">CONFIRMADO</span> o <span class="tag tag-yellow">PENDIENTE</span></td></tr>
+        <tr><td>Sustituto</td><td>Profesor asignado (o vacío)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Filtros</h3>
+    <p>Puedes filtrar los datos usando:</p>
+    <ul>
+      <li><strong>Búsqueda por profesor</strong> — Campo de texto con búsqueda en tiempo real.</li>
+      <li><strong>Filtro por estado</strong> — Selecciona Todos/Confirmados/Pendientes.</li>
+      <li><strong>Filtro por justificación</strong> — Ausencias justificadas o sin justificar.</li>
+      <li><strong>Rango de fechas</strong> — Selecciona fecha desde y hasta con el calendario.</li>
+      <li><strong>Reiniciar filtros</strong> — Botón que limpia todos los filtros aplicados.</li>
+    </ul>
+
+    <h3>Asignar un sustituto</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Haz clic en el icono <i class="bi bi-person-plus-fill"></i> Asignar</strong>
+          <p>En la fila de la sustitución que deseas cubrir (solo disponible si el estado es PENDIENTE).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Selecciona el sustituto</strong>
+          <p>Elige entre los profesores asignados a esa hora (guardia) o los profesores libres por eventos.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Confirma la asignación</strong>
+          <p>El sistema actualiza el estado a CONFIRMADO, incrementa el contador del profesor y envía un email de notificación.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Ver detalle de ausencia</h3>
+    <p>Haz clic en el icono <i class="bi bi-eye-fill"></i> para abrir una ventana modal con la información completa de la ausencia: profesor, clase, fecha, hora, estado, justificación y motivo.</p>
+
+    <h3>Eliminar sustitución</h3>
+    <p>Haz clic en el icono <i class="bi bi-trash"></i> para eliminar una sustitución. Se mostrará un mensaje de confirmación. Solo se pueden eliminar sustituciones con estado PENDIENTE.</p>
+
+    <h3>Exportar</h3>
+    <p>Puedes exportar la tabla a Excel o PDF usando los botones superiores.</p>
+
+    <img src="img/03-sustituciones.png" alt="Tabla de sustituciones" class="screenshot">
+    <p class="screenshot-caption">Gestión de sustituciones con filtros y acciones por fila</p>
+
+    <img src="img/04-asignar-sustituto.png" alt="Modal de asignar sustituto" class="screenshot">
+    <p class="screenshot-caption">Ventana modal para asignar un sustituto a una ausencia</p>
+
+    <img src="img/05-detalle-ausencia.png" alt="Modal detalle de ausencia" class="screenshot">
+    <p class="screenshot-caption">Ventana modal con el detalle completo de la ausencia</p>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section id="calendario">
+    <h2>Calendario</h2>
+    <p>
+      La vista de <strong>Calendario</strong> muestra en un calendario mensual todas las
+      sustituciones confirmadas, coloreadas según la etapa educativa del grupo:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Etapa</th>
+          <th>Color</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Infantil</td><td><span class="tag tag-cyan">Cian</span></td></tr>
+        <tr><td>Primaria</td><td><span class="tag tag-orange">Naranja</span></td></tr>
+        <tr><td>ESO</td><td><span class="tag tag-blue">Azul</span></td></tr>
+        <tr><td>Bachillerato</td><td><span class="tag tag-green">Verde</span></td></tr>
+        <tr><td>Grado Medio</td><td><span class="tag tag-purple">Morado</span></td></tr>
+        <tr><td>Grado Superior</td><td><span class="tag tag-red">Rojo</span></td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      En escritorio se muestra la vista mensual con cuadrícula. En móvil cambia automáticamente
+      a una lista de eventos. Al pasar el cursor sobre un evento, aparece un tooltip con
+      la clase, el profesor ausente y el sustituto.
+    </p>
+
+    <img src="img/06-calendario.png" alt="Calendario de sustituciones" class="screenshot">
+    <p class="screenshot-caption">Vista mensual del calendario con sustituciones coloreadas por etapa</p>
+  </section>
+
+  <!-- HISTORIAL DE AUSENCIAS -->
+  <section id="historial-ausencias">
+    <h2>Historial de ausencias</h2>
+    <p>
+      El <strong>Historial de ausencias</strong> ofrece una vista retrospectiva de todas
+      las ausencias registradas, independientemente de si tienen o no sustitución asignada.
+    </p>
+
+    <h3>Columnas de la tabla</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Columna</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Profesor ausente</td><td>Nombre del profesor</td></tr>
+        <tr><td>Horas ausentes</td><td>Número de periodos afectados</td></tr>
+        <tr><td>Fecha</td><td>Día de la ausencia</td></tr>
+        <tr><td>Motivo</td><td>Razón indicada</td></tr>
+        <tr><td>Justificación</td><td><span class="tag tag-green">Justificada</span> o <span class="tag tag-yellow">Sin justificar</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Filtros disponibles</h3>
+    <ul>
+      <li><strong>Búsqueda por profesor</strong> — Campo de texto.</li>
+      <li><strong>Justificación</strong> — Todas/Justificadas/Sin justificar.</li>
+      <li><strong>Rango de fechas</strong> — Desde / Hasta.</li>
+      <li><strong>Reiniciar filtros</strong> — Limpia todos los filtros.</li>
+    </ul>
+
+    <p>Haz clic en el icono <i class="bi bi-eye-fill"></i> para ver el detalle completo de la ausencia, incluyendo las horas afectadas, el estado de cada sustitución y el justificante si existe.</p>
+
+    <img src="img/07-historial-ausencias.png" alt="Historial de ausencias" class="screenshot">
+    <p class="screenshot-caption">Historial completo de ausencias con filtros y detalles</p>
+  </section>
+
+  <!-- EVENTOS -->
+  <section id="eventos">
+    <h2>Gestión de eventos</h2>
+    <p>
+      Los <strong>Eventos</strong> son actividades académicas que afectan a la docencia
+      (excursiones, visitas, jornadas, etc.). Al crear un evento, el sistema genera
+      automáticamente las ausencias de los profesores acompañantes y las sustituciones
+      necesarias.
+    </p>
+
+    <h3>Crear un nuevo evento</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Haz clic en "Nuevo evento"</strong>
+          <p>Se abre una ventana modal con el formulario de creación.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Rellena los datos generales</strong>
+          <p>Título, descripción, fecha de inicio y fecha de fin.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Selecciona las clases afectadas</strong>
+          <p>Añade los grupos que se ven afectados por el evento (opcional).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Selecciona los periodos afectados</strong>
+          <p>Marca las horas lectivas que abarca el evento.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Añade profesores acompañantes</strong>
+          <p>Selecciona los profesores que acompañarán al alumnado. El sistema generará sus ausencias automáticamente.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Guarda el evento</strong>
+          <p>Haz clic en "Crear Evento". El sistema crea el evento, las ausencias de los acompañantes y las sustituciones pendientes.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Editar y eliminar eventos</h3>
+    <p>
+      Los eventos se muestran como tarjetas en una cuadrícula de 2 columnas.
+      Usa el icono de lápiz para editar y el icono de papelera para eliminar.
+      Al eliminar un evento, también se eliminan las ausencias asociadas.
+    </p>
+
+    <div class="alert alert-danger">
+      <strong>⚠️</strong>
+      <span>Al eliminar un evento se borrarán también las ausencias generadas automáticamente para los profesores acompañantes.</span>
+    </div>
+
+    <img src="img/08-eventos.png" alt="Listado de eventos" class="screenshot">
+    <p class="screenshot-caption">Tarjetas de eventos con acciones de editar y eliminar</p>
+
+    <img src="img/09-crear-evento.png" alt="Formulario de creación de evento" class="screenshot">
+    <p class="screenshot-caption">Formulario modal para crear o editar un evento</p>
+  </section>
+
+  <!-- PROFESORES -->
+  <section id="profesores">
+    <h2>Gestión de profesores</h2>
+    <p>
+      La sección de <strong>Profesores</strong> muestra el listado completo del profesorado
+      sincronizado desde la Intranet EVG.
+    </p>
+
+    <h3>Columnas de la tabla</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Columna</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Nombre</td><td>Nombre completo del profesor</td></tr>
+        <tr><td>Email</td><td>Correo electrónico</td></tr>
+        <tr><td>Teléfono</td><td>Número de contacto</td></tr>
+        <tr><td>Sustituciones</td><td>Contador de sustituciones realizadas</td></tr>
+        <tr><td>Tutor</td><td><span class="tag tag-green">Sí</span> o <span class="tag tag-yellow">No</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cargar horario de un profesor</h3>
+    <p>Para importar el horario de un profesor desde un archivo Excel:</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Descarga la plantilla</strong>
+          <p>Haz clic en "Descargar Plantilla" para obtener el archivo XLSX con el formato requerido.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Rellena la plantilla</strong>
+          <p>Completa el horario del profesor usando los códigos de clase disponibles (el archivo incluye validación de datos).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Sube el archivo</strong>
+          <p>Haz clic en el icono de calendario junto al profesor, selecciona el archivo XLSX y haz clic en "Importar horario".</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <strong>💡</strong>
+      <span>Los profesores se sincronizan automáticamente desde la Intranet EVG al iniciar sesión. No es necesario crearlos manualmente.</span>
+    </div>
+
+    <img src="img/10-profesores.png" alt="Listado de profesores" class="screenshot">
+    <p class="screenshot-caption">Tabla de profesores con opciones de exportar y cargar horario</p>
+  </section>
+
+  <!-- GRUPOS -->
+  <section id="grupos">
+    <h2>Gestión de grupos</h2>
+    <p>
+      En <strong>Clases</strong> puedes administrar los grupos del centro.
+    </p>
+
+    <h3>Crear un nuevo grupo</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Haz clic en "Nuevo grupo"</strong>
+          <p>Se abre un modal con el formulario de creación.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Rellena el código</strong>
+          <p>Ejemplo: 2-DAW (máx. 10 caracteres, alfanumérico con guiones).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Rellena el nombre</strong>
+          <p>Ejemplo: 2º Des. Aplicaciones Web (máx. 50 caracteres).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Selecciona la etapa</strong>
+          <p>ESO, BACH, CFGM, CFGS o PRIM.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Guarda</strong>
+          <p>Haz clic en "Crear grupo".</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Editar y eliminar grupos</h3>
+    <p>
+      Usa el icono de lápiz para modificar un grupo. Usa el icono de papelera
+      para darlo de baja (eliminación lógica: el grupo se desactiva, no se borra).
+    </p>
+
+    <div class="alert alert-warning">
+      <strong>⚠️</strong>
+      <strong>Validaciones importantes:</strong>
+      <ul style="margin-top:.4rem">
+        <li>El código debe ser único. No puede repetirse.</li>
+        <li>No se puede modificar un grupo que ya está dado de baja.</li>
+        <li>Máximo 255 grupos en el sistema.</li>
+      </ul>
+    </div>
+
+    <img src="img/11-clases.png" alt="Listado de grupos" class="screenshot">
+    <p class="screenshot-caption">Tabla de grupos con opciones de editar, eliminar y exportar</p>
+
+    <img src="img/12-crear-grupo.png" alt="Formulario de creación de grupo" class="screenshot">
+    <p class="screenshot-caption">Formulario modal para crear o editar un grupo</p>
+  </section>
+
+  <!-- PROBLEMAS FRECUENTES -->
+  <section id="problemas">
+    <h2>Resolución de problemas frecuentes</h2>
+
+    <div class="card">
+      <h3>No aparecen los profesores en el listado</h3>
+      <p>Los profesores se sincronizan desde la Intranet EVG al iniciar sesión. Si faltan profesores, verifica que la conexión con la Intranet esté activa o solicita al profesor que inicie sesión para sincronizar sus datos.</p>
+    </div>
+
+    <div class="card">
+      <h3>No se puede asignar un sustituto</h3>
+      <p>Verifica que el estado de la sustitución sea PENDIENTE. Las sustituciones CONFIRMADO no se pueden modificar. Además, asegúrate de que haya profesores disponibles (en guardia o libres) para esa hora.</p>
+    </div>
+
+    <div class="card">
+      <h3>Error al asignar guardia: límite de horas</h3>
+      <p>Los tutores solo pueden tener 1 hora de guardia semanal y el resto de profesores 2 horas. Si un profesor ya ha alcanzado su límite, deberás seleccionar a otro profesor para esa guardia.</p>
+    </div>
+
+    <div class="card">
+      <h3>El horario importado da error</h3>
+      <p>Verifica que estás usando la plantilla descargada desde la aplicación y que los códigos de clase existen en el sistema. El archivo debe ser XLSX y no superar los 5 MB.</p>
+    </div>
+
+    <div class="card">
+      <h3>Al crear un evento no se generan las ausencias</h3>
+      <p>Comprueba que has seleccionado al menos un periodo lectivo y has añadido profesores acompañantes. Las ausencias solo se generan para los profesores seleccionados como acompañantes.</p>
+    </div>
+
+    <div class="card">
+      <h3>No encuentro un grupo que creé</h3>
+      <p>Si el grupo no aparece en la tabla, es posible que haya sido dado de baja. Verifica en la base de datos o contacta con soporte técnico.</p>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <p>
+      Para cualquier incidencia técnica o duda sobre el funcionamiento de la aplicación,
+      contacta con el departamento de informática de la Escuela Virgen de Guadalupe.
+    </p>
+    <ul>
+      <li><strong>Web:</strong> <a href="https://fundacionloyola.com/vguadalupe/" target="_blank">fundacionloyola.com/vguadalupe/</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Gestión de Guardias · Manual de Usuario · 2026</p>
+    <p style="margin-top:.4rem">Desarrollado por <strong>Eduardo Davilá, Miguel Albenca, Francisco M. Carrillo</strong></p>
+  </footer>
+
+</main>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const links     = document.querySelectorAll('nav#sidebar a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav#sidebar a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

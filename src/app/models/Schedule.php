@@ -253,49 +253,58 @@ final class Schedule extends Model
             ];
         }
 
-        if (!$this->replaceTeacherClassSchedules($teacherId, $entries)) {
-            return ['success' => false, 'message' => 'Error al guardar el horario en la base de datos.'];
+        try {
+            $saved = $this->replaceTeacherClassSchedules($teacherId, $entries);
+        } catch (\Throwable $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
 
         return [
             'success' => true,
-            'message' => 'Horario importado correctamente (' . count($entries) . ' asignaciones).',
-            'count'   => count($entries),
+            'message' => 'Horario importado correctamente (' . $saved . ' asignaciones).',
+            'count'   => $saved,
         ];
     }
 
-    public function replaceTeacherClassSchedules(int $teacherId, array $entries): bool
+    public function replaceTeacherClassSchedules(int $teacherId, array $entries): int
     {
-        $sqlDelete = 'DELETE FROM schedules WHERE teacher_id = ?;';
         $sqlInsert = 'INSERT INTO schedules (teacher_id, period_id, day, class_id) VALUES (?, ?, ?, ?)';
 
         try {
-            $this->beginTransaction();
+            $this->connection->exec("DELETE FROM schedules WHERE teacher_id = " . (int) $teacherId);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('No se pudo limpiar el horario anterior: ' . $e->getMessage());
+        }
 
-            $deleteRes = $this->query($sqlDelete, [$teacherId]);
-            if (!$deleteRes['success']) {
-                throw new \RuntimeException('No se pudo limpiar el horario anterior.');
-            }
-
-            foreach ($entries as $entry) {
-                $insertRes = $this->insert($sqlInsert, [
+        $insertedRows = 0;
+        foreach ($entries as $entry) {
+            try {
+                $stmt = $this->connection->prepare($sqlInsert);
+                $stmt->execute([
                     $teacherId,
                     $entry['period_id'],
                     $entry['day'],
                     $entry['class_id'],
                 ]);
-
-                if (!$insertRes['success']) {
-                    throw new \RuntimeException('Error al insertar una asignación de horario.');
-                }
+                $insertedRows += $stmt->rowCount();
+            } catch (\Throwable $e) {
+                error_log('[Schedule] Error al insertar horario: ' . $e->getMessage()
+                    . " | teacher_id={$teacherId}"
+                    . " | period_id={$entry['period_id']}"
+                    . " | day={$entry['day']}"
+                    . " | class_id={$entry['class_id']}");
+                throw new \RuntimeException('Error al insertar una asignación de horario.');
             }
-
-            $this->commit();
-            return true;
-        } catch (\Throwable) {
-            $this->rollBack();
-            return false;
         }
+
+        $verify = $this->query("SELECT COUNT(*) AS cnt FROM schedules WHERE teacher_id = ?", [$teacherId], false);
+        $saved = (int) ($verify['data']['cnt'] ?? 0);
+
+        if ($saved !== $insertedRows) {
+            error_log("[Schedule] Mismatch: insertedRows={$insertedRows}, verified={$saved}");
+        }
+
+        return $saved;
     }
 
     public function getTeacherFree(int $id,string $date): array

@@ -46,6 +46,5 @@
 </main>
 <?php
     push_css('admin/absence_history.css');
-    push_js('admin/datatables_export.js');
     push_js('admin/absence_history.js');
 ?>

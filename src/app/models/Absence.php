@@ -181,17 +181,16 @@ final class Absence extends Model
         $sql = "SELECT
                     absences.id,
                     absent_teacher.full_name AS absent,
-                    COUNT(substitutions.id) AS absent_hours,
+                    COUNT(DISTINCT absence_period.id) AS absent_hours,
                     absences.is_justified AS justify,
                     absences.date AS date_absence,
                     absences.reason,
                     GROUP_CONCAT(DISTINCT substitute_teacher.full_name ORDER BY substitute_teacher.full_name SEPARATOR ', ') AS sustitute
-                FROM substitutions
-                LEFT JOIN teachers AS absent_teacher     ON substitutions.absent_teacher_id = absent_teacher.id
-                LEFT JOIN absence_period                 ON substitutions.absence_detail_id = absence_period.id
-                LEFT JOIN absences                       ON absence_period.absence_id = absences.id
+                FROM absences
+                LEFT JOIN teachers AS absent_teacher ON absences.teacher_id = absent_teacher.id
+                LEFT JOIN absence_period ON absence_period.absence_id = absences.id
+                LEFT JOIN substitutions ON substitutions.absence_detail_id = absence_period.id AND substitutions.enabled = 1
                 LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
-                WHERE substitutions.enabled = 1
                 GROUP BY absences.id, absent_teacher.full_name, absences.is_justified, absences.date, absences.reason";
 
         $res = $this->query($sql);
@@ -268,13 +267,13 @@ final class Absence extends Model
                     absences.reason,
                     absences.proof_file_path AS material,
                     substitute_teacher.full_name AS sustitute
-                FROM substitutions
-                LEFT JOIN classes        ON substitutions.class_id = classes.id
-                LEFT JOIN teachers       ON substitutions.absent_teacher_id = teachers.id
-                LEFT JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
-                LEFT JOIN schedules      ON substitutions.schedule_id = schedules.id
-                LEFT JOIN periods        ON schedules.period_id = periods.id
-                LEFT JOIN absences       ON absence_period.absence_id = absences.id
+                FROM absences
+                LEFT JOIN teachers ON absences.teacher_id = teachers.id
+                LEFT JOIN absence_period ON absence_period.absence_id = absences.id
+                LEFT JOIN substitutions ON substitutions.absence_detail_id = absence_period.id AND substitutions.enabled = 1
+                LEFT JOIN schedules ON substitutions.schedule_id = schedules.id
+                LEFT JOIN periods ON schedules.period_id = periods.id
+                LEFT JOIN classes ON substitutions.class_id = classes.id
                 LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
                 WHERE absences.id = ?";
 
