@@ -30,8 +30,9 @@
         <label class="form-label small fw-bold">Imagen de Perfil</label>
         <?php if (!empty($teacher['profile_img_path'])): ?>
             <div class="mb-2">
+                <?php $imgSrc = (str_starts_with($teacher['profile_img_path'], 'http')) ? $teacher['profile_img_path'] : UPLOADS_URL . 'teachers/' . $teacher['profile_img_path']; ?>
                 <img 
-                    src="<?= UPLOADS_URL . 'teachers/' . htmlspecialchars($teacher['profile_img_path']) ?>"
+                    src="<?= htmlspecialchars($imgSrc) ?>"
                     alt="Imagen de perfil"
                     style="max-width: 100px; border-radius: 4px;"
                 >

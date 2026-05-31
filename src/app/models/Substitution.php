@@ -31,6 +31,36 @@ final class Substitution extends Model
         
     }
 
+    public function getSubstitutionsBySubstitute(int $teacherId): array
+    {
+        $sql = "SELECT
+                    s.id,
+                    s.date,
+                    s.status,
+                    COALESCE(p.name, '-') AS period_name,
+                    p.start_time,
+                    p.end_time,
+                    c.code AS class_code,
+                    COALESCE(c.name, 'Sin clase') AS class_name,
+                    c.stage AS class_stage,
+                    COALESCE(ta.full_name, 'Profesor desconocido') AS absent_teacher,
+                    ab.reason,
+                    ab.proof_file_path AS material
+                FROM substitutions s
+                LEFT JOIN teachers ta ON s.absent_teacher_id = ta.id
+                LEFT JOIN classes c ON s.class_id = c.id
+                JOIN absence_period ap ON s.absence_detail_id = ap.id
+                JOIN absences ab ON ap.absence_id = ab.id
+                LEFT JOIN periods p ON ap.period_id = p.id
+                WHERE s.substitute_teacher_id = ?
+                    AND s.enabled = 1
+                    AND s.status IN ('PENDIENTE', 'CONFIRMADO')
+                ORDER BY s.date ASC, p.start_time ASC";
+
+        $res = $this->query($sql, [$teacherId]);
+        return $res['success'] ? $res['data'] : [];
+    }
+
     public function countTodaySubstitutions(string $date) : int
     {
         $res = $this->query("SELECT COUNT(*) as count FROM substitutions WHERE date = ? AND substitute_teacher_id is not null", [$date]);
@@ -39,9 +69,10 @@ final class Substitution extends Model
     public function getPendingGuards(string $date) : array
     {
         $res = $this->query("SELECT 
-                                ELT(WEEKDAY(s.date) + 1, 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') AS dia,c.name AS class_name 
+                                ELT(WEEKDAY(s.date) + 1, 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') AS dia,
+                                COALESCE(c.name, 'Sin clase') AS class_name 
                             FROM substitutions s 
-                            JOIN classes c ON s.class_id = c.id 
+                            LEFT JOIN classes c ON s.class_id = c.id 
                             WHERE s.date = ? AND s.status = 'PENDIENTE';", [$date]);
         return $res['success'] ? $res['data'] : [];
     }
@@ -60,11 +91,16 @@ final class Substitution extends Model
 
     public function getSubstitutionsCalendar() : array
     {
-        $res = $this->query("SELECT s.date AS start, c.name AS title, c.name AS class,c.stage, ta.full_name AS absent_teacher, ts.full_name AS substitute_teacher
+        $res = $this->query("SELECT s.date AS start,
+                                    COALESCE(c.name, 'Sin clase') AS title,
+                                    COALESCE(c.name, 'Sin clase') AS class,
+                                    c.stage,
+                                    COALESCE(ta.full_name, 'Profesor desconocido') AS absent_teacher,
+                                    COALESCE(ts.full_name, 'Sin asignar') AS substitute_teacher
                             FROM substitutions s 
-                            JOIN teachers ta ON s.absent_teacher_id = ta.id
-                            JOIN classes c ON s.class_id = c.id
-                            JOIN teachers ts ON s.substitute_teacher_id = ts.id
+                            LEFT JOIN teachers ta ON s.absent_teacher_id = ta.id
+                            LEFT JOIN classes c ON s.class_id = c.id
+                            LEFT JOIN teachers ts ON s.substitute_teacher_id = ts.id
                             WHERE s.status = 'CONFIRMADO'");
         return $res['success'] ? $res['data'] : [];
     }

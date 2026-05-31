@@ -10,8 +10,6 @@
                         <th class="text-center">Teléfono</th>
                         <th class="text-center">Sustituciones</th>
                         <th class="text-center">Tutor</th>
-                        <th class="text-center">Modificar</th>
-                        <th class="text-center">Eliminar</th>
                         <th class="text-center">Cargar Horario</th>
                     </tr>
                 </thead>

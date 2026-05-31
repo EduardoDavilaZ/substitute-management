@@ -4,6 +4,9 @@ final class AdminController extends Controller
 {
     protected function init() {
         $this->layout = 'admin/layout';
+        auth();
+        $usuario = JWTMiddleware::getUsuario() ?? [];
+        JWTMiddleware::requireRole(JWTMiddleware::ROLES_ADMIN, $usuario);
     }
 
     public function home() : void
