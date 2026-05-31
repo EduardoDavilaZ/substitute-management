@@ -23,6 +23,6 @@ final class AbsenceController extends Controller
         $this->view   = 'admin/modals/absence_detail_modal';
         $this->layout = null;
 
-        return ['absence' => (new Absence())->getAbsencesDetailsById($id)];
+        return ['absence' => (new Absence())->getAbsencesDetailsByAbsenceId($id)];
     }
 }

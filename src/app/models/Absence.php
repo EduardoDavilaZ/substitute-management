@@ -166,10 +166,10 @@ final class Absence extends Model
     public function getTeacherAbsencesToday(string $date) : array
     {
         $sql = "SELECT
-                    teachers.full_name,
+                    teachers.full_name AS full_name,
                     teachers.profile_img_path
                 FROM absences
-                JOIN teachers ON absences.teacher_id = teachers.id
+                LEFT JOIN teachers ON absences.teacher_id = teachers.id
                 WHERE absences.date = ?";
 
         $res = $this->query($sql, [$date]);
@@ -181,17 +181,16 @@ final class Absence extends Model
         $sql = "SELECT
                     absences.id,
                     absent_teacher.full_name AS absent,
-                    COUNT(substitutions.id) AS absent_hours,
+                    COUNT(DISTINCT absence_period.id) AS absent_hours,
                     absences.is_justified AS justify,
                     absences.date AS date_absence,
                     absences.reason,
                     GROUP_CONCAT(DISTINCT substitute_teacher.full_name ORDER BY substitute_teacher.full_name SEPARATOR ', ') AS sustitute
-                FROM substitutions
-                JOIN teachers AS absent_teacher          ON substitutions.absent_teacher_id = absent_teacher.id
-                JOIN absence_period                      ON substitutions.absence_detail_id = absence_period.id
-                JOIN absences                            ON absence_period.absence_id = absences.id
+                FROM absences
+                LEFT JOIN teachers AS absent_teacher ON absences.teacher_id = absent_teacher.id
+                LEFT JOIN absence_period ON absence_period.absence_id = absences.id
+                LEFT JOIN substitutions ON substitutions.absence_detail_id = absence_period.id AND substitutions.enabled = 1
                 LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
-                WHERE substitutions.enabled = 1
                 GROUP BY absences.id, absent_teacher.full_name, absences.is_justified, absences.date, absences.reason";
 
         $res = $this->query($sql);
@@ -211,17 +210,20 @@ final class Absence extends Model
                     absences.reason,
                     absences.proof_file_path AS material
                 FROM substitutions
-                JOIN classes ON substitutions.class_id = classes.id
-                JOIN teachers AS absent_teacher ON substitutions.absent_teacher_id = absent_teacher.id
+                LEFT JOIN classes ON substitutions.class_id = classes.id
+                LEFT JOIN teachers AS absent_teacher ON substitutions.absent_teacher_id = absent_teacher.id
                 LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
-                JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
-                JOIN schedules ON substitutions.schedule_id = schedules.id
-                JOIN periods ON schedules.period_id = periods.id
-                JOIN absences ON absence_period.absence_id = absences.id
+                LEFT JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
+                LEFT JOIN schedules ON substitutions.schedule_id = schedules.id
+                LEFT JOIN periods ON schedules.period_id = periods.id
+                LEFT JOIN absences ON absence_period.absence_id = absences.id
                 WHERE substitutions.enabled = 1
                     AND substitutions.status IN ('PENDIENTE', 'CONFIRMADO')";
 
         $res = $this->query($sql);
+        if (!$res['success']) {
+            error_log('[Absence::getAbsencesDetails] Query failed: ' . ($res['message'] ?? 'unknown'));
+        }
         return $res['success'] ? $res['data'] : [];
     }
 
@@ -236,17 +238,47 @@ final class Absence extends Model
                     substitutions.status AS state,
                     absences.date AS date_absence,
                     absences.reason,
-                    absences.proof_file_path AS material
+                    absences.proof_file_path AS material,
+                    substitute_teacher.full_name AS sustitute
                 FROM substitutions
-                JOIN classes        ON substitutions.class_id = classes.id
-                JOIN teachers       ON substitutions.absent_teacher_id = teachers.id
-                JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
-                JOIN schedules      ON substitutions.schedule_id = schedules.id
-                JOIN periods        ON schedules.period_id = periods.id
-                JOIN absences       ON absence_period.absence_id = absences.id
+                LEFT JOIN classes        ON substitutions.class_id = classes.id
+                LEFT JOIN teachers       ON substitutions.absent_teacher_id = teachers.id
+                LEFT JOIN absence_period ON substitutions.absence_detail_id = absence_period.id
+                LEFT JOIN schedules      ON substitutions.schedule_id = schedules.id
+                LEFT JOIN periods        ON schedules.period_id = periods.id
+                LEFT JOIN absences       ON absence_period.absence_id = absences.id
+                LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
                 WHERE substitutions.id = ?";
 
         $res = $this->query($sql, [$id]);
         return $res['success'] ? $res['data'] : [];
     }
+
+    public function getAbsencesDetailsByAbsenceId(int $absenceId) : array
+    {
+        $sql = "SELECT
+                    substitutions.id,
+                    classes.name AS class,
+                    teachers.full_name AS absent,
+                    periods.name AS name_hour,
+                    absences.is_justified AS justify,
+                    substitutions.status AS state,
+                    absences.date AS date_absence,
+                    absences.reason,
+                    absences.proof_file_path AS material,
+                    substitute_teacher.full_name AS sustitute
+                FROM absences
+                LEFT JOIN teachers ON absences.teacher_id = teachers.id
+                LEFT JOIN absence_period ON absence_period.absence_id = absences.id
+                LEFT JOIN substitutions ON substitutions.absence_detail_id = absence_period.id AND substitutions.enabled = 1
+                LEFT JOIN schedules ON substitutions.schedule_id = schedules.id
+                LEFT JOIN periods ON schedules.period_id = periods.id
+                LEFT JOIN classes ON substitutions.class_id = classes.id
+                LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
+                WHERE absences.id = ?";
+
+        $res = $this->query($sql, [$absenceId]);
+        return $res['success'] ? $res['data'] : [];
+    }
+
 }

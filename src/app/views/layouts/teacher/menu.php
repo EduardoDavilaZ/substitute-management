@@ -19,8 +19,4 @@
         <i class="bi bi-megaphone"></i>
         <span>Informar Ausencia</span>
     </a>
-    <a href="<?= url('auth/logout') ?>" class="nav-pill">
-        <i class="bi bi-arrow-right-square"></i>
-        <span>Cerrar sesión</span>
-    </a>
 </nav>

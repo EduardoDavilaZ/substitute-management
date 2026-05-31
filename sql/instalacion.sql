@@ -1,18 +1,31 @@
+DROP TABLE IF EXISTS substitutions;
+DROP TABLE IF EXISTS event_schedules;
+DROP TABLE IF EXISTS absence_period;
+
+DROP TABLE IF EXISTS absences;
+DROP TABLE IF EXISTS event_teachers;
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS schedules;
+
+DROP TABLE IF EXISTS teachers;
+DROP TABLE IF EXISTS periods;
+DROP TABLE IF EXISTS classes;
+
 -- -----------------------------------------------------------------------------
 -- 1. INDEPENDENT TABLES
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE classes (
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id TINYINT UNSIGNED NOT NULL,
     code CHAR(10) NOT NULL,
     name VARCHAR(50) NOT NULL,
-    stage ENUM('ESO', 'BACH', 'CFGM', 'CFGS', 'PRIM') NOT NULL,
+    stage ENUM('ESO', 'BACH', 'CFGM', 'CFGS', 'PRIM', 'INF') NOT NULL,
 	enabled BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT pk_classes PRIMARY KEY (id)
 );
 
 CREATE TABLE periods (
-    id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id TINYINT UNSIGNED NOT NULL,
 	name CHAR(7) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
@@ -20,11 +33,10 @@ CREATE TABLE periods (
 );
 
 CREATE TABLE teachers (
-    id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id SMALLINT UNSIGNED NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(20) NULL UNIQUE,
-    password_hash CHAR(60) NOT NULL,
     profile_img_path VARCHAR(255) NULL,
     substitution_counter TINYINT UNSIGNED DEFAULT 0,
     is_tutor BOOLEAN default 0,
@@ -128,3 +140,12 @@ CREATE TABLE substitutions (
     CONSTRAINT fk_subst_absent_teacher FOREIGN KEY (absent_teacher_id) REFERENCES teachers(id),
     CONSTRAINT fk_subst_class FOREIGN KEY (class_id) REFERENCES classes(id)
 );
+
+INSERT INTO periods (id, name, start_time, end_time) VALUES
+(1, '1 hora', '08:15:00', '09:10:00'),
+(2, '2 hora', '09:10:00', '10:05:00'),
+(3, '3 hora', '10:05:00', '11:00:00'),
+(4, 'Recreo', '11:00:00', '11:30:00'),
+(5, '4 hora', '11:30:00', '12:25:00'),
+(6, '5 hora', '12:25:00', '13:20:00'),
+(7, '6 hora', '13:20:00', '14:15:00');

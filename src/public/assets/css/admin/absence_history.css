@@ -7,6 +7,214 @@
     border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
+.filters-wrapper {
+    background: var(--primary);
+    padding: 1.5rem 2rem;
+    border-radius: 20px;
+    margin-bottom: 2.5rem;
+    border: none;
+    box-shadow: 0 10px 30px rgba(15, 76, 129, 0.15);
+    color: var(--text-on-primary);
+}
+
+.filters-bar {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    position: relative;
+
+    &.search-group {
+        flex: 1.5;
+        min-width: 320px;
+
+        i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            background-color: #ffffff !important;
+            color: #475569 !important;
+            transition: all 0.3s;
+            backdrop-filter: none !important;
+
+            &::placeholder { color: #94a3b8; }
+            &:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(15, 76, 129, 0.1);
+                outline: none;
+                + i { color: var(--primary); }
+            }
+        }
+    }
+
+    &.select-group {
+        min-width: 200px;
+        select { display: none; }
+
+        .custom-select-trigger {
+            padding: 0.9rem 1.2rem;
+            padding-right: 3rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background-color: #ffffff !important;
+            color: #475569 !important;
+            font-weight: 600;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            backdrop-filter: none !important;
+
+            &:after {
+                content: "\F229";
+                font-family: "bootstrap-icons" !important;
+                position: absolute;
+                right: 1.2rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 0.85rem;
+                color: currentColor;
+                transition: transform 0.3s ease;
+            }
+            &:hover { border-color: #cbd5e1; background-color: #f8fafc; }
+        }
+
+        &.open {
+            .custom-select-trigger {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(15, 76, 129, 0.1);
+                &:after { transform: translateY(-50%) rotate(180deg); }
+            }
+            .custom-options { opacity: 1; visibility: visible; transform: translateY(0); }
+        }
+    }
+
+    &.date-group {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+
+        .input-white, .flatpickr-input, .form-control.input {
+            padding: 0.9rem 1rem !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            font-size: 0.92rem !important;
+            color: #475569 !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
+            transition: all 0.3s !important;
+            height: auto !important;
+            backdrop-filter: none !important;
+            opacity: 1 !important;
+
+            &::placeholder { color: #94a3b8 !important; }
+            &:focus {
+                border-color: var(--primary) !important;
+                box-shadow: 0 0 0 4px rgba(15, 76, 129, 0.1) !important;
+                outline: none !important;
+            }
+        }
+    }
+}
+
+.custom-options {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: #ffffff;
+    border-radius: 14px;
+    margin-top: 8px;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+    border: 1px solid #f1f5f9;
+    opacity: 0; visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    padding: 8px;
+    overflow: hidden;
+
+    .custom-option {
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #475569;
+        transition: all 0.2s ease;
+
+        &:hover { background-color: #f1f5f9; color: var(--primary); }
+        &.selected { background-color: var(--bg-blue); color: var(--primary); font-weight: 700; }
+    }
+}
+
+.date-separator {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: bold;
+    margin: 0 0.5rem;
+}
+
+.results-info {
+    margin-top: 1.2rem;
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 0.5rem;
+    font-weight: 500;
+
+    #record-count { color: #ffffff; font-size: 0.9rem; }
+}
+
+#reset {
+    display: none;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+
+    button {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        padding: 0.85rem 1.4rem;
+        border-radius: 14px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background: #ffffff;
+            border-color: #ffffff;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        &:active { transform: translateY(0); }
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
 table#absence-history-table {
     border-collapse: separate;
     border-spacing: 0 10px;
