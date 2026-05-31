@@ -45,7 +45,7 @@ final class TeacherController extends Controller
 
     public function storeAbsence(): never
     {
-        $teacherId   = (int) ($_SESSION['user_id'] ?? 0);
+        $teacherId   = (int) (current_user_id() ?? 0);
         $date        = input('date', '');
         $absenceType = input('absence_type', '');
         $description = input('description', '');

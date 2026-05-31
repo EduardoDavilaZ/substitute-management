@@ -8,7 +8,7 @@ final class Schedule extends Model
     {
         $sql = "SELECT s.id AS schedule_id, s.day, s.period_id, t.id, t.full_name, t.substitution_counter AS count
                 FROM schedules s
-                JOIN teachers t ON s.teacher_id = t.id
+                LEFT JOIN teachers t ON s.teacher_id = t.id
                 WHERE s.class_id IS NULL";
         
         $res = $this->query($sql);
@@ -158,7 +158,7 @@ final class Schedule extends Model
     public function getIdAndDay(int $id){
         $res = $this->query("SELECT
                                     guardias.teacher_id AS teacher_id,
-                                    t.full_name AS teacher_name,
+                                    COALESCE(t.full_name, 'Profesor desconocido') AS teacher_name,
                                     t.substitution_counter AS counter
                                 FROM substitutions sub
                                 JOIN schedules clases_ausentes ON sub.schedule_id = clases_ausentes.id
@@ -172,7 +172,7 @@ final class Schedule extends Model
                                                     ELSE NULL
                                                 END
 
-                                JOIN teachers t ON guardias.teacher_id = t.id
+                                LEFT JOIN teachers t ON guardias.teacher_id = t.id
                                 WHERE sub.id = ?
                                 AND guardias.class_id IS NULL;",[$id]);
                                         return $res['success'] ? $res['data'] : [];
@@ -180,9 +180,9 @@ final class Schedule extends Model
     public function getTeachersHour (int $id, string $letterDay){
         $res = $this->query("SELECT 
                             s.teacher_id,
-                            t.full_name
+                            COALESCE(t.full_name, 'Profesor desconocido') AS full_name
                         FROM schedules s 
-                        JOIN teachers t ON s.teacher_id = t.id 
+                        LEFT JOIN teachers t ON s.teacher_id = t.id 
                         WHERE s.class_id IS NULL 
                             AND s.period_id = ? 
                             AND s.`day` = ?",[$id,$letterDay]);
