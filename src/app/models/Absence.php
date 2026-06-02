@@ -254,6 +254,15 @@ final class Absence extends Model
         return $res['success'] ? $res['data'] : [];
     }
 
+    public function updateJustification(int $absenceId, string $proofFilePath): array
+    {
+        return $this->update(
+            "UPDATE absences SET proof_file_path = ?, is_justified = 1
+             WHERE id = ? AND is_justified = 0",
+            [$proofFilePath, $absenceId]
+        );
+    }
+
     public function getAbsencesDetailsByAbsenceId(int $absenceId) : array
     {
         $sql = "SELECT

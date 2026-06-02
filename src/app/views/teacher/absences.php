@@ -35,6 +35,7 @@
                                 <th>Horas</th>
                                 <th>Motivo</th>
                                 <th>Justificante</th>
+                                <th>Subir justificante</th>
                                 <th>Guardias</th>
                             </tr>
                         </thead>
@@ -70,6 +71,24 @@
                                         <?php endif; ?>
                                     </td>
 
+                                    <td class="text-center">
+                                        <?php if ((int) $absence['is_justified'] === 1): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Ya justificada">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        <?php else: ?>
+                                            <button type="button" class="btn btn-sm btn-outline-primary btn-upload-file"
+                                                    data-absence-id="<?= $absence['id'] ?>"
+                                                    data-url="<?= url('teacher/upload-justification') ?>"
+                                                    title="Subir justificante">
+                                                <i class="bi bi-upload"></i>
+                                            </button>
+                                            <input type="file" accept=".pdf" hidden
+                                                   class="d-none input-upload-file"
+                                                   data-absence-id="<?= $absence['id'] ?>">
+                                        <?php endif; ?>
+                                    </td>
+
                                     <td>
                                         <div class="coverage-summary">
                                             <span><?= $confirmed ?> confirmadas</span>
@@ -91,4 +110,5 @@
 
 <?php
     push_css('teacher/teacher_sections.css');
+    push_js('teacher/absences.js');
 ?>
