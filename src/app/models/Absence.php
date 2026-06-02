@@ -183,6 +183,7 @@ final class Absence extends Model
                     absent_teacher.full_name AS absent,
                     COUNT(DISTINCT absence_period.id) AS absent_hours,
                     absences.is_justified AS justify,
+                    absences.proof_file_path,
                     absences.date AS date_absence,
                     absences.reason,
                     GROUP_CONCAT(DISTINCT substitute_teacher.full_name ORDER BY substitute_teacher.full_name SEPARATOR ', ') AS sustitute
@@ -191,7 +192,7 @@ final class Absence extends Model
                 LEFT JOIN absence_period ON absence_period.absence_id = absences.id
                 LEFT JOIN substitutions ON substitutions.absence_detail_id = absence_period.id AND substitutions.enabled = 1
                 LEFT JOIN teachers AS substitute_teacher ON substitutions.substitute_teacher_id = substitute_teacher.id
-                GROUP BY absences.id, absent_teacher.full_name, absences.is_justified, absences.date, absences.reason";
+                GROUP BY absences.id, absent_teacher.full_name, absences.is_justified, absences.proof_file_path, absences.date, absences.reason";
 
         $res = $this->query($sql);
         return $res['success'] ? $res['data'] : [];

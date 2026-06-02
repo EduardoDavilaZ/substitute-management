@@ -36,6 +36,7 @@
                     <th class="text-center">Fecha</th>
                     <th>Motivo</th>
                     <th class="text-center">Justificación</th>
+                    <th class="text-center">Justificante</th>
                     <th class="text-center">Detalles</th>
                 </thead>
                 <tbody>
