@@ -20,6 +20,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             {
+                data: 'proof_file_path',
+                className: 'text-center',
+                orderable: false,
+                render: function (data, type, row) {
+                    if (row.justify == 1 && data) {
+                        return `<a href="${BASE_URL}${data.replace(/^\//, '')}" class="btn btn-sm btn-success" download title="Descargar justificante">
+                            <i class="bi bi-download"></i>
+                        </a>`;
+                    }
+                    return '<span class="text-muted">—</span>';
+                }
+            },
+            {
                 data: null,
                 orderable: false,
                 className: 'text-center',
@@ -40,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 orderSequence: ['asc', 'desc']
             },
             {
-                targets: 5,
+                targets: [5, 6],
                 orderable: false
             }
         ],

@@ -145,6 +145,66 @@ final class TeacherController extends Controller
         ]);
     }
 
+    public function uploadJustification(): never
+    {
+        $teacherId = (int) (current_user_id() ?? 0);
+        $absenceId = (int) input('absence_id', 0);
+
+        if ($teacherId <= 0) {
+            json_error('Sesion no valida.', 401);
+        }
+
+        if ($absenceId <= 0) {
+            json_error('ID de ausencia no valido.');
+        }
+
+        $absence = (new Absence())->getAbsence($absenceId);
+        if (empty($absence)) {
+            json_error('Ausencia no encontrada.');
+        }
+
+        if ((int) $absence['teacher_id'] !== $teacherId) {
+            json_error('No tienes permiso para modificar esta ausencia.');
+        }
+
+        if ((int) $absence['is_justified'] === 1) {
+            json_error('Esta ausencia ya esta justificada.');
+        }
+
+        $file = $_FILES['justification'] ?? [];
+
+        if (empty($file['name'])) {
+            json_error('Debes seleccionar un archivo PDF.');
+        }
+
+        $fileError = validate_uploaded_file(
+            $file,
+            ['pdf'],
+            ['application/pdf'],
+            5 * 1024 * 1024
+        );
+
+        if ($fileError !== null) {
+            json_error($fileError);
+        }
+
+        $filename = upload_file($file, self::ABSENCE_UPLOAD_PATH, 'proof_');
+        if ($filename === null) {
+            json_error('No se pudo guardar el justificante.');
+        }
+
+        $proofFilePath = '/uploads/absences/' . $filename;
+
+        $result = (new Absence())->updateJustification($absenceId, $proofFilePath);
+
+        if (!$result['success']) {
+            delete_file(self::ABSENCE_UPLOAD_PATH, $filename);
+            json_error($result['message'] ?? 'No se pudo actualizar el justificante.');
+        }
+
+        json_success('Justificante subido correctamente.');
+    }
+
     private function uploadAbsenceMaterials(array $periodIds, array &$uploadedFiles): array
     {
         $materialsByPeriod = [];
